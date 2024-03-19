@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import useInitialize from "./hooks/useInitialize";
 import HomeTabs from "./screens/HomeTabs";
+import { Sidenav, TopNavigation } from "./components";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Main() {
   const [appIsReady, setAppIsReady] = useState(false);
+  const [sideNavOpen, setSidenavOpen] = useState(false);
   const { loading } = useInitialize();
 
   useEffect(() => {
@@ -17,6 +19,12 @@ export default function Main() {
     }
   }, [loading])
   return (
-    appIsReady && <HomeTabs />
+    appIsReady && (
+      <>
+        <TopNavigation loggedIn={true} setSidenavOpen={setSidenavOpen} />
+        <Sidenav open={sideNavOpen} setOpen={setSidenavOpen} />
+        <HomeTabs />
+      </>
+    )
   );
 }

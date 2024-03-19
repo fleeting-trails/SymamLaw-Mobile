@@ -6,6 +6,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
 import { theme } from "./src/theme";
+import 'react-native-reanimated'
+import 'react-native-gesture-handler'
 
 export default function App() {
   return (
