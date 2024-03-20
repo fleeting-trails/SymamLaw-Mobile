@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Button } from "react-native-paper";
 
-export function IconButtonCustom({ children, onPress, height, width }: PropTypes.IconButtonCustom) {
+export const IconButtonCustom = ({ children, onPress, height, width }: PropTypes.IconButtonCustom) => {
   return (
     <Button
       mode="text"

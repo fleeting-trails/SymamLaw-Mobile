@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { ScreenContainer } from '../../components'
+import CustomText from '../../atoms/CustomText/CustomText'
 
 export default function Home() {
   return (
-    <View style={styles.container}>
-      <Text>Home</Text>
-    </View>
+    <ScreenContainer style={styles.container}>
+      <CustomText>Home</CustomText>
+    </ScreenContainer>
   )
 }
 

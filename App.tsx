@@ -1,25 +1,26 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import Main from "./src/Main";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { PaperProvider } from "react-native-paper";
-import { theme } from "./src/theme";
-import 'react-native-reanimated'
-import 'react-native-gesture-handler'
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
+import { useState } from "react";
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ height: "100%" }}>
-        <PaperProvider theme={theme}>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <SafeAreaView style={{ height: "100%" }}>
           <NavigationContainer>
             <Main />
           </NavigationContainer>
-        </PaperProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 

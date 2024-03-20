@@ -1,47 +1,57 @@
 import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
-import { useTheme } from "react-native-paper";
+import { useTheme, Switch } from "react-native-paper";
 import { Dimensions } from "react-native";
 import React from "react";
 import { CompletedExamsIcon, FAQIcon, HomeIcon, MyCoursesIcon, SettingsIcon, SidenavLogo, SupportIcon } from "../../assets/Icons";
 import { View as MotiView, AnimatePresence } from "moti";
 import CustomText from "../../atoms/CustomText/CustomText";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { toggleDarkTheme } from "../../redux/slices/config";
 
 export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
   const theme = useTheme<Config.Theme>();
+  const dispatch = useAppDispatch()
+  const darkMode = useAppSelector(state => state.config.darkMode)
+
   const { height, width } = Dimensions.get("window");
   const styles = createStyles({ theme, screenHeight: height, screenWidth: width });
   const NavItems = [
     {
       label: "Home",
-      icon: <HomeIcon color="#000000" />,
+      icon: <HomeIcon color={theme.colors.text} />,
       url: "",
     },
     {
       label: "My Courses",
-      icon: <MyCoursesIcon color="#000000" />,
+      icon: <MyCoursesIcon color={theme.colors.text} />,
       url: "",
     },
     {
       label: "Completed Exams",
-      icon: <CompletedExamsIcon color="#000000" />,
+      icon: <CompletedExamsIcon color={theme.colors.text} />,
       url: "",
     },
     {
       label: "Settings",
-      icon: <SettingsIcon color="#000000" />,
+      icon: <SettingsIcon color={theme.colors.text} />,
       url: "",
     },
     {
       label: "Support",
-      icon: <SupportIcon color="#000000" />,
+      icon: <SupportIcon color={theme.colors.text} />,
       url: "",
     },
     {
       label: "FAQ",
-      icon: <FAQIcon color="#000000" />,
+      icon: <FAQIcon color={theme.colors.text} />,
       url: "",
     },
   ];
+
+  const handleDarkModeToggle = () => {
+    console.log("Change pressing")
+    dispatch(toggleDarkTheme())
+  }
   return (
     <MotiView style={styles.container}>
       {open && <View style={styles.overlay} onTouchEnd={() => setOpen(false)}></View>}
@@ -68,7 +78,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             style={styles.sidenavContainer}
           >
             <View style={styles.sidenavLogo}>
-              <SidenavLogo color={theme.colors.primary} />
+              <SidenavLogo color={theme.colors.primary} secondaryColor={theme.colors.primaryLight[0]} />
             </View>
             <View style={styles.menuItemsContainer}>
               {NavItems.map((item, i) => (
@@ -84,6 +94,10 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
                   </View>
                 </TouchableHighlight>
               ))}
+            </View>
+            <View style={styles.darkModeSettingsContainer}>
+              <CustomText>Dark Mode</CustomText> 
+              <Switch value={!darkMode} onChange={handleDarkModeToggle}/>
             </View>
           </MotiView>
         )}
@@ -109,7 +123,7 @@ const createStyles = ({ theme, screenHeight, screenWidth }: StyleProps) => {
     sidenavContainer: {
       position: "absolute",
       zIndex: 1,
-      backgroundColor: "white",
+      backgroundColor: theme.colors.background,
       left: 0,
       top: 0,
       width: 300,
@@ -130,5 +144,12 @@ const createStyles = ({ theme, screenHeight, screenWidth }: StyleProps) => {
       paddingVertical: 8,
       paddingHorizontal: 25,
     },
+    darkModeSettingsContainer: {
+      paddingHorizontal: 25,
+      marginTop: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12
+    }
   });
 };

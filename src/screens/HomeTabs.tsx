@@ -36,7 +36,7 @@ export default function HomeTabs() {
         // tabBarActiveTintColor: "white",
         // tabBarInactiveTintColor: "gray",
         tabBarStyle: {
-          backgroundColor: theme.colors.primaryLight[0],
+          backgroundColor: theme.colors.backgroundPrimaryLight,
           height: 64,
           paddingBottom: 0,
           // borderTopColor: "transparent",
@@ -49,7 +49,7 @@ export default function HomeTabs() {
           fontSize: 8,
           fontFamily: "Rubik_300Light",
         },
-        tabBarActiveBackgroundColor: theme.colors?.primary,
+        tabBarActiveBackgroundColor: theme.colors.backgroundPrimary,
         // tabBarItemStyle: {
         //   // padding: 10,
         // },
