@@ -10,8 +10,8 @@ import { toggleDarkTheme } from "../../redux/slices/config";
 
 export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
   const theme = useTheme<Config.Theme>();
-  const dispatch = useAppDispatch()
-  const darkMode = useAppSelector(state => state.config.darkMode)
+  const dispatch = useAppDispatch();
+  const darkMode = useAppSelector((state) => state.config.darkMode);
 
   const { height, width } = Dimensions.get("window");
   const styles = createStyles({ theme, screenHeight: height, screenWidth: width });
@@ -49,11 +49,11 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
   ];
 
   const handleDarkModeToggle = () => {
-    console.log("Change pressing")
-    dispatch(toggleDarkTheme())
-  }
+    // console.log("Change pressing");
+    dispatch(toggleDarkTheme());
+  };
   return (
-    <MotiView style={styles.container}>
+    <View style={styles.container}>
       {open && <View style={styles.overlay} onTouchEnd={() => setOpen(false)}></View>}
       <AnimatePresence>
         {open && (
@@ -69,11 +69,11 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             }}
             exitTransition={{
               type: "timing",
-            //   duration: 0.3,
+              //   duration: 0.3,
             }}
             transition={{
               type: "timing",
-            //   duration: 0.3
+              //   duration: 0.3
             }}
             style={styles.sidenavContainer}
           >
@@ -82,12 +82,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             </View>
             <View style={styles.menuItemsContainer}>
               {NavItems.map((item, i) => (
-                <TouchableHighlight 
-                    key={i} 
-                    onPress={() => console.log("Pressed on", i)}
-                    activeOpacity={0.1}
-                    underlayColor={theme.colors.primaryGray}
-                >
+                <TouchableHighlight key={i} onPress={() => console.log("Pressed on", i)} activeOpacity={0.1} underlayColor={theme.colors.primaryGray}>
                   <View style={styles.menuItem}>
                     {item.icon}
                     <CustomText>{item.label}</CustomText>
@@ -96,13 +91,13 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
               ))}
             </View>
             <View style={styles.darkModeSettingsContainer}>
-              <CustomText>Dark Mode</CustomText> 
-              <Switch value={!darkMode} onChange={handleDarkModeToggle}/>
+              <CustomText>Dark Mode</CustomText>
+              <Switch value={darkMode} onTouchEnd={handleDarkModeToggle} />
             </View>
           </MotiView>
         )}
       </AnimatePresence>
-    </MotiView>
+    </View>
   );
 }
 
@@ -147,9 +142,9 @@ const createStyles = ({ theme, screenHeight, screenWidth }: StyleProps) => {
     darkModeSettingsContainer: {
       paddingHorizontal: 25,
       marginTop: 20,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12
-    }
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
   });
 };

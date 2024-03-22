@@ -16,9 +16,15 @@ import {
     Rubik_900Black,
     Rubik_900Black_Italic,
   } from "@expo-google-fonts/rubik";
+import { useDispatch } from 'react-redux';
+import { setDarkTheme } from '../redux/slices/config';
+import { Appearance } from 'react-native';
 
 function useInitialize() {
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
+    const colorScheme = Appearance.getColorScheme();
+    
     // // Load all fonts
     let [fontsLoaded, fontError] = useFonts({
         Rubik_300Light,
@@ -36,6 +42,10 @@ function useInitialize() {
         Rubik_900Black,
         Rubik_900Black_Italic,
     });
+
+    useEffect(() => {
+      dispatch(setDarkTheme(colorScheme === 'light'))
+    }, [])
     useEffect(() => {
         if (fontError) console.log("Failed to load fonts", fontError)
     }, [fontError])
@@ -50,6 +60,7 @@ function useInitialize() {
             setLoading(false)
         }
     }, [fontsLoaded])
+
     
 
     return { loading }

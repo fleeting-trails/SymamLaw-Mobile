@@ -37,7 +37,7 @@ export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigat
   return (
     <View style={styles.container}>
       <View style={styles.leftActionIconsContainer}>
-        {header.goBackFunc && <IconButton icon={() => <CaretLeftIcon />} onPress={() => handleNavigateBack(header.goBackFunc)} />}
+        {header.goBackFunc && <IconButton icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />} onPress={() => handleNavigateBack(header.goBackFunc)} />}
         <IconButtonCustom onPress={handleHamburgerClick}>
           <HamburgerIcon color={theme.colors.primary} />
         </IconButtonCustom>
