@@ -20,7 +20,10 @@ export const getTheme = (dark : boolean = false) : Config.Theme =>  {
             backgroundPrimary: '#0A2647',
             backgroundPrimaryLight: '#144272',
             text: !dark ? '#000000' : "#ffffff",
-            textPrimary: !dark ? '#0A2647' : '#D6E6F8'
+            textPrimary: !dark ? '#0A2647' : '#D6E6F8',
+            textLight: !dark ? '#ffffff' : '#000000',
+            textLightPrimary: !dark ? '#D6E6F8' : '#0A2647',
+            textGray: '#6B758A'
         },
     }
 }

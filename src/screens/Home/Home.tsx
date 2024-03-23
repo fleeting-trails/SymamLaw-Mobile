@@ -4,6 +4,7 @@ import { Switch } from 'react-native-paper'
 import { ScreenContainer, Section } from '../../components'
 import CustomText from '../../atoms/CustomText/CustomText'
 import LiveClassCard from '../../components/LiveClassCard/LiveClassCard'
+import CourseCard from '../../components/CoursesCard/CourseCard'
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
         <LiveClassCard />
       </Section>
       <Section title="Explore Our Courses">
-        <CustomText>Explore New</CustomText>
+        <CourseCard />
       </Section>
     </ScreenContainer>
   )

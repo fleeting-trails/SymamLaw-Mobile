@@ -322,3 +322,18 @@ export const RegisterIcon = ({ color="#000000", scale=1, ...props }) => (
     </Defs>
   </Svg>
 )
+export const ClockIcon = ({ color="#000000", scale=1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={16 * scale}
+    height={16 * scale}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={color}
+      scale={scale}
+      d="M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16Zm0-1.6A6.4 6.4 0 1 0 8 1.6a6.4 6.4 0 0 0 0 12.8Zm-.8-6.072V3.2h1.6v4.472l3.16 3.16-1.128 1.128L7.2 8.328Z"
+    />
+  </Svg>
+)

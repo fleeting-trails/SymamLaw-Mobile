@@ -10,7 +10,10 @@ namespace Config {
             text: string,
             backgroundPrimary: string,
             backgroundPrimaryLight: string,
-            textPrimary: string
+            textPrimary: string,
+            textLight: string,
+            textLightPrimary: string,
+            textGray: string
         }
     }
     type ScreensStack = {

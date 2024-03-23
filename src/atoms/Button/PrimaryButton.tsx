@@ -8,6 +8,7 @@ export default function PrimaryButton({
   icon,
   color,
   size,
+  lightText,
   ...props
 }: PropTypes.PrimaryButton) {
   const theme = useTheme<Config.Theme>();
@@ -16,7 +17,11 @@ export default function PrimaryButton({
     <TouchableRipple {...props}>
       <View style={styles.container}>
         {icon}
-        <CustomText style={styles.buttonText}>{text}</CustomText>
+        <CustomText 
+          lightText={lightText ?? (color === 'primary') ? true : false} 
+          style={styles.buttonText}>
+            {text}
+        </CustomText>
       </View>
     </TouchableRipple>
   );
@@ -31,9 +36,10 @@ const createStyles = ({ theme, color, size }: StyleType) => {
   return StyleSheet.create({
     container: {
       borderRadius: 2,
-      paddingVertical: 3,
+      paddingVertical: 6,
       paddingHorizontal: 10,
       flexDirection: 'row',
+      justifyContent: 'center',
       alignItems: 'center',
       gap: 5,
       ...(color === "light" && { backgroundColor: theme.colors.background }),

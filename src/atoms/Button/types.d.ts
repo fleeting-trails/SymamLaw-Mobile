@@ -4,6 +4,7 @@ namespace PropTypes {
         icon?: React.ReactNode,
         color?: ButtonColorEnum,
         size?: ButtonSizeEnum,
+        lightText?: boolean
         [x:string] : any
     }
     type ButtonColorEnum = ("primary" | "accent" | "light" | string)
