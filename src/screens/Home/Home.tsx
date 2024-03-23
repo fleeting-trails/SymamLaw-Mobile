@@ -11,6 +11,9 @@ export default function Home() {
       <Section title='Upcoming Live Class'>
         <LiveClassCard />
       </Section>
+      <Section title="Explore Our Courses">
+        <CustomText>Explore New</CustomText>
+      </Section>
     </ScreenContainer>
   )
 }

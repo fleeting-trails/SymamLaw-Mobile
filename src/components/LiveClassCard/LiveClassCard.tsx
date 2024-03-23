@@ -20,12 +20,12 @@ export default function LiveClassCard() {
         </CustomText>
         <View style={styles.metaInfoContainer}>
           <SpeakerIcon color={'#ffffff'} />
-          <CustomText variant="500" style={{ color: "#ffffff" }}>Speaker</CustomText>
-          <CustomText style={{ color: "#ffffff" }}>Mr. Symam</CustomText>
+          <CustomText variant="500" style={{ color: "#ffffff", fontSize: 10 }}>Speaker</CustomText>
+          <CustomText style={{ color: "#ffffff", fontSize: 10 }}>Mr. Symam</CustomText>
         </View>
         <View style={styles.metaInfoContainer}>
           <DateIcon color={'#ffffff'} />
-          <CustomText style={{ color: "#ffffff" }}>15th April, 2024</CustomText>
+          <CustomText style={{ color: "#ffffff", fontSize: 10 }}>15th April, 2024</CustomText>
         </View>
         <View style={styles.actionContainer}>
             <PrimaryButton 
@@ -56,7 +56,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     },
     content: {
         flex: 1,
-        gap: 2
+        gap: 7
     },
     heading: {
         color: "#ffffff"
