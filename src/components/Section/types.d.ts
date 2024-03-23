@@ -1,7 +1,7 @@
 namespace PropTypes {
-    type ScreenContainer = {
+    type Section = {
+        title: string,
         children: React.ReactNode,
-        style?: import('react-native').ViewStyle,
         [x:string] : any
     }
 }

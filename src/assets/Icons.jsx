@@ -1,5 +1,5 @@
 import * as React from "react"
-import Svg, { Path, Mask } from "react-native-svg"
+import Svg, { Path, Mask, G, Defs, ClipPath } from "react-native-svg"
 export const HomeIcon = ({ color, size=26, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +86,7 @@ export const HamburgerIcon = ({ color='black', height=19, width=23, ...props }) 
     height={height}
     fill="none"
     {...props}
+    
   >
     <Path
       fill={color}
@@ -267,5 +268,57 @@ export const CaretLeftIcon = ({ color="#000000", ...props }) => (
       strokeLinecap="round"
       d="m8.531 1-7.2 7.2a1.131 1.131 0 0 0 0 1.6l7.2 7.2"
     />
+  </Svg>
+)
+export const SpeakerIcon = ({ color="#000000", scale=1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={12 * scale}
+    height={10 * scale}
+    fill="none"
+    {...props}
+  >
+    <Path
+      fill={color}
+      scale={scale}
+      d="M7.015 6.275c-.893-.282-.639-.506.213-.826.409-.154.16-.478.171-.737.005-.119.472-.095.438-.553-.024-.322-.734-.781-.927-.977-.112-.113.228-.423-.011-.695-.327-.372-.378-1.019-.576-1.38 0 0 .15-.23.035-.362C5.363-.38 1.648-.278.7 1.38-.366 3.242-.38 5.815 1.835 7.2c.985.617-.277 2.8-.277 2.8h3.908c0-.373-.436-1.71.327-1.65.662.052 1.474.024 1.402-.725-.022-.225-.047-.429.11-.616.158-.187.386-.52-.29-.734ZM7.91 5.924l3.628.475v-.95l-3.629.475ZM10.858 9.054l.389-.823-3.338-1.802 2.949 2.625ZM11.247 3.609l-.39-.824L7.91 5.411l3.338-1.802Z"
+    />
+  </Svg>
+)
+export const DateIcon = ({ color="#000000", scale=1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={11 * scale}
+    height={12 * scale}
+    fill="none"
+    {...props}
+  >
+    <Path
+      stroke="#fff"
+      scale={scale}
+      strokeLinecap="round"
+      d="M9.889 4.889V3.222c0-.613-.498-1.11-1.111-1.11H2.11C1.497 2.111 1 2.608 1 3.221V4.89m8.889 0v5c0 .614-.498 1.111-1.111 1.111H2.11A1.111 1.111 0 0 1 1 9.889v-5m8.889 0H1M3.222 1v2.222M7.667 1v2.222"
+    />
+  </Svg>
+)
+export const RegisterIcon = ({ color="#000000", scale=1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={10 * scale}
+    height={10 * scale}
+    fill="none"
+    {...props}
+  >
+    <G clipPath="url(#a)" scale={scale}>
+      <Path
+        fill={color}
+        d="M7.188 8.125a.312.312 0 0 0-.313.313v.937H.625v-7.5h1.25v.313a.312.312 0 0 0 .313.312h3.124a.312.312 0 0 0 .313-.313v-.312h1.25v.313a.312.312 0 1 0 .625 0v-.626a.312.312 0 0 0-.313-.312H5.625V.937A.937.937 0 0 0 4.687 0H2.813a.937.937 0 0 0-.937.938v.312H.312A.312.312 0 0 0 0 1.563v8.124A.312.312 0 0 0 .313 10h6.875a.312.312 0 0 0 .312-.313v-1.25a.312.312 0 0 0-.313-.312ZM2.5.937a.312.312 0 0 1 .313-.312h1.874A.312.312 0 0 1 5 .938v.937H2.5V.937Zm7.409 2.904-1.25-1.25a.312.312 0 0 0-.443 0l-3.75 3.75a.312.312 0 0 0-.091.221v1.25a.312.312 0 0 0 .313.313h1.25a.313.313 0 0 0 .22-.091l3.75-3.75a.313.313 0 0 0 0-.443ZM5 7.5v-.808l3.438-3.438.808.808L5.808 7.5H5Zm-1.25.313a.312.312 0 0 1-.313.312h-1.25a.312.312 0 1 1 0-.625h1.25a.312.312 0 0 1 .313.313Zm0-1.875a.312.312 0 0 1-.313.312h-1.25a.312.312 0 1 1 0-.625h1.25a.312.312 0 0 1 .313.313Zm1.563-1.563H2.188a.312.312 0 1 1 0-.625h3.124a.312.312 0 1 1 0 .625Z"
+      />
+    </G>
+    <Defs>
+      <ClipPath id="a" scale={scale}>
+        <Path fill={color} d="M0 0h10v10H0z" />
+      </ClipPath>
+    </Defs>
   </Svg>
 )

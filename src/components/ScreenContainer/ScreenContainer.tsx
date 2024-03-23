@@ -13,6 +13,8 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+      padding: 20,
+      gap: 30
     },
   });
 };

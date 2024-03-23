@@ -35,6 +35,7 @@ export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigat
     setProfileMenuVisible(false)
   }
   return (
+    <>
     <View style={styles.container}>
       <View style={styles.leftActionIconsContainer}>
         {header.goBackFunc && <IconButton icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />} onPress={() => handleNavigateBack(header.goBackFunc)} />}
@@ -66,6 +67,9 @@ export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigat
         )}
       </View>
     </View>
+    <View style={styles.spacer}>
+    </View>
+    </>
   );
 }
 
@@ -101,5 +105,8 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       borderRadius: 30,
       objectFit: "cover",
     },
+    spacer: {
+      height: 60
+    }
   });
 };

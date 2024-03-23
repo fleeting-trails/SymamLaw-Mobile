@@ -18,7 +18,7 @@ import {
   } from "@expo-google-fonts/rubik";
 import { useDispatch } from 'react-redux';
 import { setDarkTheme } from '../redux/slices/config';
-import { Appearance } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native';
 
 function useInitialize() {
     const dispatch = useDispatch();
@@ -44,7 +44,9 @@ function useInitialize() {
     });
 
     useEffect(() => {
-      dispatch(setDarkTheme(colorScheme === 'light'))
+        console.log("Color scheme", colorScheme)
+      dispatch(setDarkTheme(colorScheme !== 'light'))
+      Appearance.addChangeListener(({ colorScheme }) => console.log('New color scheme', colorScheme))
     }, [])
     useEffect(() => {
         if (fontError) console.log("Failed to load fonts", fontError)
