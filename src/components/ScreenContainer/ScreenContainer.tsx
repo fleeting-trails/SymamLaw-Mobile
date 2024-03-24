@@ -1,11 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
 import { useTheme } from "react-native-paper";
 
-export function ScreenContainer({ children, style, ...props }: PropTypes.ScreenContainer) {
+export function ScreenContainer({
+  children,
+  style,
+  ...props
+}: PropTypes.ScreenContainer) {
   const theme = useTheme<Config.Theme>();
-  const styles = createStyles({ theme })
-    return <View style={[style, styles.container]} {...props}>{children}</View>;
+  const styles = createStyles({ theme });
+  return (
+    <View style={[style, styles.container]} {...props}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ rowGap: 30 }}>
+        {children}
+      </ScrollView>
+    </View>
+  );
 }
 
 const createStyles = ({ theme }: { theme: Config.Theme }) => {
@@ -13,8 +23,11 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
-      padding: 20,
-      gap: 30
     },
+    scrollView: {
+      flex: 1,
+      padding: 20,
+      rowGap: 30
+    }
   });
 };

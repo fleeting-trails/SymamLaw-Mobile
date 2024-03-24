@@ -5,14 +5,14 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import { ClockIcon } from "../../assets/Icons";
 import { useTheme } from "react-native-paper";
 
-export default function CourseCard() {
+export default function CourseCard({ data } : PropTypes.CourseCard) {
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
 
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../assets/dev/course-img-1.jpeg")}
+        source={data.thumbnail}
         style={styles.thumbnail}
       />
       <View style={styles.saveButtonContainer}>
@@ -22,19 +22,17 @@ export default function CourseCard() {
       {/* Author Block */}
       <View style={styles.authorContainer}>
         <Image
-          source={require("../../assets/dev/headshot.jpeg")}
+          source={data.author.image}
           style={styles.authorAvatar}
         />
-        <CustomText variant="500">Andrew Mead</CustomText>
+        <CustomText variant="500">{data.author.name}</CustomText>
       </View>
       {/* Course Title */}
       <CustomText variant="300">
-        Constitutional Law of Bangladesh (Full Course)
+        {data.title}
       </CustomText>
       <CustomText variant="300" truncate={200} style={{ fontSize: 10, color: theme.colors.textGray }}>
-        In this session you will learn a lot of different strategies to excel in
-        bar at law exam. Also expert suggestions about common mistakes and how
-        to overcome thosex
+        {data.description}
       </CustomText>
 
       {/* Meta Data */}
@@ -42,7 +40,7 @@ export default function CourseCard() {
         {/* Total course hour */}
         <View style={styles.metaInfoItem}>
           <ClockIcon />
-          <CustomText variant="300">21h 45min</CustomText>
+          <CustomText variant="300">{data.courseHour}</CustomText>
         </View>
       </View>
 
@@ -62,7 +60,8 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       borderRadius: 2,
       padding: 7,
       position: "relative",
-      width: 250,
+      // width: 250,
+      minHeight: 320,
       gap: 8,
     },
     thumbnail: {
@@ -95,6 +94,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
         gap: 6
     },
     actionContainer: {
+        marginTop: 'auto',
         flexDirection: 'column',
         gap: 3
     }
