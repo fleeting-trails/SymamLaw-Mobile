@@ -28,7 +28,7 @@ export default function CourseCard({ data } : PropTypes.CourseCard) {
         <CustomText variant="500">{data.author.name}</CustomText>
       </View>
       {/* Course Title */}
-      <CustomText variant="300">
+      <CustomText variant="300" truncate={50}>
         {data.title}
       </CustomText>
       <CustomText variant="300" truncate={200} style={{ fontSize: 10, color: theme.colors.textGray }}>
@@ -39,7 +39,7 @@ export default function CourseCard({ data } : PropTypes.CourseCard) {
       <View style={styles.metaInfoContainer}>
         {/* Total course hour */}
         <View style={styles.metaInfoItem}>
-          <ClockIcon />
+          <ClockIcon color={theme.colors.text} />
           <CustomText variant="300">{data.courseHour}</CustomText>
         </View>
       </View>
@@ -86,6 +86,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       borderColor: theme.colors.primaryLight[0],
     },
     metaInfoContainer: {
+        marginTop: 'auto',
         flexDirection: 'row',
         gap: 8
     },
@@ -94,7 +95,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
         gap: 6
     },
     actionContainer: {
-        marginTop: 'auto',
+        // marginTop: 'auto',
         flexDirection: 'column',
         gap: 3
     }
