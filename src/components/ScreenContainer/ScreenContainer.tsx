@@ -13,6 +13,7 @@ export function ScreenContainer({
     <View style={[style, styles.container]} {...props}>
       <ScrollView style={styles.scrollView} contentContainerStyle={{ rowGap: 30 }}>
         {children}
+        <View style={{ height: 30 }}></View>
       </ScrollView>
     </View>
   );
@@ -27,7 +28,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     scrollView: {
       flex: 1,
       padding: 20,
-      rowGap: 30
+      rowGap: 30,
     }
   });
 };

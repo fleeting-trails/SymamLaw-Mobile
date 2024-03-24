@@ -6,6 +6,7 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import LiveClassCard from "../../components/LiveClassCard/LiveClassCard";
 import CourseCard from "../../components/CoursesCard/CourseCard";
 import { FlatList } from "react-native";
+import ExamCard from "../../components/ExamCard/ExamCard";
 
 export default function Home() {
   const courseData: Array<PropTypes.CourseCardData> = [
@@ -46,6 +47,38 @@ export default function Home() {
       },
     },
   ];
+  const examData : Array<PropTypes.ExamCardData> = [
+    {
+      id: "1",
+      name: "Daily Exam",
+      duration: 50,
+      totalQuestions: 40
+    },
+    {
+      id: "2",
+      name: "Labor Law Exam",
+      duration: 50,
+      totalQuestions: 40
+    },
+    {
+      id: "3",
+      name: "Constituion Law Exam",
+      duration: 50,
+      totalQuestions: 40
+    },
+    {
+      id: "4",
+      name: "Bar-At-Law Preperation",
+      duration: 50,
+      totalQuestions: 40
+    },
+    {
+      id: "5",
+      name: "Special Exams",
+      duration: 50,
+      totalQuestions: 40
+    }
+  ]
   return (
     <ScreenContainer>
       <Section title="Upcoming Live Class">
@@ -63,6 +96,14 @@ export default function Home() {
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
         />
+      </Section>
+        
+      <Section title="Recommended Exams For You">
+        <View style={{ gap: 8 }}>
+          {examData.map(exam => (
+            <ExamCard key={exam.id} data={exam} />
+          ))}
+        </View>
       </Section>
     </ScreenContainer>
   );
