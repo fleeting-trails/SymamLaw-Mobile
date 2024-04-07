@@ -12,6 +12,7 @@ import { PaperProvider, useTheme } from "react-native-paper";
 import { getTheme } from "./theme";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { setDarkTheme } from "./redux/slices/config";
+import Register from "./screens/Auth/Register";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,6 +41,7 @@ export default function Main() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="HomeTabs" component={HomeTabs} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

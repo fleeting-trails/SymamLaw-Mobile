@@ -12,7 +12,7 @@ export const getTheme = (dark : boolean = false) : Config.Theme =>  {
             ...DefaultTheme.colors,
             primary: !dark ? '#0A2647' : '#D6E6F8',
             primaryLight: !dark ? ['#144272', '#205295', '#2C74B3'] : ['#C1DBF6', '#9BBAE2', '#709DC5'],
-            accent: '#FCFFFD',
+            accent: '#F4F7BE',
             accentLight: '#FCFFFD',
             primaryGray: '#A0AAC0',
             primaryGrayLight: '#DADADA',

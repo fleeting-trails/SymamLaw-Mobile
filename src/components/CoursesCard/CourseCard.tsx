@@ -61,7 +61,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       padding: 7,
       position: "relative",
       // width: 250,
-      minHeight: 320,
+      minHeight: 330,
       gap: 8,
     },
     thumbnail: {

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native"
 import { useTheme, Switch } from "react-native-paper";
 import { Dimensions } from "react-native";
 import React from "react";
-import { CompletedExamsIcon, FAQIcon, HomeIcon, MyCoursesIcon, SettingsIcon, SidenavLogo, SupportIcon } from "../../assets/Icons";
+import { CompletedExamsIcon, FAQIcon, HomeIcon, LogoWithText, MyCoursesIcon, SettingsIcon, SupportIcon } from "../../assets/Icons";
 import { View as MotiView, AnimatePresence } from "moti";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -78,7 +78,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             style={styles.sidenavContainer}
           >
             <View style={styles.sidenavLogo}>
-              <SidenavLogo color={theme.colors.primary} secondaryColor={theme.colors.primaryLight[0]} />
+              <LogoWithText scale={1} color={theme.colors.primary} secondaryColor={theme.colors.primaryLight[0]} />
             </View>
             <View style={styles.menuItemsContainer}>
               {NavItems.map((item, i) => (

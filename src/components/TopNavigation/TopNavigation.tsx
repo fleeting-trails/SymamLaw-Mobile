@@ -14,7 +14,7 @@ const BlankAvatar = require("../../assets/blank-avatar.jpeg");
 export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigation) {
   const theme = useTheme<Config.Theme>();
   const header = useAppSelector(state => state.header)
-  const navigator = useAppNavigation();
+  const { navigate, navigator } = useAppNavigation();
   const styles = createStyles({ theme });
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
   const [notificationDropdownVisible, setNotificationDropdownVisible] = useState(false);
@@ -31,14 +31,14 @@ export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigat
     if (goBackFunc) goBackFunc()
   }
   const handleMenuClick = (screen : string) => {
-    navigator.navigate(screen)
+    navigate(screen)
     setProfileMenuVisible(false)
   }
   return (
-    <>
+    header.enabled && <>
     <View style={styles.container}>
       <View style={styles.leftActionIconsContainer}>
-        {header.goBackFunc && <IconButton icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />} onPress={() => handleNavigateBack(header.goBackFunc)} />}
+        {navigator.canGoBack() && <IconButton icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />} onPress={() => handleNavigateBack(navigator.goBack())} />}
         <IconButtonCustom onPress={handleHamburgerClick}>
           <HamburgerIcon color={theme.colors.primary} />
         </IconButtonCustom>
@@ -60,7 +60,7 @@ export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigat
             }
           >
             <Menu.Item leadingIcon="login" onPress={() => handleMenuClick('Login')} title="Login" />
-            <Menu.Item leadingIcon="book" onPress={() => handleMenuClick('Login')} title="Register" />
+            <Menu.Item leadingIcon="book" onPress={() => handleMenuClick('Register')} title="Register" />
           </Menu>
         ) : (
           <Image source={BlankAvatar} style={styles.avatarImage} />

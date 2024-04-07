@@ -191,6 +191,7 @@ const createStyles = ({
   color: PropTypes.CustomTextColorEnum;
   lightText: boolean;
 }) => {
+
   return StyleSheet.create({
     textStyle: {
       color: !lightText

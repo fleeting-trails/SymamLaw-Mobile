@@ -17,8 +17,11 @@ namespace Config {
         }
     }
     type ScreensStack = {
-        HomeTabs: undefined;
-        Login: undefined;
+        [key: string] : any
     }
     type StackNavigation = import('@react-navigation/stack').StackNavigationProp<ScreensStack>
+    type ThemedStyle = {
+        theme: Config.Theme,
+        [key: sring]: any
+    }
 }
