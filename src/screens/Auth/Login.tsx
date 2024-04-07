@@ -34,8 +34,8 @@ export default function Login() {
   const [request, response, prompAsync] = Google.useAuthRequest({
     // clientId: '439529637268-idtchlgch2mgv92ep26900pn62agitd7.apps.googleusercontent.com',
     // clientSecret: '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',
-    iosClientId: "626239332006-k98sctr0h0233lpbhqmc3fvulnd8c6kh.apps.googleusercontent.com",
-    androidClientId: "626239332006-n3b6pqgepusum891u9lkg6j6mefq0hm0.apps.googleusercontent.com",
+    iosClientId: process.env.GOOGLE_IOS_CLIENT_ID,
+    androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
     // redirectUri: 'https://symamlaw-de958.firebaseapp.com/__/auth/handler',
     // redirectUri: AuthSession.makeRedirectUri(),
     // scopes: ['profile', 'email']
@@ -131,7 +131,7 @@ export default function Login() {
             color="#4267B2"
             lightText={true}
           />
-        </View>
+        </View> 
         <PrimaryButton
           style={styles.backToHomeButton}
           // color="secondary"

@@ -28,7 +28,3 @@ export const auth = initializeAuth(firebaseApp, {
 });
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
-
-
-// IOS: 626239332006-k98sctr0h0233lpbhqmc3fvulnd8c6kh.apps.googleusercontent.com
-// Android: 626239332006-n3b6pqgepusum891u9lkg6j6mefq0hm0.apps.googleusercontent.com
