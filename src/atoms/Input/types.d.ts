@@ -12,4 +12,10 @@ namespace PropTypes {
     type DateTimePickerPrimary = {
         label?: string
     }
+    type ListInput = {
+        label?: string,
+        inputStyle?: import('react-native').ViewStyle,
+        onChange?: (values: Array<string>) => void,
+        defaultValue?: Array<string>
+    }
 }
