@@ -6,6 +6,8 @@ namespace PropTypes {
         style?: import("react-native").TextStyle,
         lightText?: boolean,
         truncate?: number,
+        linkStyle?: boolean,
+        centerText?: boolean
     }
     type CustomTextColorEnum = ('default' | 'primary')
 }

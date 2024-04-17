@@ -22,6 +22,6 @@ namespace Config {
     type StackNavigation = import('@react-navigation/stack').StackNavigationProp<ScreensStack>
     type ThemedStyle = {
         theme: Config.Theme,
-        [key: sring]: any
+        [key: string]: any
     }
 }

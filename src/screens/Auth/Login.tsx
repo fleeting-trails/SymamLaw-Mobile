@@ -71,6 +71,10 @@ export default function Login() {
 
     return () => unsub();
   }, [])
+
+  const handleLogin = () => {
+    navigate('OTP')
+  }
   return (
     <View style={styles.wrapper}>
       <View style={styles.backgroundDesignBlock1}>
@@ -104,7 +108,7 @@ export default function Login() {
           <View style={styles.loginContainer}>
             <InputPrimary label="Email" placeholder="example@gmail.com" />
             <InputPrimary label="Password" />
-            <PrimaryButton text="Login" color="primary" />
+            <PrimaryButton text="Login" color="primary" onPress={handleLogin} />
           </View>
 
           <View style={styles.dividerContainer}>

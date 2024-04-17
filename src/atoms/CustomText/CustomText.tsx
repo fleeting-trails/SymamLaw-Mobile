@@ -11,11 +11,13 @@ export default function CustomText({
   color = "default",
   style,
   truncate,
+  linkStyle = false,
+  centerText = false,
   ...props
 }: PropTypes.CustomText) {
   const darkMode = useAppSelector((state) => state.config.darkMode);
   const theme = useTheme<Config.Theme>();
-  const styles = createStyles({ theme, color, lightText });
+  const styles = createStyles({ theme, color, lightText, linkStyle, centerText });
   return (
     <>
       {variant === "300" && (
@@ -186,10 +188,14 @@ const createStyles = ({
   theme,
   color,
   lightText,
+  linkStyle,
+  centerText
 }: {
   theme: Config.Theme;
   color: PropTypes.CustomTextColorEnum;
   lightText: boolean;
+  linkStyle: boolean;
+  centerText: boolean
 }) => {
 
   return StyleSheet.create({
@@ -201,6 +207,15 @@ const createStyles = ({
         : color === "default"
         ? theme.colors.textLight
         : theme.colors.textLightPrimary,
+      
+      ...(linkStyle && {
+        color: theme.colors.primaryLight[1],
+        borderBottomColor: theme.colors.primaryLight[1],
+        borderBottomWidth: 1,
+      }),
+      ...(centerText && {
+        textAlign: 'center'
+      })
     },
   });
 };

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { AppRegistry, StyleSheet, Text, View } from "react-native";
 import Main from "./src/Main";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
