@@ -228,7 +228,7 @@ export const FAQIcon = ({ color = "#000000", size = 24, ...props }) => (
 export const LogoWithText = ({
   color = "#000000",
   secondaryColor = "gray",
-  scale=1,
+  scale = 1,
   ...props
 }) => (
   <Svg
@@ -427,7 +427,7 @@ export const GoogleIcon = ({ color = "#fff", scale = 1, ...props }) => (
       d="M10.002 20C4.487 20 0 15.515 0 10S4.487 0 10.002 0a9.98 9.98 0 0 1 6.735 2.607l.337.307-3.299 3.299-.305-.262a5.338 5.338 0 0 0-3.468-1.286A5.342 5.342 0 0 0 4.665 10a5.342 5.342 0 0 0 5.337 5.335c2.121 0 3.797-1.084 4.587-2.93H9.567V7.903l9.805.013.073.345c.51 2.427.102 5.997-1.97 8.551C15.758 18.927 13.244 20 10.002 20Z"
     />
   </Svg>
-)
+);
 
 export const FacebookIcon = ({ color = "#fff", scale = 1, ...props }) => (
   <Svg
@@ -443,7 +443,7 @@ export const FacebookIcon = ({ color = "#fff", scale = 1, ...props }) => (
       d="M10.051 0C4.501 0 0 4.5 0 10.051c0 5.04 3.712 9.2 8.55 9.928v-7.263H6.061v-2.643H8.55V8.315c0-2.91 1.418-4.188 3.838-4.188 1.158 0 1.77.085 2.061.125v2.306h-1.65c-1.027 0-1.386.974-1.386 2.071v1.444h3.01l-.409 2.643h-2.601V20c4.906-.666 8.69-4.86 8.69-9.949 0-5.55-4.5-10.051-10.05-10.051Z"
     />
   </Svg>
-)
+);
 
 export const CameraIcon = ({ color = "#fff", scale = 1, ...props }) => (
   <Svg
@@ -459,9 +459,9 @@ export const CameraIcon = ({ color = "#fff", scale = 1, ...props }) => (
       d="M10.45 15.16c1.07 0 1.98-.375 2.73-1.124.75-.75 1.125-1.66 1.125-2.731s-.375-1.982-1.124-2.732c-.75-.749-1.66-1.123-2.731-1.123s-1.982.374-2.731 1.123c-.75.75-1.124 1.66-1.124 2.732 0 1.07.374 1.98 1.124 2.73.75.75 1.66 1.125 2.73 1.125Zm-.943-4.798.557-1.2a.386.386 0 0 1 .386-.256c.185 0 .314.086.385.257l.557 1.2 1.2.556c.17.072.256.2.256.386a.386.386 0 0 1-.257.385l-1.199.557-.557 1.2a.386.386 0 0 1-.385.256.386.386 0 0 1-.386-.257l-.557-1.2-1.2-.556a.386.386 0 0 1-.256-.385c0-.186.086-.314.257-.386l1.2-.557Zm-5.91 7.796c-.472 0-.875-.168-1.21-.503a1.65 1.65 0 0 1-.504-1.21V6.165c0-.472.168-.875.504-1.21a1.648 1.648 0 0 1 1.21-.504h2.698l1.07-1.156c.158-.186.347-.325.568-.418a1.79 1.79 0 0 1 .696-.14h3.641c.243 0 .475.047.697.14.22.093.41.232.567.418l1.07 1.156h2.699c.471 0 .875.168 1.21.504.336.335.503.738.503 1.21v10.28c0 .47-.167.874-.502 1.21-.336.335-.74.503-1.211.503H3.596Z"
     />
   </Svg>
-)
+);
 
-export const CrossIcon = ({ color = '#fff', scale = 1, ...props }) => (
+export const CrossIcon = ({ color = "#fff", scale = 1, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={14 * scale}
@@ -475,9 +475,9 @@ export const CrossIcon = ({ color = '#fff', scale = 1, ...props }) => (
       d="M.927.927a.991.991 0 0 1 1.401 0L7 5.598 11.672.927a.991.991 0 0 1 1.402 1.401L8.402 7l4.672 4.672a.991.991 0 0 1-1.402 1.401L7 8.401l-4.672 4.672a.991.991 0 0 1-1.401-1.401L5.598 7 .927 2.328a.991.991 0 0 1 0-1.401Z"
     />
   </Svg>
-)
+);
 
-export const DeleteIcon = ({ color = '#fff', scale = 1, ...props }) => (
+export const DeleteIcon = ({ color = "#fff", scale = 1, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={19 * scale}
@@ -493,9 +493,9 @@ export const DeleteIcon = ({ color = '#fff', scale = 1, ...props }) => (
       clipRule="evenodd"
     />
   </Svg>
-)
+);
 
-export const GalleryIcon = ({ color = '#fff', scale = 1, ...props }) => (
+export const GalleryIcon = ({ color = "#fff", scale = 1, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={29 * scale}
@@ -519,6 +519,50 @@ export const GalleryIcon = ({ color = '#fff', scale = 1, ...props }) => (
       stroke={color}
       strokeLinecap="round"
       d="m1.483 15.237 2.28-1.995a2.994 2.994 0 0 1 4.089.137l5.584 5.583a2.603 2.603 0 0 0 3.337.29l.389-.273a3.905 3.905 0 0 1 4.857.292l4.196 3.777"
+    />
+  </Svg>
+);
+export const LogoutIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke={color}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M15.25 12H1.167m0 0 3.791-3.25M1.167 12l3.791 3.25"
+    />
+    <Path
+      scale={scale}
+      stroke={color}
+      strokeLinecap="round"
+      strokeWidth={2}
+      d="M8.752 6.583c.013-2.356.118-3.632.95-4.464.952-.952 2.484-.952 5.548-.952h1.084c3.064 0 4.596 0 5.548.952.952.951.952 2.483.952 5.548v8.666c0 3.064 0 4.596-.952 5.548-.833.833-2.109.937-4.465.95m-8.665-5.414c.013 2.356.118 3.632.95 4.464.695.695 1.699.883 3.381.934"
+    />
+  </Svg>
+);
+export const BackIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M4 12h16M9 17s-5-3.682-5-5 5-5 5-5"
     />
   </Svg>
 )

@@ -14,6 +14,8 @@ import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { setDarkTheme } from "./redux/slices/config";
 import Register from "./screens/Auth/Register";
 import OTP from "./screens/Auth/OTP";
+import ForgetPassword from "./screens/Auth/ForgetPassword";
+import ForgetPasswordOTP from "./screens/Auth/ForgetPasswordOTP";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,6 +45,8 @@ export default function Main() {
           <Stack.Screen name="HomeTabs" component={HomeTabs} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+          <Stack.Screen name="ForgetPasswordOTP" component={ForgetPasswordOTP} />
           <Stack.Screen name="OTP" component={OTP} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}

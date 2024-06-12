@@ -18,4 +18,8 @@ namespace PropTypes {
         onChange?: (values: Array<string>) => void,
         defaultValue?: Array<string>
     }
+    type SwitchPrimary = import('react-native').SwitchProps & {
+        label?: string,
+        containerStyle?: import('react-native').ViewStyle
+    }
 }

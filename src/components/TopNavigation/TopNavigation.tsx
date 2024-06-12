@@ -1,75 +1,153 @@
-import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableHighlight,
+} from "react-native";
 import React, { useState } from "react";
-import { CaretLeftIcon, HamburgerIcon, NotificationIcon, UserIcon } from "../../assets/Icons";
-import { Menu, Divider, IconButton } from "react-native-paper";
-import { useTheme } from "react-native-paper";
+import {
+  CaretLeftIcon,
+  HamburgerIcon,
+  LogoutIcon,
+  NotificationIcon,
+  UserIcon,
+} from "../../assets/Icons";
+import { Menu, Divider, IconButton, TouchableRipple } from "react-native-paper";
+import { useTheme, Modal, Portal } from "react-native-paper";
 import { IconButtonCustom } from "../../atoms";
 import { Link, useNavigation } from "@react-navigation/native";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useAppNavigation from "../../hooks/useAppNavigation";
-  
+import { logout } from "../../redux/slices/auth/auth";
+import CustomText from "../../atoms/CustomText/CustomText";
+import PrimaryButton from "../../atoms/Button/PrimaryButton";
 
 const BlankAvatar = require("../../assets/blank-avatar.jpeg");
 
-export function TopNavigation({ loggedIn, setSidenavOpen }: PropTypes.TopNavigation) {
+export function TopNavigation({
+  loggedIn,
+  setSidenavOpen,
+}: PropTypes.TopNavigation) {
   const theme = useTheme<Config.Theme>();
-  const header = useAppSelector(state => state.header)
+  const dispatch = useAppDispatch();
+  const header = useAppSelector((state) => state.header);
   const { navigate, navigator } = useAppNavigation();
+  const user = useAppSelector((state) => state.auth.user);
   const styles = createStyles({ theme });
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
-  const [notificationDropdownVisible, setNotificationDropdownVisible] = useState(false);
+  const [notificationDropdownVisible, setNotificationDropdownVisible] =
+    useState(false);
+  const [logoutFailedModal, setLogoutFailedModal] = useState(false);
   const handleUserIconPress = () => {
     setProfileMenuVisible(true);
   };
   const handleNotificationIconPress = () => {
-    setNotificationDropdownVisible(false)
-  }
+    setNotificationDropdownVisible(false);
+  };
   const handleHamburgerClick = () => {
     setSidenavOpen(true);
   };
-  const handleNavigateBack = (goBackFunc : any) => {
-    if (goBackFunc) goBackFunc()
-  }
-  const handleMenuClick = (screen : string) => {
-    navigate(screen)
-    setProfileMenuVisible(false)
-  }
+  const handleNavigateBack = (goBackFunc: any) => {
+    if (goBackFunc) goBackFunc();
+  };
+  const handleMenuClick = async (screen: string) => {
+    navigate(screen);
+    setProfileMenuVisible(false);
+  };
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      navigate("Login");
+    } catch (error) {
+      setLogoutFailedModal(true);
+    }
+  };
   return (
-    header.enabled && <>
-    <View style={styles.container}>
-      <View style={styles.leftActionIconsContainer}>
-        {navigator.canGoBack() && <IconButton icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />} onPress={() => handleNavigateBack(navigator.goBack())} />}
-        <IconButtonCustom onPress={handleHamburgerClick}>
-          <HamburgerIcon color={theme.colors.primary} />
-        </IconButtonCustom>
-      </View>
-      <View style={styles.actionIconsContainer}>
-        {loggedIn && (
-          <IconButtonCustom onPress={handleNotificationIconPress}>
-            <NotificationIcon color={theme.colors.primaryGray} />
-          </IconButtonCustom>
-        )}
-        {!loggedIn ? (
-          <Menu
-            visible={profileMenuVisible}
-            onDismiss={() => setProfileMenuVisible(false)}
-            anchor={
-              <IconButtonCustom onPress={handleUserIconPress}>
-                <UserIcon color={theme.colors.primaryGray} />
+    header.enabled && (
+      <>
+        <View style={styles.container}>
+          <View style={styles.leftActionIconsContainer}>
+            {navigator.canGoBack() && (
+              <IconButton
+                icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />}
+                onPress={() => handleNavigateBack(navigator.goBack())}
+              />
+            )}
+            <IconButtonCustom onPress={handleHamburgerClick}>
+              <HamburgerIcon color={theme.colors.primary} />
+            </IconButtonCustom>
+          </View>
+          <View style={styles.actionIconsContainer}>
+            {user && (
+              <IconButtonCustom onPress={handleNotificationIconPress}>
+                <NotificationIcon color={theme.colors.primaryGray} />
               </IconButtonCustom>
-            }
+            )}
+            {!user ? (
+              <Menu
+                visible={profileMenuVisible}
+                onDismiss={() => setProfileMenuVisible(false)}
+                anchor={
+                  <IconButtonCustom onPress={handleUserIconPress}>
+                    <UserIcon color={theme.colors.primaryGray} />
+                  </IconButtonCustom>
+                }
+              >
+                <Menu.Item
+                  leadingIcon="login"
+                  onPress={() => handleMenuClick("Login")}
+                  title="Login"
+                />
+                <Menu.Item
+                  leadingIcon="book"
+                  onPress={() => handleMenuClick("Register")}
+                  title="Register"
+                />
+              </Menu>
+            ) : (
+              <Menu
+                visible={profileMenuVisible}
+                onDismiss={() => setProfileMenuVisible(false)}
+                anchor={
+                  <TouchableRipple onPress={handleUserIconPress}>
+                    <Image source={BlankAvatar} style={styles.avatarImage} />
+                  </TouchableRipple>
+                }
+              >
+                <Menu.Item
+                  leadingIcon={() => (
+                    <UserIcon color={theme.colors.primaryGray} />
+                  )}
+                  onPress={() => handleMenuClick("Account")}
+                  title="Profile"
+                />
+                <Menu.Item
+                  leadingIcon={() => <LogoutIcon color={theme.colors.error} />}
+                  onPress={handleLogout}
+                  title="Logout"
+                  titleStyle={{ color: theme.colors.error }}
+                />
+              </Menu>
+            )}
+          </View>
+        </View>
+        <View style={styles.spacer}></View>
+        <Portal>
+          <Modal
+            visible={logoutFailedModal}
+            contentContainerStyle={styles.modalContainerStyle}
           >
-            <Menu.Item leadingIcon="login" onPress={() => handleMenuClick('Login')} title="Login" />
-            <Menu.Item leadingIcon="book" onPress={() => handleMenuClick('Register')} title="Register" />
-          </Menu>
-        ) : (
-          <Image source={BlankAvatar} style={styles.avatarImage} />
-        )}
-      </View>
-    </View>
-    <View style={styles.spacer}>
-    </View>
-    </>
+            <View style={styles.modalStyle}>
+              <Image source={require("../../assets/internal_error.png")} style={styles.modalImage} />
+              <CustomText style={{fontSize: 18 }} variant="500">Failed to logout!</CustomText>
+              <CustomText>Something went wrong, cannot log out! Sorry if this is a fault from our part, we will be fixing this as soon as possible</CustomText>
+              <PrimaryButton color="primary" text="Close" onPress={() => setLogoutFailedModal(false)} />
+            </View>
+          </Modal>
+        </Portal>
+      </>
+    )
   );
 }
 
@@ -91,8 +169,8 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       paddingVertical: 10,
     },
     leftActionIconsContainer: {
-      flexDirection: 'row',
-      alignItems: 'center'
+      flexDirection: "row",
+      alignItems: "center",
     },
     actionIconsContainer: {
       flexDirection: "row",
@@ -106,7 +184,22 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       objectFit: "cover",
     },
     spacer: {
-      height: 60
+      height: 60,
+    },
+    modalContainerStyle: {
+      backgroundColor: "white",
+      padding: 20,
+      width: '80%',
+      alignSelf: 'center'
+    },
+    modalStyle: {
+      width: '100%',
+      alignItems: 'center', 
+      gap: 20
+    },
+    modalImage: {
+      height: 100,
+      objectFit: 'contain'
     }
   });
 };

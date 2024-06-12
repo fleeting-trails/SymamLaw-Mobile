@@ -16,12 +16,14 @@ import {
     Rubik_900Black,
     Rubik_900Black_Italic,
   } from "@expo-google-fonts/rubik";
-import { useDispatch } from 'react-redux';
 import { setDarkTheme } from '../redux/slices/config';
 import { Appearance, useColorScheme } from 'react-native';
+import { EventRegister } from 'react-native-event-listeners'
+import { fetchUserProfile } from '../redux/slices/auth/auth';
+import { useAppDispatch } from '../redux/hooks';
 
 function useInitialize() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
     const colorScheme = Appearance.getColorScheme();
     
@@ -43,10 +45,26 @@ function useInitialize() {
         Rubik_900Black_Italic,
     });
 
+
+    const initializeAuthExpirationListener = () => {
+        return EventRegister.addEventListener('myCustomEvent', (data) => {
+            console.log("Login session expired, navigate to login page and do necessary cleanups")
+        })
+    }
+    const initializeUser = () => {
+        dispatch(fetchUserProfile());
+    }
     useEffect(() => {
         console.log("Color scheme", colorScheme)
       dispatch(setDarkTheme(colorScheme !== 'light'))
       Appearance.addChangeListener(({ colorScheme }) => console.log('New color scheme', colorScheme))
+      const logoutListener = initializeAuthExpirationListener();
+
+      initializeUser();
+      
+      return () => {
+        EventRegister.removeEventListener(logoutListener as string);
+      }
     }, [])
     useEffect(() => {
         if (fontError) console.log("Failed to load fonts", fontError)

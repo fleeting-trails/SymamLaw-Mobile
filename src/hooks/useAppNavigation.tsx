@@ -13,14 +13,14 @@ export default function useAppNavigation() {
     if (navigator.canGoBack()) dispatch(setGoBackFunction(navigator.goBack))
     else dispatch(setGoBackFunction(null))
   }
-  const handleNavigate = (screen : string) => {
+  const handleNavigate = (screen : string, params?: any) => {
     dispatch(setTopNavigationEnabled(true));
     if (navigator.canGoBack()) {
       dispatch(setGoBackFunction(handleGoBack));
     } else {
       dispatch(setGoBackFunction(null))
     }
-    navigator.navigate(screen)
+    navigator.navigate(screen, params)
   }
 
 

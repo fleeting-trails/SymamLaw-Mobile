@@ -67,7 +67,7 @@ export function AvatarImagePicker() {
           style={styles.cameraButton}
           onPress={() => setPickerOpen(true)}
         >
-          <CameraIcon />
+          <CameraIcon color={theme.colors.textLight} />
         </TouchableRipple>
       </View>
 
@@ -99,21 +99,21 @@ export function AvatarImagePicker() {
             <TouchableRipple onPress={() => pickImage("camera")}>
               <View style={styles.overlayActionButtonContainer}>
                 <CameraIcon />
-                <CustomText lightText>Camera</CustomText>
+                <CustomText lightText={!theme.dark}>Camera</CustomText>
               </View>
             </TouchableRipple>
             <View style={styles.overlayActionButtonsDivider}></View>
             <TouchableRipple onPress={() => pickImage("gallery")}>
               <View style={styles.overlayActionButtonContainer}>
                 <GalleryIcon scale={0.85} />
-                <CustomText lightText>Choose</CustomText>
+                <CustomText lightText={!theme.dark}>Choose</CustomText>
               </View>
             </TouchableRipple>
             <View style={styles.overlayActionButtonsDivider}></View>
             <TouchableRipple onPress={deleteImage}>
               <View style={styles.overlayActionButtonContainer}>
                 <DeleteIcon />
-                <CustomText lightText>Delete</CustomText>
+                <CustomText lightText={!theme.dark}>Delete</CustomText>
               </View>
             </TouchableRipple>
           </View>

@@ -7,6 +7,7 @@ namespace PropTypes {
         lightText?: boolean,
         onPress?: () => void,
         style?: import('react-native').ViewStyle,
+        loading?: boolean
         [key: string] : any
     }
     type ButtonColorEnum = ("primary" | "accent" | "light" | string)

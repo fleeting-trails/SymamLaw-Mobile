@@ -50,7 +50,7 @@ export default function ListInput({
             <View key={`${value}_${i}`} style={styles.item}>
                 <CustomText lightText>{value}</CustomText>
                 <TouchableRipple onPress={() => handleRemoveItem(i)}>
-                    <CrossIcon scale={0.5}/>
+                    <CrossIcon scale={0.5} color={theme.colors.textLight} />
                 </TouchableRipple>
             </View>
         ))}

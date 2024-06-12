@@ -10,10 +10,12 @@ import Account from "./Account/Account";
 import { RouteProp, ParamListBase } from "@react-navigation/native";
 import { AccountIconFilled, HomeIcon, PlayIconFilled, SaveIconFilled, SearchIcon } from "../assets/Icons";
 import { useTheme } from "react-native-paper";
+import { useAppSelector } from "../redux/hooks";
 
 export default function HomeTabs() {
   const theme = useTheme<Config.Theme>();
   const Tab = createBottomTabNavigator();
+  const user = useAppSelector(state => state.auth.user)
   const renderTabBarIcon = (route: RouteProp<ParamListBase, string>) => {
     if (route.name === "Home") {
       return <HomeIcon color={"white"} />;

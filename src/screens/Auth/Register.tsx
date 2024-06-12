@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useAppDispatch } from "../../redux/hooks";
 import useAppNavigation from "../../hooks/useAppNavigation";
@@ -15,6 +15,8 @@ import InputPrimary from "../../atoms/Input/InputPrimary";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useIsFocused } from "@react-navigation/native";
+import { register } from "../../redux/slices/auth/auth";
+import { axiosExternal } from "../../axios/axios";
 
 export default function Register() {
   const screenFoncused = useIsFocused();
@@ -22,12 +24,48 @@ export default function Register() {
   const dispatch = useAppDispatch();
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [input, setInput] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+  const [failed, setFailed] = useState(false);
+  const [errorData, setErrorData] = useState<{
+    email: Array<string>;
+    phone: Array<string>;
+  }>();
 
   useEffect(() => {
     if (screenFoncused) {
       dispatch(setTopNavigationEnabled(false));
     }
   }, [screenFoncused]);
+
+  const handleInput = (name: string, value: string) => {
+    setInput({
+      ...input,
+      [name]: value,
+    });
+  };
+
+  const onSubmit = async () => {
+    setSubmitLoading(true);
+    const body = {
+      ...input,
+      password_confirmation: input.password,
+    };
+    try {
+      const res = await dispatch(register(body)).unwrap();
+      console.log("Data", JSON.stringify(res));
+      navigate("OTP");
+    } catch (error: any) {
+      console.log("Error", error);
+      setErrorData(error?.error);
+    }
+    setSubmitLoading(false);
+  };
   return (
     <View style={styles.wrapper}>
       <View style={styles.backgroundDesignBlock1}>
@@ -59,15 +97,52 @@ export default function Register() {
             </View>
           </View>
           <View style={styles.loginContainer}>
-            <InputPrimary label="Email" placeholder="example@gmail.com" />
-            <InputPrimary label="Phone" placeholder="017xxxxxxxx" />
-            <InputPrimary label="Password" />
-            <PrimaryButton text="Register" color="primary" />
+            <InputPrimary
+              label="Name"
+              placeholder="Full Name"
+              value={input.name}
+              onChangeText={(text) => handleInput("name", text)}
+            />
+            <InputPrimary
+              autoCapitalize="none"
+              label="Email"
+              placeholder="example@gmail.com"
+              value={input.email}
+              onChangeText={(text) => handleInput("email", text)}
+            />
+            {errorData?.email && (
+              <CustomText style={{ color: theme.colors.error }}>
+                {errorData.email.map((item) => item).join(", ")}
+              </CustomText>
+            )}
+            <InputPrimary
+              label="Phone"
+              placeholder="017xxxxxxxx"
+              value={input.phone}
+              onChangeText={(text) => handleInput("phone", text)}
+            />
+            {errorData?.phone && (
+              <CustomText style={{ color: theme.colors.error }}>
+                {errorData.phone.map((item) => item).join(", ")}
+              </CustomText>
+            )}
+            <InputPrimary
+              secureTextEntry={true}
+              label="Password"
+              value={input.password}
+              onChangeText={(text) => handleInput("password", text)}
+            />
+            <PrimaryButton
+              loading={submitLoading}
+              text="Register"
+              color="primary"
+              onPress={onSubmit}
+            />
           </View>
         </View>
         <PrimaryButton
           style={styles.backToHomeButton}
-        //   color="secondary"
+          //   color="secondary"
           text="Back To Home"
           icon={<HomeIcon />}
           onPress={() => {

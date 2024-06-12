@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { setTopNavigationEnabled } from "../../redux/slices/header";
 import {
@@ -19,16 +19,22 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import { useIsFocused } from "@react-navigation/native";
 
 import { firebaseApp, auth } from "../../firebase/config";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential } from "firebase/auth";
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-import * as AuthSession from 'expo-auth-session'
-
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+} from "firebase/auth";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+import { login } from "../../redux/slices/auth/auth";
 
 export default function Login() {
   const screenFoncused = useIsFocused();
   const { navigate } = useAppNavigation();
   const dispatch = useAppDispatch();
+  const authState = useAppSelector((state) => state.auth);
+  const loginLoading = authState.loading.login;
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
   const [request, response, prompAsync] = Google.useAuthRequest({
@@ -43,38 +49,65 @@ export default function Login() {
 
   WebBrowser.maybeCompleteAuthSession();
 
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState<string>();
+
   useEffect(() => {
     if (screenFoncused) {
       dispatch(setTopNavigationEnabled(false));
     }
   }, [screenFoncused]);
 
-
   useEffect(() => {
     if (response?.type == "success") {
       const { id_token } = response.params;
       const credentials = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credentials)
+      signInWithCredential(auth, credentials);
     } else {
-      console.log("Response", JSON.stringify(response))
+      console.log("Response", JSON.stringify(response));
     }
-  }, [response])
+  }, [response]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("User", JSON.stringify(user))
+        console.log("User exists");
       } else {
-        console.log("No User")
+        console.log("No User");
       }
-    })
+    });
 
     return () => unsub();
-  }, [])
+  }, []);
 
-  const handleLogin = () => {
-    navigate('OTP')
-  }
+  const handleLogin = async () => {
+    if (!input.email || !input.password) {
+      setErrorMessage("Please fillup both email and password field");
+      return;
+    }
+    const body = {
+      user_input: input.email,
+      password: input.password,
+    };
+
+    try {
+      const res = await dispatch(login(body)).unwrap();
+      console.log(JSON.stringify(res));
+      navigate("HomeTabs");
+    } catch (error: any) {
+      console.log("ERROR", JSON.stringify(error));
+      setErrorMessage(error?.error as string);
+    }
+  };
+  const handleInput = (key: "email" | "password", value: string) => {
+    setInput({
+      ...input,
+      [key]: value,
+    });
+  };
   return (
     <View style={styles.wrapper}>
       <View style={styles.backgroundDesignBlock1}>
@@ -106,9 +139,36 @@ export default function Login() {
             </View>
           </View>
           <View style={styles.loginContainer}>
-            <InputPrimary label="Email" placeholder="example@gmail.com" />
-            <InputPrimary label="Password" />
-            <PrimaryButton text="Login" color="primary" onPress={handleLogin} />
+            <InputPrimary
+              autoCapitalize="none"
+              label="Email"
+              placeholder="example@gmail.com"
+              value={input.email}
+              onChangeText={(text) => handleInput("email", text)}
+            />
+            <InputPrimary
+              secureTextEntry
+              label="Password"
+              value={input.password}
+              onChangeText={(text) => handleInput("password", text)}
+            />
+            <PrimaryButton
+              text={!loginLoading ? "Login" : "Logging In..."}
+              color="primary"
+              onPress={handleLogin}
+              loading={loginLoading}
+            />
+            {errorMessage && (
+              <CustomText style={{ color: theme.colors.error }}>
+                {errorMessage}
+              </CustomText>
+            )}
+            <CustomText
+              style={styles.registerNowLink}
+              onPress={() => navigate("ForgetPassword")}
+            >
+              Forgot Password
+            </CustomText>
           </View>
 
           <View style={styles.dividerContainer}>
@@ -135,7 +195,7 @@ export default function Login() {
             color="#4267B2"
             lightText={true}
           />
-        </View> 
+        </View>
         <PrimaryButton
           style={styles.backToHomeButton}
           // color="secondary"

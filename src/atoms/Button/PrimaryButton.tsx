@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TouchableRipple, useTheme } from "react-native-paper";
 import CustomText from "../CustomText/CustomText";
@@ -11,6 +11,7 @@ export default function PrimaryButton({
   lightText,
   style,
   onPress,
+  loading,
   ...props
 }: PropTypes.PrimaryButton) {
   const theme = useTheme<Config.Theme>();
@@ -20,9 +21,9 @@ export default function PrimaryButton({
   useEffect(() => {
     if (lightText) setIsLightText(true);
     else {
-      if (color === 'primary') {
+      if (color === "primary") {
         setIsLightText(true);
-      } else if (color === 'secondary') {
+      } else if (color === "secondary") {
         if (theme.dark) {
           setIsLightText(true);
         } else {
@@ -30,7 +31,7 @@ export default function PrimaryButton({
         }
       }
     }
-  }, [color, theme.dark])
+  }, [color, theme.dark]);
 
   return (
     <TouchableRipple
@@ -38,13 +39,20 @@ export default function PrimaryButton({
       onPress={() => {
         if (onPress) onPress();
       }}
+      disabled={loading}
     >
       <View style={[style, styles.container]}>
-        {icon}
-        <CustomText
-          lightText={isLightText}
-          style={styles.buttonText}
-        >
+        {!loading ? (
+          <View>{icon}</View>
+        ) : (
+          <View>
+            <Image
+              source={require("../../assets/loading.gif")}
+              style={{ height: 20, width: 20, objectFit: "contain" }}
+            />
+          </View>
+        )}
+        <CustomText lightText={isLightText} style={styles.buttonText}>
           {text}
         </CustomText>
       </View>
@@ -66,12 +74,14 @@ const createStyles = ({ theme, color, size }: StyleType) => {
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-      gap: 5,
+      gap: 10,
       ...(!color && { backgroundColor: theme.colors.accent }),
       ...(color === "light" && { backgroundColor: theme.colors.background }),
       ...(color === "primary" && { backgroundColor: theme.colors.primary }),
       ...(color === "secondary" && { backgroundColor: theme.colors.accent }),
-      ...(!["light", "primary", "secondary"].includes(color as string) && { backgroundColor: color }),
+      ...(!["light", "primary", "secondary"].includes(color as string) && {
+        backgroundColor: color,
+      }),
     },
     buttonText: {
       ...((!size || size === "medium") && { fontSize: 16 }),

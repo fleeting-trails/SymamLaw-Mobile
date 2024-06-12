@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useDisableNavbar from "../../hooks/useDisableNavbar";
 import useAppTheme from "../../hooks/useAppTheme";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
@@ -8,23 +8,33 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import OTPTextView from "react-native-otp-textinput";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
 import useAppNavigation from "../../hooks/useAppNavigation";
+import { verifyEmail } from "../../redux/slices/auth/auth";
 
 const RESEND_COUNTDOWN = 10;
 
 export default function OTP() {
   useDisableNavbar();
   const theme = useAppTheme();
+  const dispatch = useAppDispatch();
   const { navigate } = useAppNavigation();
   const styles = createStyles({ theme });
-  const [code, setCode] = useState("1000");
+  const [code, setCode] = useState("");
   const [resendCountdown, _setResendCountdown] = useState(RESEND_COUNTDOWN);
   const resendCountdownRef = useRef(RESEND_COUNTDOWN);
   const [failed, setFailed] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  
   const setResendCountdown = (value: number) => {
     resendCountdownRef.current = value;
     _setResendCountdown(value);
   };
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const registerResponse = useAppSelector(state => state.auth.registerResponse)
+
+
+  useEffect(() => {
+    console.log("Register resonse", registerResponse?.otp)
+  }, [registerResponse])
 
   useEffect(() => {
     countdownRef.current = setInterval(() => {
@@ -51,8 +61,21 @@ export default function OTP() {
     }, 100);
   };
 
-  const handleSubmit = () => {
-    navigate('Account')
+  const handleSubmit = async () => {
+    setSubmitLoading(false);
+    const body = {
+      email: registerResponse?.email as string,
+      otp: code
+    }
+    console.log("OTP body", body);
+    try {
+      await dispatch(verifyEmail(body)).unwrap();
+      navigate("Account")
+    } catch (error) {
+      console.log("ERROR", error)
+      setFailed(true);
+    }
+    setSubmitLoading(false);
   }
   return (
     <View style={styles.container}>
@@ -61,15 +84,15 @@ export default function OTP() {
         An 5 digit, OTP has sent to your email. Use this code to verify your
         email.
       </CustomText>
-      {failed && <CustomText style={{ color: 'red' }}>
+      {failed && <CustomText style={{ color: theme.colors.error }}>
         Wrong OTP!
       </CustomText>}
         <OTPTextView
-          inputCount={5}
+          inputCount={6}
           handleTextChange={(text) => setCode(text)}
           tintColor={theme.colors.primary}
         />
-      <PrimaryButton text="Submit" color="primary" style={{ width: 200 }} onPress={handleSubmit}  />
+      <PrimaryButton text="Submit" color="primary" style={{ width: 200 }} onPress={handleSubmit} loading={submitLoading}  />
       {resendCountdown !== 0 ? (
         <View>
           <CustomText>{`Resend OTP within 00:${resendCountdown} seconds`}</CustomText>
