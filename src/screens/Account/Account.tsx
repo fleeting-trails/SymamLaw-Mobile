@@ -53,7 +53,7 @@ export default function Account() {
         is_graduated: user.student_details.is_graduated === '1' ? true : false
       })
     }
-  }, [])
+  }, [user])
 
   const handleSubmit = async () => {
     const formData = new FormData();
@@ -62,14 +62,11 @@ export default function Account() {
       return;
     }
     if (input.name) formData.append("name", input.name);
-    if (input.phone) formData.append("phone", input.phone);
-    if (input.address) formData.append("address", input.address);
-    if (input.institute) formData.append("institute", input.institute);
-    if (input.department) formData.append("department", input.department);
-    if (input.is_graduated) formData.append("is_graduated", input.is_graduated ? '1' : '0');
-    if (avatar) {
-      formData.append('image', avatar)
-    }
+    formData.append("phone", input.phone ?? "");
+    formData.append("address", input.address ?? "");
+    formData.append("institute", input.institute ?? "");
+    formData.append("department", input.department ?? "");
+    formData.append("is_graduated", input.is_graduated ? '1' : '0');
     try {
       await dispatch(updateProfile(formData)).unwrap();
       

@@ -5,12 +5,12 @@ import CustomText from '../CustomText/CustomText';
 
 
 
-export default function AlertPrimary({ label, type } : PropTypes.AlertPrimary) {
+export default function AlertPrimary({ label, type, lightText } : PropTypes.AlertPrimary) {
     const theme = useAppTheme();
     const styles = createStyles({ theme, type })
     return (
         <View style={styles.container}>
-            <CustomText>{label}</CustomText>
+            <CustomText lightText={lightText}>{label}</CustomText>
         </View>
     )
 }

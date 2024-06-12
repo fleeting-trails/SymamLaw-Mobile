@@ -1,7 +1,8 @@
 namespace PropTypes {
     type AlertPrimary = {
         label: string,
-        type: AlertPrimaryTypes
+        type: AlertPrimaryTypes,
+        lightText?: boolean
     }
     type AlertPrimaryTypes = ("error" | "info" | "warning")
 }
