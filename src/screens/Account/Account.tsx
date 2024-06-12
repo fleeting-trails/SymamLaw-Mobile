@@ -7,10 +7,13 @@ import { InputUnderlined } from "../../atoms";
 import DateTimePickerPrimary from "../../atoms/Input/DateTimePickerPrimary";
 import ListInput from "../../atoms/Input/ListInput";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import CustomText from "../../atoms/CustomText/CustomText";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import SwitchPrimary from "../../atoms/Input/SwitchPrimary";
+import { ImagePickerResult } from "expo-image-picker";
+import { updateProfile } from "../../redux/slices/auth/auth";
+import AlertPrimary from "../../atoms/Alert/AlertPrimary";
 
 type ProfileInputType = {
   name: string,
@@ -22,7 +25,14 @@ type ProfileInputType = {
 }
 
 export default function Account() {
-  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const authState = useAppSelector((state) => state.auth);
+  const user = authState.user;
+  const storeError = authState.error;
+  const submitLoading = authState.loading.updateProfile
+  
+  const [avatar, setAvatar] = useState<Blob | null>(null);
+  const [error, setError] = useState("");
   const [input, setInput] = useState<ProfileInputType>({
     name: "",
     phone: "",
@@ -38,12 +48,36 @@ export default function Account() {
         name: user.name,
         phone: user.phone,
         address: user.address,
-        institute: user.institute,
-        department: user.department,
-        is_graduated: user.is_graduated 
+        institute: user.student_details.institute,
+        department: user.student_details.department,
+        is_graduated: user.student_details.is_graduated === '1' ? true : false
       })
     }
   }, [])
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    if (!input.name) {
+      setError("Name Cannot be empty");
+      return;
+    }
+    if (input.name) formData.append("name", input.name);
+    if (input.phone) formData.append("phone", input.phone);
+    if (input.address) formData.append("address", input.address);
+    if (input.institute) formData.append("institute", input.institute);
+    if (input.department) formData.append("department", input.department);
+    if (input.is_graduated) formData.append("is_graduated", input.is_graduated ? '1' : '0');
+    if (avatar) {
+      formData.append('image', avatar)
+    }
+    try {
+      await dispatch(updateProfile(formData)).unwrap();
+      
+    } catch (error) {
+      console.log("Error", error)
+      setError(storeError)
+    }
+  }
 
 
   const handleInputChange = (key: keyof ProfileInputType, value: string ) => {
@@ -56,8 +90,9 @@ export default function Account() {
   return user ? (
     <ScreenContainer style={styles.container}>
       <View style={styles.imageUploadContainer}>
-        <AvatarImagePicker />
+        <AvatarImagePicker existingImage={user.image} onUpload={(res) => setAvatar(res?.blob ?? null)} />
       </View>
+      {error && <AlertPrimary label={error} type="error" />}
       <InputUnderlined
         value={input.name}
         onChangeText={(text) => handleInputChange("name", text)}
@@ -101,7 +136,7 @@ export default function Account() {
         placeholder="Short description about yourself"
         multiline={true}
       /> */}
-      <PrimaryButton text="Update" color="primary" />
+      <PrimaryButton text="Update" color="primary" loading={submitLoading} onPress={handleSubmit} />
     </ScreenContainer>
   ) : (
     <ScreenContainer

@@ -1,6 +1,7 @@
 namespace Config {
     type Theme = import('react-native-paper').MD3Theme & {
         colors: {
+            primaryRgb: string,
             primaryLight: Array<string>,
             accent: string
             accentLight: string,
@@ -14,7 +15,10 @@ namespace Config {
             textLight: string,
             textLightPrimary: string,
             textGray: string,
-            error: string
+            error: string,
+            errorRgb: string,
+            warning: string,
+            warningRgb: string
         }
     }
     type ScreensStack = {

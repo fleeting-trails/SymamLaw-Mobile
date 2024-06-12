@@ -45,7 +45,6 @@ export default function ForgetPasswordOTP({ route }: { route: any }) {
       ).unwrap();
       navigate("Login");
     } catch (error) {
-      console.log("What error", error);
       setError("Something went wrong");
     }
     setSubmitLoading(false);

@@ -16,7 +16,8 @@ export const initialState : Store.Auth = {
         fetchUserProfile: false,
         logout: false,
         forgetPasswordGetOtp: false,
-        forgetPasswordPostOtp: false
+        forgetPasswordPostOtp: false,
+        updateProfile: false
     },
     typedErrors: {
         otpFailed: false
@@ -126,9 +127,7 @@ export const forgetPasswordPostOtp = createAsyncThunk(
     'forgetPasswordPostOtp',
     async (body : ForgetPasswordPostOtpPayload, thunkAPI) => {
         try {
-            console.log("Body", body)
             const res = await axiosExternal.post("/forgot-password/post-otp", body)
-            console.log("Post otp response", res.data);
             if (!res.data.success) {
                 return thunkAPI.rejectWithValue({ error: res.data.message })
             }
@@ -139,6 +138,22 @@ export const forgetPasswordPostOtp = createAsyncThunk(
         }
     },
 )
+
+export const updateProfile = createAsyncThunk(
+    'updateProfile',
+    async (body: FormData, thunkAPI) => {
+        try {
+            const res = await axiosExternal.post("/user/profile/update", body)
+            if (!res.data.success) {
+                return thunkAPI.rejectWithValue({ error: res.data.message })
+            }
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 
 
 export const authSlice = createSlice({
@@ -239,6 +254,21 @@ export const authSlice = createSlice({
         })
         builder.addCase(forgetPasswordPostOtp.rejected, (state, action) => {
             state.loading.forgetPasswordPostOtp = false;
+            state.error = action.error;
+        })
+
+        // Update profile
+        builder.addCase(updateProfile.pending, (state) => {
+            state.loading.updateProfile = true;
+        })
+        builder.addCase(updateProfile.fulfilled, (state, action) => {
+            state.loading.updateProfile = false;
+            if (action.payload) {
+                state.user = action.payload.data.data;
+            }
+        })
+        builder.addCase(updateProfile.rejected, (state, action) => {
+            state.loading.updateProfile = false;
             state.error = action.error;
         })
     },

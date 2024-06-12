@@ -10,7 +10,8 @@ namespace Store {
             fetchUserProfile: boolean,
             logout: boolean,
             forgetPasswordGetOtp: boolean,
-            forgetPasswordPostOtp: boolean
+            forgetPasswordPostOtp: boolean,
+            updateProfile: boolean
         },
         typedErrors: {
             otpFailed: boolean
@@ -44,7 +45,7 @@ namespace Store {
         email: string,
         otp: string
     }
-    type UserData =  {
+    type UserData = {
         id: number
         name: string
         email: string
@@ -59,8 +60,12 @@ namespace Store {
         fcm_token: any
         created_at: string
         updated_at: string,
-        institute: string,
-        department: string,
-        is_graduated: boolean
-      }
+        student_details: {
+            id: number
+            user_id: string
+            institute: string
+            department: string
+            is_graduated: string
+        }
+    }
 }

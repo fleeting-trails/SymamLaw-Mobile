@@ -13,13 +13,18 @@ import useAppTheme from "../../hooks/useAppTheme";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { ImagePickerOptions, ImagePickerResult } from "expo-image-picker";
 import { CameraType } from "expo-image-picker";
+import { base64ToBlob } from "../../utils/helpers";
 
-export function AvatarImagePicker() {
+export function AvatarImagePicker({
+  existingImage,
+  onUpload,
+}: PropTypes.AvatarImagePicker) {
   const theme = useAppTheme();
   const { height, width } = Dimensions.get("screen");
   const styles = createStyles({ theme, height, width });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [image, setImage] = useState<ImagePickerResult | null>(null);
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const pickImage = async (mode: "gallery" | "camera") => {
     // No permissions request is necessary for launching the image library
@@ -29,21 +34,26 @@ export function AvatarImagePicker() {
       aspect: [1, 1],
       quality: 1,
       cameraType: CameraType.front,
+      base64: true,
     };
     if (mode === "gallery") {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
       let result = await ImagePicker.launchImageLibraryAsync(config);
-      console.log(result);
       if (!result.canceled) {
         setImage(result);
+        const asset = result.assets[0];
+        const blob = base64ToBlob(asset.base64 as string, asset.mimeType);
+        if (onUpload) onUpload({ result, blob });
         setImagePreview(result.assets[0].uri);
       }
     } else if (mode === "camera") {
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync(config);
-      console.log(result);
       if (!result.canceled) {
         setImage(result);
+        const asset = result.assets[0];
+        const blob = base64ToBlob(asset.base64 as string, asset.mimeType);
+        if (onUpload) onUpload({ result: result, blob: blob });
         setImagePreview(result.assets[0].uri);
       }
     }
@@ -51,16 +61,22 @@ export function AvatarImagePicker() {
   const deleteImage = () => {
     setImagePreview(null);
     setImage(null);
+    if (onUpload) onUpload(null);
   };
   return (
     <>
       <View style={styles.container}>
         {imagePreview ? (
           <Image style={styles.image} source={{ uri: imagePreview }} />
-        ) : (
+        ) : !existingImage ? (
           <Image
             style={styles.image}
             source={require("../../assets/empty-avatar.jpg")}
+          />
+        ) : (
+          <Image
+            style={styles.image}
+            src={"https://backoffice.symamlaw.com/dummy/no_image.png"}
           />
         )}
         <TouchableRipple
@@ -88,10 +104,15 @@ export function AvatarImagePicker() {
                 style={styles.overlayAvatar}
                 source={{ uri: imagePreview }}
               />
-            ) : (
+            ) : !existingImage ? (
               <Image
                 style={styles.overlayAvatar}
                 source={require("../../assets/empty-avatar.jpg")}
+              />
+            ) : (
+              <Image
+                style={styles.image}
+                src={"https://backoffice.symamlaw.com/dummy/no_image.png"}
               />
             )}
           </View>

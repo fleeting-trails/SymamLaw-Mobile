@@ -58,7 +58,6 @@ export default function Register() {
     };
     try {
       const res = await dispatch(register(body)).unwrap();
-      console.log("Data", JSON.stringify(res));
       navigate("OTP");
     } catch (error: any) {
       console.log("Error", error);
