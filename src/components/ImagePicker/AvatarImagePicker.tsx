@@ -101,6 +101,7 @@ export function AvatarImagePicker({
   };
   const saveImageToProfile = async () => {
     if (blob) {
+      setCurrentScreen("loading")
       const formData = new FormData();
       formData.append("image", {
         uri: asset?.uri,
