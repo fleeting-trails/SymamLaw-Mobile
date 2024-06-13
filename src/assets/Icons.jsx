@@ -298,7 +298,7 @@ export const DateIcon = ({ color = "#000000", scale = 1, ...props }) => (
     {...props}
   >
     <Path
-      stroke="#fff"
+      stroke={color}
       scale={scale}
       strokeLinecap="round"
       d="M9.889 4.889V3.222c0-.613-.498-1.11-1.111-1.11H2.11C1.497 2.111 1 2.608 1 3.221V4.89m8.889 0v5c0 .614-.498 1.111-1.111 1.111H2.11A1.111 1.111 0 0 1 1 9.889v-5m8.889 0H1M3.222 1v2.222M7.667 1v2.222"
@@ -563,6 +563,103 @@ export const BackIcon = ({ color = "#fff", scale = 1, ...props }) => (
       strokeLinejoin="round"
       strokeWidth={1.5}
       d="M4 12h16M9 17s-5-3.682-5-5 5-5 5-5"
+    />
+  </Svg>
+)
+export const DurationIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M11.08 13.152 8 7l5.42 4.28c.77.608.774 1.767.008 2.38a1.547 1.547 0 0 1-2.347-.508Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M5 4.82a10.003 10.003 0 0 0-3 7.157C2 17.513 6.477 22 12 22s10-4.487 10-10.023a10.02 10.02 0 0 0-8.013-9.824c-.836-.17-1.254-.254-1.62.047C12 2.5 12 2.987 12 3.96v1.002"
+    />
+  </Svg>
+)
+export const QuestionIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M22 11.567c0 5.283-4.478 9.566-10 9.566-.65.001-1.297-.059-1.935-.178-.459-.087-.688-.13-.848-.105-.16.024-.388.145-.842.386a6.5 6.5 0 0 1-4.224.657 5.292 5.292 0 0 0 1.087-2.348c.1-.53-.148-1.045-.52-1.422C3.034 16.411 2 14.105 2 11.567 2 6.284 6.478 2 12 2s10 4.284 10 9.567Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5}
+      d="M10 9.846C10 8.826 10.895 8 12 8s2 .827 2 1.846c0 .368-.116.71-.317.998C13.085 11.7 12 12.519 12 13.539V14"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M12 16.5h.009"
+    />
+  </Svg>
+)
+export const TopicIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke={color}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M2.5 9.167c0-3.125 0-4.688.796-5.783.257-.354.568-.665.922-.922 1.095-.795 2.657-.795 5.782-.795s4.687 0 5.782.795c.354.257.665.568.922.922.796 1.095.796 2.658.796 5.783v1.666c0 3.125 0 4.688-.796 5.783a4.164 4.164 0 0 1-.922.922c-1.095.795-2.657.795-5.782.795s-4.687 0-5.782-.795a4.165 4.165 0 0 1-.922-.922C2.5 15.52 2.5 13.958 2.5 10.833V9.167ZM13.333 5.833H6.667M11.25 10h-2.5"
+    />
+  </Svg>
+)
+export const CategoryIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M4 14h4.421c.93 0 1.395 0 1.52.28.123.28-.193.616-.826 1.288l-3.638 3.864c-.633.672-.95 1.008-.826 1.288s.59.28 1.52.28H10M4 9l2.106-4.695C6.496 3.435 6.69 3 7 3c.309 0 .504.435.894 1.305L10 9M17.5 20V4m0 16c-.7 0-2.008-1.994-2.5-2.5m2.5 2.5c.7 0 2.009-1.994 2.5-2.5"
     />
   </Svg>
 )

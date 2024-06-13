@@ -7,7 +7,8 @@ namespace PropTypes {
         lightText?: boolean,
         truncate?: number,
         linkStyle?: boolean,
-        centerText?: boolean
+        centerText?: boolean,
+        className?: string
     }
     type CustomTextColorEnum = ('default' | 'primary')
 }

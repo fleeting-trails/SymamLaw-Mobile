@@ -16,7 +16,9 @@ namespace Config {
             textLightPrimary: string,
             textGray: string,
             error: string,
+            errorText: string,
             errorRgb: string,
+            errorTextRgb: string,
             warning: string,
             warningRgb: string
         }

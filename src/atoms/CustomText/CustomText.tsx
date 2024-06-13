@@ -13,6 +13,7 @@ export default function CustomText({
   truncate,
   linkStyle = false,
   centerText = false,
+  className,
   ...props
 }: PropTypes.CustomText) {
   const darkMode = useAppSelector((state) => state.config.darkMode);
@@ -23,6 +24,8 @@ export default function CustomText({
       {variant === "300" && (
         <Text
           style={[styles.textStyle, style, { fontFamily: "Rubik_300Light" }]}
+          className={className}
+
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -35,6 +38,7 @@ export default function CustomText({
             style,
             { fontFamily: "Rubik_300Light_Italic" },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -43,6 +47,7 @@ export default function CustomText({
       {variant === "400" && (
         <Text
           style={[styles.textStyle, style, { fontFamily: "Rubik_400Regular" }]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -55,6 +60,7 @@ export default function CustomText({
             style,
             { fontFamily: "Rubik_400Regular_Italic" },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -63,6 +69,7 @@ export default function CustomText({
       {variant === "500" && (
         <Text
           style={[styles.textStyle, style, { fontFamily: "Rubik_500Medium" }]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -75,6 +82,7 @@ export default function CustomText({
             style,
             { fontFamily: "Rubik_500Medium_Italic" },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -83,6 +91,7 @@ export default function CustomText({
       {variant === "600" && (
         <Text
           style={[styles.textStyle, style, { fontFamily: "Rubik_600SemiBold" }]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -95,6 +104,7 @@ export default function CustomText({
             style,
             { fontFamily: "Rubik_600SemiBold_Italic" },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -103,6 +113,7 @@ export default function CustomText({
       {variant === "700" && (
         <Text
           style={[styles.textStyle, style, { fontFamily: "Rubik_700Bold" }]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -115,6 +126,7 @@ export default function CustomText({
             style,
             { fontFamily: "Rubik_700Bold_Italic" },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -130,6 +142,7 @@ export default function CustomText({
               transform: [{ scaleX: 1 }, { scaleY: 1.1 }],
             },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -145,6 +158,7 @@ export default function CustomText({
               transform: [{ scaleX: 1 }, { scaleY: 1.1 }],
             },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -160,6 +174,7 @@ export default function CustomText({
               transform: [{ scaleX: 1 }, { scaleY: 1.1 }],
             },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
@@ -175,6 +190,7 @@ export default function CustomText({
               transform: [{ scaleX: 1 }, { scaleY: 1.1 }],
             },
           ]}
+          className={className}
           {...props}
         >
           {truncate ? truncateString(children, truncate) : children}
