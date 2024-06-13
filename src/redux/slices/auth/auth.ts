@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { axiosExternal } from '../../../axios/axios'
+import { axiosExternal, axiosFileUpload } from '../../../axios/axios'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FormDataProps from 'form-data'
 
 
 // Define the initial state using that type
@@ -61,7 +62,12 @@ export const login = createAsyncThunk(
             if (!res.data.success) {
                 return thunkAPI.rejectWithValue({ error: res.data.message })
             }
-            return { data: res.data }
+            AsyncStorage.setItem("token", res.data.data.token)
+            const userProfile = await axiosExternal.get('/user/profile');
+            if (!userProfile.data.success) {
+                return thunkAPI.rejectWithValue({ error: userProfile.data.message })
+            }
+            return { data: userProfile.data }
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
         }
@@ -144,6 +150,20 @@ export const updateProfile = createAsyncThunk(
     async (body: FormData, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/user/profile/update", body)
+            if (!res.data.success) {
+                return thunkAPI.rejectWithValue({ error: res.data.message })
+            }
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+export const updateProfileImage = createAsyncThunk(
+    'updateProfile/image',
+    async (body: FormDataProps, thunkAPI) => {
+        try {
+            const res = await axiosFileUpload.post("/user/profile/update", body)
             if (!res.data.success) {
                 return thunkAPI.rejectWithValue({ error: res.data.message })
             }
@@ -268,6 +288,20 @@ export const authSlice = createSlice({
             }
         })
         builder.addCase(updateProfile.rejected, (state, action) => {
+            state.loading.updateProfile = false;
+            state.error = action.error;
+        })
+        // Update profile Image
+        builder.addCase(updateProfileImage.pending, (state) => {
+            state.loading.updateProfile = true;
+        })
+        builder.addCase(updateProfileImage.fulfilled, (state, action) => {
+            state.loading.updateProfile = false;
+            if (action.payload) {
+                state.user = action.payload.data.data;
+            }
+        })
+        builder.addCase(updateProfileImage.rejected, (state, action) => {
             state.loading.updateProfile = false;
             state.error = action.error;
         })

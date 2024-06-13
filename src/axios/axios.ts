@@ -1,6 +1,6 @@
-import React from "react";
 import axios from "axios";
 import { getAuthData, clearLoginData } from "../utils/authHelper";
+
 
 export const axiosExternal = axios.create({
   baseURL: "https://backoffice.symamlaw.com/api",
@@ -9,7 +9,28 @@ export const axiosExternal = axios.create({
     Accept: 'application/json'
   },
 });
+export const axiosFileUpload = axios.create({
+  baseURL: "https://backoffice.symamlaw.com/api",
+  timeout: 8000,
+  headers: {
+    "Accept": '*/*',
+    'Content-Type': 'multipart/form-data'
+  },
+})
 axiosExternal.interceptors.request.use(async function (config) {
+  let { token } = await getAuthData() as any;
+  // config.timeout = 0;
+  if (token) {
+    config.headers["Authorization"] = "Bearer " + token;
+  }
+  return config;
+}, function (error) {
+  // Do something with request error
+  console.log("Some error", error)
+  return Promise.reject(error);
+});
+
+axiosFileUpload.interceptors.request.use(async function (config) {
   let { token } = await getAuthData() as any;
   // config.timeout = 0;
   if (token) {

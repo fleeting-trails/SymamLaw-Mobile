@@ -16,6 +16,7 @@ import Register from "./screens/Auth/Register";
 import OTP from "./screens/Auth/OTP";
 import ForgetPassword from "./screens/Auth/ForgetPassword";
 import ForgetPasswordOTP from "./screens/Auth/ForgetPasswordOTP";
+import ExamStart from "./screens/Exam/ExamStart";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,6 +49,7 @@ export default function Main() {
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
           <Stack.Screen name="ForgetPasswordOTP" component={ForgetPasswordOTP} />
           <Stack.Screen name="OTP" component={OTP} />
+          <Stack.Screen name="ExamStart" component={ExamStart} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

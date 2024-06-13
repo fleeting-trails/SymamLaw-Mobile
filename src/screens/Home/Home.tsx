@@ -7,8 +7,10 @@ import LiveClassCard from "../../components/LiveClassCard/LiveClassCard";
 import CourseCard from "../../components/CoursesCard/CourseCard";
 import { FlatList } from "react-native";
 import ExamCard from "../../components/ExamCard/ExamCard";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export default function Home() {
+  const { navigate } = useAppNavigation();
   const courseData: Array<PropTypes.CourseCardData> = [
     {
       id: "1",
@@ -79,6 +81,9 @@ export default function Home() {
       totalQuestions: 40
     }
   ]
+  const handleExamCardPress = (id: string) => {
+    navigate("ExamStart", { id })
+  }
   return (
     <ScreenContainer>
       <Section title="Upcoming Live Class">
@@ -101,7 +106,7 @@ export default function Home() {
       <Section title="Recommended Exams For You">
         <View style={{ gap: 8 }}>
           {examData.map(exam => (
-            <ExamCard key={exam.id} data={exam} />
+            <ExamCard onPress={handleExamCardPress} key={exam.id} data={exam} />
           ))}
         </View>
       </Section>

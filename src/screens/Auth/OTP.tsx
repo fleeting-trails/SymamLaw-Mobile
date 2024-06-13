@@ -31,11 +31,6 @@ export default function OTP() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const registerResponse = useAppSelector(state => state.auth.registerResponse)
 
-
-  useEffect(() => {
-    console.log("Register resonse", registerResponse?.otp)
-  }, [registerResponse])
-
   useEffect(() => {
     countdownRef.current = setInterval(() => {
       if (resendCountdownRef.current !== 0) {
@@ -67,7 +62,6 @@ export default function OTP() {
       email: registerResponse?.email as string,
       otp: code
     }
-    console.log("OTP body", body);
     try {
       await dispatch(verifyEmail(body)).unwrap();
       navigate("Account")

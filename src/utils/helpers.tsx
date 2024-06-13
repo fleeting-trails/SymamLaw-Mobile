@@ -1,3 +1,4 @@
+import { atob } from "react-native-quick-base64";
 export function truncateString(str: string, size: number) {
   if (str.length <= size) {
     return str;
@@ -23,27 +24,28 @@ export function formatMinutesToHourMinute(minutes: number) {
     ? `${formattedHours}hour ${formattedMinutes}min`
     : `${formattedMinutes}min`;
 }
-export function base64ToBlob(base64 : string, contentType = '', sliceSize = 512) {
-  const Buffer = require("buffer").Buffer;
-  const buffer = Buffer.from(base64, "base64");
-  const blob = new Blob([buffer], { type: contentType })
-  return blob;
-}
 // export function base64ToBlob(base64 : string, contentType = '', sliceSize = 512) {
-//   const byteCharacters = atob(base64);
-//   const byteArrays = [];
-
-//   for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-//       const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-//       const byteNumbers = new Array(slice.length);
-//       for (let i = 0; i < slice.length; i++) {
-//           byteNumbers[i] = slice.charCodeAt(i);
-//       }
-
-//       const byteArray = new Uint8Array(byteNumbers);
-//       byteArrays.push(byteArray);
-//   }
-
-//   return new Blob(byteArrays, { type: contentType });
+//   const Buffer = require("buffer").Buffer;
+//   const buffer = Buffer.from(base64, "base64");
+//   const blob = new File([buffer], "jisun", { type: contentType })
+//   return blob;
 // }
+
+export function base64ToBlob(base64 : string, contentType = '', sliceSize = 512) {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+  }
+
+  return new File(byteArrays, "avatar.jpeg", { type: contentType });
+}

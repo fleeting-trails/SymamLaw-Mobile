@@ -111,7 +111,11 @@ export function TopNavigation({
                 onDismiss={() => setProfileMenuVisible(false)}
                 anchor={
                   <TouchableRipple onPress={handleUserIconPress}>
-                    <Image source={BlankAvatar} style={styles.avatarImage} />
+                    {user.image ? (
+                      <Image src={user.image} style={styles.avatarImage} />
+                    ) : (
+                      <Image source={BlankAvatar} style={styles.avatarImage} />
+                    )}
                   </TouchableRipple>
                 }
               >
@@ -139,10 +143,22 @@ export function TopNavigation({
             contentContainerStyle={styles.modalContainerStyle}
           >
             <View style={styles.modalStyle}>
-              <Image source={require("../../assets/internal_error.png")} style={styles.modalImage} />
-              <CustomText style={{fontSize: 18 }} variant="500">Failed to logout!</CustomText>
-              <CustomText>Something went wrong, cannot log out! Sorry if this is a fault from our part, we will be fixing this as soon as possible</CustomText>
-              <PrimaryButton color="primary" text="Close" onPress={() => setLogoutFailedModal(false)} />
+              <Image
+                source={require("../../assets/internal_error.png")}
+                style={styles.modalImage}
+              />
+              <CustomText style={{ fontSize: 18 }} variant="500">
+                Failed to logout!
+              </CustomText>
+              <CustomText>
+                Something went wrong, cannot log out! Sorry if this is a fault
+                from our part, we will be fixing this as soon as possible
+              </CustomText>
+              <PrimaryButton
+                color="primary"
+                text="Close"
+                onPress={() => setLogoutFailedModal(false)}
+              />
             </View>
           </Modal>
         </Portal>
@@ -189,17 +205,17 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     modalContainerStyle: {
       backgroundColor: "white",
       padding: 20,
-      width: '80%',
-      alignSelf: 'center'
+      width: "80%",
+      alignSelf: "center",
     },
     modalStyle: {
-      width: '100%',
-      alignItems: 'center', 
-      gap: 20
+      width: "100%",
+      alignItems: "center",
+      gap: 20,
     },
     modalImage: {
       height: 100,
-      objectFit: 'contain'
-    }
+      objectFit: "contain",
+    },
   });
 };

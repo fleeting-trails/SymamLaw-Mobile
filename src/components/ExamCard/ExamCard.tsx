@@ -6,9 +6,14 @@ import { TouchableRipple, useTheme } from "react-native-paper";
 import { Button } from "react-native-paper";
 import { formatMinutesToHourMinute } from "../../utils/helpers";
 
-export default function ExamCard({ data } : PropTypes.ExamCard) {
+export default function ExamCard({ data, onPress } : PropTypes.ExamCard) {
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
+  const handlePress = () => {
+    if (onPress) {
+      onPress(data.id)
+    }
+  }
   return (
     <TouchableRipple>
       <View style={styles.container}>
@@ -22,7 +27,7 @@ export default function ExamCard({ data } : PropTypes.ExamCard) {
           </CustomText>
         </View>
         <View>
-          <Button textColor={theme.colors.textPrimary} onPress={() => console.log("Pressed")}>
+          <Button textColor={theme.colors.textPrimary} onPress={handlePress}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
                 <CustomText variant="300">Start Now</CustomText>
                 <CaretRightIcon color={theme.colors.textPrimary} />

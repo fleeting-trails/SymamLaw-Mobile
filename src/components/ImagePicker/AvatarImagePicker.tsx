@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Button } from "react-native-paper";
 import { TouchableRipple } from "react-native-paper";
+import FormData from "form-data";
 import {
   CameraIcon,
   CrossIcon,
@@ -23,7 +24,10 @@ import { ImagePickerOptions, ImagePickerResult } from "expo-image-picker";
 import { CameraType } from "expo-image-picker";
 import { base64ToBlob } from "../../utils/helpers";
 import { useAppDispatch } from "../../redux/hooks";
-import { updateProfile } from "../../redux/slices/auth/auth";
+import {
+  updateProfile,
+  updateProfileImage,
+} from "../../redux/slices/auth/auth";
 import AlertPrimary from "../../atoms/Alert/AlertPrimary";
 
 export function AvatarImagePicker({
@@ -35,6 +39,7 @@ export function AvatarImagePicker({
   const { height, width } = Dimensions.get("screen");
   const styles = createStyles({ theme, height, width });
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [asset, setAsset] = useState<null | ImagePicker.ImagePickerAsset>(null);
   const [image, setImage] = useState<ImagePickerResult | null>(null);
   const [blob, setBlob] = useState<null | Blob>(null);
   const [uploadError, setUploadError] = useState("");
@@ -63,27 +68,25 @@ export function AvatarImagePicker({
       await ImagePicker.requestMediaLibraryPermissionsAsync();
       setCurrentScreen("loading");
       let result = await ImagePicker.launchImageLibraryAsync(config);
-      if (!result.canceled) {
-        setImage(result);
-        const asset = result.assets[0];
-        const blob = base64ToBlob(asset.base64 as string, asset.mimeType);
-        setBlob(blob);
-        if (onUpload) onUpload({ result, blob });
-        setImagePreview(result.assets[0].uri);
-      }
+      afterUpload(result);
     } else if (mode === "camera") {
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync(config);
-      if (!result.canceled) {
-        setImage(result);
-        const asset = result.assets[0];
-        const blob = base64ToBlob(asset.base64 as string, asset.mimeType);
-        setBlob(blob);
-        if (onUpload) onUpload({ result: result, blob: blob });
-        setImagePreview(result.assets[0].uri);
-      }
+      afterUpload(result);
     }
     setCurrentScreen("save");
+  };
+  const afterUpload = (result: ImagePickerResult) => {
+    if (!result.canceled) {
+      setImage(result);
+      const asset = result.assets[0];
+      const blob = base64ToBlob(asset.base64 as string, asset.mimeType);
+      
+      setAsset(result.assets[0]);
+      setBlob(blob);
+      if (onUpload) onUpload({ result: result, blob: blob });
+      setImagePreview(result.assets[0].uri);
+    }
   };
   const deleteImage = () => {
     setImagePreview(null);
@@ -95,20 +98,24 @@ export function AvatarImagePicker({
     setImage(null);
     if (onUpload) onUpload(null);
     setCurrentScreen("upload");
-  }
+  };
   const saveImageToProfile = async () => {
     if (blob) {
       const formData = new FormData();
-      formData.append('image', blob);
+      formData.append("image", {
+        uri: asset?.uri,
+        type: asset?.mimeType,
+        name: asset?.fileName
+      });
       try {
-        await dispatch(updateProfile(formData))
+        await dispatch(updateProfileImage(formData));
         setCurrentScreen("upload");
         setPickerOpen(false);
       } catch (error) {
-        setUploadError("Failed to upload profile image")
+        setUploadError("Failed to upload profile image");
       }
     }
-  }
+  };
   return (
     <>
       <View style={styles.container}>
@@ -184,21 +191,29 @@ export function AvatarImagePicker({
           )}
           {currentScreen === "save" && (
             <>
-            {uploadError && <View style={{ marginBottom: 20 }}>
-              <AlertPrimary lightText={true} label="Failed to upload image" type="error" />
-            </View>}
-            <View style={styles.overlaySaveContainer}>
-              <TouchableRipple onPress={saveImageToProfile}>
-                <View style={styles.overlaySaveButton}>
-                  <CustomText>Save Profile Image</CustomText>
+              {uploadError && (
+                <View style={{ marginBottom: 20 }}>
+                  <AlertPrimary
+                    lightText={true}
+                    label="Failed to upload image"
+                    type="error"
+                  />
                 </View>
-              </TouchableRipple>
-              <TouchableRipple onPress={cancelImageUpload}>
-                <View style={styles.overlayCancelButton}>
-                  <CustomText style={{ color: theme.colors.textLight }}>Cancel</CustomText>
-                </View>
-              </TouchableRipple>
-            </View>
+              )}
+              <View style={styles.overlaySaveContainer}>
+                <TouchableRipple onPress={saveImageToProfile}>
+                  <View style={styles.overlaySaveButton}>
+                    <CustomText>Save Profile Image</CustomText>
+                  </View>
+                </TouchableRipple>
+                <TouchableRipple onPress={cancelImageUpload}>
+                  <View style={styles.overlayCancelButton}>
+                    <CustomText style={{ color: theme.colors.textLight }}>
+                      Cancel
+                    </CustomText>
+                  </View>
+                </TouchableRipple>
+              </View>
             </>
           )}
         </View>
@@ -302,9 +317,9 @@ const createStyles = ({
       alignItems: "center",
     },
     overlaySaveContainer: {
-      justifyContent: 'center',
-      flexDirection: 'row',
-      gap: 10
+      justifyContent: "center",
+      flexDirection: "row",
+      gap: 10,
     },
     overlaySaveButton: {
       backgroundColor: theme.colors.background,
@@ -322,6 +337,6 @@ const createStyles = ({
       borderRadius: 3,
       justifyContent: "center",
       alignItems: "center",
-    }
+    },
   });
 };
