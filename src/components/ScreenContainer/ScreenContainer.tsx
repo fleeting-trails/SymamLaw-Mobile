@@ -24,6 +24,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+      position: 'relative'
     },
     scrollView: {
       flex: 1,

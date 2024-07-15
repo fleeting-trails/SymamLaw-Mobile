@@ -2,6 +2,7 @@ namespace PropTypes {
     type PrimaryButton = {
         text: string,
         icon?: React.ReactNode,
+        endIcon?: React.ReactNode,
         color?: ButtonColorEnum,
         size?: ButtonSizeEnum,
         lightText?: boolean,

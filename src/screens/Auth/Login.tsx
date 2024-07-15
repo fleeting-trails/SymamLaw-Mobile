@@ -95,7 +95,6 @@ export default function Login() {
 
     try {
       const res = await dispatch(login(body)).unwrap();
-      console.log(JSON.stringify(res));
       navigate("HomeTabs");
     } catch (error: any) {
       console.log("ERROR", JSON.stringify(error));

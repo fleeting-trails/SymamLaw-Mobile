@@ -6,6 +6,7 @@ import CustomText from "../CustomText/CustomText";
 export default function PrimaryButton({
   text,
   icon,
+  endIcon,
   color,
   size,
   lightText,
@@ -43,7 +44,7 @@ export default function PrimaryButton({
     >
       <View style={[style, styles.container]}>
         {!loading ? (
-          <View>{icon}</View>
+          icon && <View className="">{icon}</View>
         ) : (
           <View>
             <Image
@@ -55,6 +56,7 @@ export default function PrimaryButton({
         <CustomText lightText={isLightText} style={styles.buttonText}>
           {text}
         </CustomText>
+        {endIcon && <View className="">{endIcon}</View>}
       </View>
     </TouchableRipple>
   );

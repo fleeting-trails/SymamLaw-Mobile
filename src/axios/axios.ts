@@ -1,5 +1,7 @@
 import axios from "axios";
 import { getAuthData, clearLoginData } from "../utils/authHelper";
+import { NativeEventEmitter, NativeModules } from "react-native";
+import { EventRegister } from "react-native-event-listeners";
 
 
 export const axiosExternal = axios.create({
@@ -51,6 +53,7 @@ axiosExternal.interceptors.response.use(
       if (!error.response) return Promise.reject(error);
       if (error.response.status === 401) {
         clearLoginData();
+        EventRegister.emit("token-expired", "Token Expired Loggin Out");
         // window.location.href = "/login"
         //   navigate("/login");
       }

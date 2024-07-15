@@ -24,6 +24,19 @@ export function formatMinutesToHourMinute(minutes: number) {
     ? `${formattedHours}hour ${formattedMinutes}min`
     : `${formattedMinutes}min`;
 }
+export function formatSecondToHour(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedSeconds = secs.toString().padStart(2, '0');
+
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+
 // export function base64ToBlob(base64 : string, contentType = '', sliceSize = 512) {
 //   const Buffer = require("buffer").Buffer;
 //   const buffer = Buffer.from(base64, "base64");

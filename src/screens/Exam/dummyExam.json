@@ -1,0 +1,226 @@
+[
+  {
+    "id": 1,
+    "exam_id": 1,
+    "question_text": "What is the capital of Bangladesh?",
+    "slug": "what_is_the_capital_of_bangladesh",
+    "question_type": "mcq",
+    "marks": 1,
+    "image": null,
+    "description": "Choose the correct answer.",
+    "multiple_answer": 0,
+    "status": 1,
+    "created_at": "2024-07-10T18:48:57.000000Z",
+    "updated_at": "2024-07-10T18:48:57.000000Z",
+    "option": [
+      {
+        "id": 2,
+        "question_id": 1,
+        "option_text": "Dhaka",
+        "slug": "dhaka",
+        "is_correct": 1,
+        "created_at": "2024-07-10T18:51:02.000000Z",
+        "updated_at": "2024-07-10T18:51:02.000000Z"
+      },
+      {
+        "id": 5,
+        "question_id": 1,
+        "option_text": "kop",
+        "slug": "kop",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 6,
+        "question_id": 1,
+        "option_text": "top",
+        "slug": "top",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:26.000000Z",
+        "updated_at": "2024-07-10T18:52:26.000000Z"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "exam_id": 1,
+    "question_text": "What is the largest planet in our solar system?",
+    "slug": "what_is_the_largest_planet_in_our_solar_system",
+    "question_type": "mcq",
+    "marks": 1,
+    "image": null,
+    "description": "Choose the correct answer.",
+    "multiple_answer": 0,
+    "status": 1,
+    "created_at": "2024-07-10T18:48:57.000000Z",
+    "updated_at": "2024-07-10T18:48:57.000000Z",
+    "option": [
+      {
+        "id": 7,
+        "question_id": 2,
+        "option_text": "Jupiter",
+        "slug": "jupiter",
+        "is_correct": 1,
+        "created_at": "2024-07-10T18:51:02.000000Z",
+        "updated_at": "2024-07-10T18:51:02.000000Z"
+      },
+      {
+        "id": 8,
+        "question_id": 2,
+        "option_text": "Saturn",
+        "slug": "saturn",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 9,
+        "question_id": 2,
+        "option_text": "Mars",
+        "slug": "mars",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:26.000000Z",
+        "updated_at": "2024-07-10T18:52:26.000000Z"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "exam_id": 1,
+    "question_text": "Who wrote 'To Kill a Mockingbird'?",
+    "slug": "who_wrote_to_kill_a_mockingbird",
+    "question_type": "mcq",
+    "marks": 1,
+    "image": null,
+    "description": "Choose the correct answer.",
+    "multiple_answer": 0,
+    "status": 1,
+    "created_at": "2024-07-10T18:48:57.000000Z",
+    "updated_at": "2024-07-10T18:48:57.000000Z",
+    "option": [
+      {
+        "id": 10,
+        "question_id": 3,
+        "option_text": "Harper Lee",
+        "slug": "harper_lee",
+        "is_correct": 1,
+        "created_at": "2024-07-10T18:51:02.000000Z",
+        "updated_at": "2024-07-10T18:51:02.000000Z"
+      },
+      {
+        "id": 11,
+        "question_id": 3,
+        "option_text": "Mark Twain",
+        "slug": "mark_twain",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 12,
+        "question_id": 3,
+        "option_text": "F. Scott Fitzgerald",
+        "slug": "f_scott_fitzgerald",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:26.000000Z",
+        "updated_at": "2024-07-10T18:52:26.000000Z"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "exam_id": 1,
+    "question_text": "What is the chemical symbol for gold?",
+    "slug": "what_is_the_chemical_symbol_for_gold",
+    "question_type": "mcq",
+    "marks": 1,
+    "image": null,
+    "description": "Choose the correct answer.",
+    "multiple_answer": 0,
+    "status": 1,
+    "created_at": "2024-07-10T18:48:57.000000Z",
+    "updated_at": "2024-07-10T18:48:57.000000Z",
+    "option": [
+      {
+        "id": 13,
+        "question_id": 4,
+        "option_text": "Au",
+        "slug": "au",
+        "is_correct": 1,
+        "created_at": "2024-07-10T18:51:02.000000Z",
+        "updated_at": "2024-07-10T18:51:02.000000Z"
+      },
+      {
+        "id": 14,
+        "question_id": 4,
+        "option_text": "Ag",
+        "slug": "ag",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 15,
+        "question_id": 4,
+        "option_text": "Pb",
+        "slug": "pb",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:26.000000Z",
+        "updated_at": "2024-07-10T18:52:26.000000Z"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "exam_id": 1,
+    "question_text": "What is the capital of Japan?",
+    "slug": "what_is_the_capital_of_japan",
+    "question_type": "mcq",
+    "marks": 1,
+    "image": null,
+    "description": "Choose the correct answer.",
+    "multiple_answer": 0,
+    "status": 1,
+    "created_at": "2024-07-10T18:48:57.000000Z",
+    "updated_at": "2024-07-10T18:48:57.000000Z",
+    "option": [
+      {
+        "id": 16,
+        "question_id": 5,
+        "option_text": "Tokyo",
+        "slug": "tokyo",
+        "is_correct": 1,
+        "created_at": "2024-07-10T18:51:02.000000Z",
+        "updated_at": "2024-07-10T18:51:02.000000Z"
+      },
+      {
+        "id": 17,
+        "question_id": 5,
+        "option_text": "Kyoto",
+        "slug": "kyoto",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 14,
+        "question_id": 4,
+        "option_text": "Ag",
+        "slug": "ag",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:20.000000Z",
+        "updated_at": "2024-07-10T18:52:20.000000Z"
+      },
+      {
+        "id": 15,
+        "question_id": 4,
+        "option_text": "Pb",
+        "slug": "pb",
+        "is_correct": 0,
+        "created_at": "2024-07-10T18:52:26.000000Z",
+        "updated_at": "2024-07-10T18:52:26.000000Z"
+      }
+    ]
+  }
+]

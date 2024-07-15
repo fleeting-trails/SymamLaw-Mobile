@@ -259,15 +259,16 @@ export const LogoWithText = ({
     />
   </Svg>
 );
-export const CaretLeftIcon = ({ color = "#000000", ...props }) => (
+export const CaretLeftIcon = ({ color = "#000000", scale = 1, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={10}
-    height={18}
+    width={10 * scale}
+    height={18 * scale}
     fill="none"
     {...props}
   >
     <Path
+      scale={scale}
       stroke={color}
       strokeLinecap="round"
       d="m8.531 1-7.2 7.2a1.131 1.131 0 0 0 0 1.6l7.2 7.2"

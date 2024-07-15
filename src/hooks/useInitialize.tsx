@@ -17,12 +17,13 @@ import {
     Rubik_900Black_Italic,
   } from "@expo-google-fonts/rubik";
 import { setDarkTheme } from '../redux/slices/config';
-import { Appearance, useColorScheme } from 'react-native';
+import { Appearance, NativeEventEmitter, NativeModules } from 'react-native';
 import { EventRegister } from 'react-native-event-listeners'
 import { fetchUserProfile } from '../redux/slices/auth/auth';
 import { useAppDispatch } from '../redux/hooks';
 
 function useInitialize() {
+    // const eventEmitter = new NativeEventEmitter();
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true);
     const colorScheme = Appearance.getColorScheme();
@@ -47,8 +48,8 @@ function useInitialize() {
 
 
     const initializeAuthExpirationListener = () => {
-        return EventRegister.addEventListener('myCustomEvent', (data) => {
-            console.log("Login session expired, navigate to login page and do necessary cleanups")
+        return EventRegister.addEventListener('token-expired', (data) => {
+            console.log("Testing Event rn")
         })
     }
     const initializeUser = () => {
