@@ -6,21 +6,38 @@ import BottomDrawer from "../../atoms/Drawer/BottomDrawer";
 import CustomText from "../../atoms/CustomText/CustomText";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
 import dummyQuestionsData from "./dummyExam.json";
-import { Checkbox, Paragraph } from "react-native-paper";
+import { Checkbox, Divider, Paragraph, TextInput } from "react-native-paper";
 import { formatSecondToHour } from "../../utils/helpers";
-import { CaretLeftIcon, CaretRightIcon } from "../../assets/Icons";
+import {
+  AttachmentIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+  DeleteIcon,
+} from "../../assets/Icons";
 import { ScrollView } from "react-native";
 import { RadioButton } from "react-native-paper";
+import { IconButtonCustom, InputUnderlined } from "../../atoms";
+import * as DocumentPicker from "expo-document-picker";
+
+type CustomQuestionData = Store.ExamQuestion & {
+  option_id?: Array<string>;
+  written_answer?: string;
+  written_file?: Array<DocumentPicker.DocumentPickerAsset>;
+};
 
 export default function Exam() {
   const theme = useAppTheme();
   const styles = createStyles({ theme });
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
-  const [questions, setQuestions] = useState(dummyQuestionsData);
+  const [questions, setQuestions] = useState<CustomQuestionData[]>(
+    dummyQuestionsData as Store.ExamQuestion[]
+  );
   const initialTime = 10000;
   const [time, setTime] = useState(initialTime);
   const [isActive, setIsActive] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(dummyQuestionsData[0]);
+  const [currentQuestion, setCurrentQuestion] = useState<CustomQuestionData>(
+    dummyQuestionsData[0] as Store.ExamQuestion
+  );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
@@ -62,10 +79,53 @@ export default function Exam() {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
+  const moveToSelectedQuestion = (id: number) => {
+    const selectedQuestion = questions.find((q) => q.id === id);
+    if (selectedQuestion) setCurrentQuestion(selectedQuestion);
+  };
+
+  const handleMCQAnswerChange = (
+    id: number,
+    data:
+      | {
+          type: "single";
+          value: string;
+        }
+      | { type: "multiple"; value: Array<string> }
+  ) => {
+    setQuestions(questions.map((q) => {
+      if (q.id === id) {
+        if (data.type === "single") {
+          return {
+            ...q,
+            option_id: [data.value]
+          }
+        } else {
+          return {
+            ...q,
+            option_id: data.value
+          }
+        }
+      }
+      return q;
+    }))
+  };
+
+  const handleWrittenAnswer = (id: number, data: { textAnswer?: string, attachments?: DocumentPicker.DocumentPickerAsset[] }) => {
+    setQuestions(questions.map((q) => {
+      if (q.id === id) {
+        return {
+          ...q,
+          written_answer: data.textAnswer,
+          written_file: data.attachments
+        }
+      }
+      return q;
+    }))
+  }
 
   useEffect(() => {
-    console.log("Current question index", currentQuestionIndex);
-    setCurrentQuestion(dummyQuestionsData[currentQuestionIndex]);
+    setCurrentQuestion(questions[currentQuestionIndex]);
   }, [currentQuestionIndex]);
 
   return (
@@ -106,11 +166,18 @@ export default function Exam() {
           </CustomText>
           <CustomText>{currentQuestion.description}</CustomText>
           <View className="mt-5">
-            <MCQOptionsView
-              onChange={(data) => console.log("Value", data.value)}
-              options={currentQuestion.option}
-              type={currentQuestion.multiple_answer ? "multiple" : "single"}
-            />
+            {currentQuestion.question_type === "mcq" ? (
+              <MCQOptionsView
+                onChange={(data) => handleMCQAnswerChange(currentQuestion.id, data)}
+                options={currentQuestion.option}
+                type={currentQuestion.multiple_answer ? "multiple" : "single"}
+                defaultValue={currentQuestion.option_id ?? null}
+              />
+            ) : (
+              <WrittenQuestionResponseField
+                onChange={(value) => console.log("Response string", value)}
+              />
+            )}
           </View>
         </ScrollView>
       </View>
@@ -119,17 +186,39 @@ export default function Exam() {
           className="mt-auto"
           text="View Questions"
           onPress={() => setOpenBottomDrawer(true)}
+          color="primary"
         />
       </View>
       <BottomDrawer open={openBottomDrawer} setOpen={setOpenBottomDrawer}>
-        <View>
-          <CustomText>Bottom Drawer Items</CustomText>
+        <View className="pt-3">
+          <CustomText variant="600" className="mb-3 text-lg">
+            Question List
+          </CustomText>
+          <View className="flex flex-row flex-wrap gap-2">
+            {questions.map((question, i) => (
+              <View
+                key={question.id}
+                className="relative h-[60px] w-[60px] rounded flex justify-center items-center"
+                style={{
+                  backgroundColor:
+                    question.id === currentQuestion.id
+                      ? theme.colors.primary
+                      : theme.colors.primaryLight[1],
+                }}
+                onTouchEnd={() => moveToSelectedQuestion(question.id)}
+              >
+                <CustomText lightText>{`${i}`}</CustomText>
+                <View className="absolute w-[87%] h-1 rounded bg-gray-300 bottom-1 left-1"></View>
+              </View>
+            ))}
+          </View>
         </View>
       </BottomDrawer>
     </View>
   );
 }
 
+type MCQOptionsType = "single" | "multiple"
 type MCQOptionsViewProps = {
   onChange?: (
     data:
@@ -139,7 +228,8 @@ type MCQOptionsViewProps = {
         }
       | { type: "multiple"; value: Array<string> }
   ) => void;
-  type: "single" | "multiple";
+  type: MCQOptionsType;
+  defaultValue?: string[] | null,
   options: {
     id: number;
     question_id: number;
@@ -150,15 +240,33 @@ type MCQOptionsViewProps = {
     updated_at: string;
   }[];
 };
-function MCQOptionsView({ onChange, type, options }: MCQOptionsViewProps) {
-  const [selectedSingleAnswer, setSelectedSingleAnswer] = useState<string>("");
+function MCQOptionsView({ onChange, type, options, defaultValue }: MCQOptionsViewProps) {
+  const [selectedSingleAnswer, setSelectedSingleAnswer] = useState<string>(
+    type === "single" ? 
+      defaultValue ? defaultValue[0] : ""
+      : ""
+  );
   const [multipleAnswerOptions, setMutlipleAnswerOptions] = useState<
     Array<{
       id: number;
       option_text: string;
       selected: boolean;
     }>
-  >([]);
+  >(intializeMultipleAnswerFromDefaultValue(type, defaultValue));
+  function intializeMultipleAnswerFromDefaultValue (type : MCQOptionsType, defaultValue: string[] | null | undefined) {
+    if (type === "multiple") {
+      if (!defaultValue) return []
+      else {
+        return options.map(option => ({
+          id: option.id,
+          option_text: option.option_text,
+          selected: defaultValue.find(v => v === `${option.id}`) ? true : false
+        }))
+      }
+    } else {
+      return []
+    }
+  }
   useEffect(() => {
     if (type === "multiple") {
       setMutlipleAnswerOptions(
@@ -225,6 +333,96 @@ function MCQOptionsView({ onChange, type, options }: MCQOptionsViewProps) {
           <CustomText>{option.option_text}</CustomText>
         </View>
       ))}
+    </View>
+  );
+}
+
+type WrittenQuestionResponseFieldProp = {
+  onChange: (data: { textAnswer?: string, attachments?: DocumentPicker.DocumentPickerAsset[] }) => void;
+};
+function WrittenQuestionResponseField({
+  onChange,
+}: WrittenQuestionResponseFieldProp) {
+  const theme = useAppTheme();
+  const [assetList, setAssetList] = useState<
+    DocumentPicker.DocumentPickerAsset[]
+  >([]);
+  const [answer, setAnswer] = useState<{ textAnswer?: string, attachments?: DocumentPicker.DocumentPickerAsset[] }>({
+    textAnswer: "",
+    attachments: []
+  })
+
+  const handleDocumentSelection = async () => {
+    try {
+      const response: DocumentPicker.DocumentPickerResult =
+        await DocumentPicker.getDocumentAsync({
+          multiple: true,
+        });
+      if (!response.canceled) {
+        setAssetList([...assetList, ...response.assets.map((asset) => asset)]);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  const deleteAttachment = (index: number) => {
+    const _assets = assetList.filter((asset, i) => index !== i)
+    setAssetList(_assets);
+    setAnswer({
+      ...answer,
+      attachments: _assets
+    })
+  };
+
+  const handleTextAnswerChange = (value: string) => {
+    setAnswer({
+      ...answer,
+      textAnswer: value
+    })
+  }
+
+  useEffect(() => {
+    if (onChange) onChange(answer)
+  }, [answer])
+
+  return (
+    <View>
+      <TextInput
+        multiline={true}
+        numberOfLines={5}
+        placeholder="Answer your question here or add as an attachment."
+        onChangeText={handleTextAnswerChange}
+      />
+      <View className="mt-3">
+        <PrimaryButton
+          onPress={handleDocumentSelection}
+          icon={<AttachmentIcon />}
+          text="Add Attachment"
+          color="primary"
+        />
+      </View>
+      {assetList.length !== 0 && (
+        <View className="mt-3">
+          <CustomText>Uploaded Files</CustomText>
+          {assetList.map((file, i) => (
+            <View
+              key={file.uri}
+              className="flex flex-row justify-between gap-2 items-center p-3 pr-0 border-b-[1px]"
+              style={{ borderColor: theme.colors.primaryGrayLight }}
+            >
+              <View className="flex flex-row gap-2 items-center w-[200px]">
+                <AttachmentIcon color={theme.colors.primary} />
+                <CustomText variant="300i">{file.name}</CustomText>
+              </View>
+              <PrimaryButton
+                onPress={() => deleteAttachment(i)}
+                icon={<DeleteIcon color={theme.colors.error} />}
+                text=""
+              />
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 }

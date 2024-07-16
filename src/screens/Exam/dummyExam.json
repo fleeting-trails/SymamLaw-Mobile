@@ -4,7 +4,7 @@
     "exam_id": 1,
     "question_text": "What is the capital of Bangladesh?",
     "slug": "what_is_the_capital_of_bangladesh",
-    "question_type": "mcq",
+    "question_type": "written",
     "marks": 1,
     "image": null,
     "description": "Choose the correct answer.",
