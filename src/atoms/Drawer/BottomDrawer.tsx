@@ -124,7 +124,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       paddingHorizontal: 25,
       bottom: 0,
       borderWidth: 1,
-      borderColor: "red",
+      borderColor: theme.colors.primary,
     },
   });
 };

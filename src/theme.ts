@@ -25,6 +25,7 @@ export const getTheme = (dark : boolean = false) : Config.Theme =>  {
             textLight: !dark ? '#ffffff' : '#000000',
             textLightPrimary: !dark ? '#D6E6F8' : '#0A2647',
             textGray: '#6B758A',
+            success: '#5CB85C',
             error: "#cc0000",
             errorText: !dark ? "#B00020" : "#CF6679",
             errorRgb: "176, 0, 32",

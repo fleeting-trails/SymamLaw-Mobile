@@ -8,6 +8,7 @@ namespace PropTypes {
         lightText?: boolean,
         onPress?: () => void,
         style?: import('react-native').ViewStyle,
+        textStyle?: import('react-native').TextStyle
         loading?: boolean
         [key: string] : any
     }

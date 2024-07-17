@@ -5,7 +5,7 @@ export function getAuthData() {
     return new Promise(async (resolve, reject) => {
         try {
             const token = await AsyncStorage.getItem('token')
-            resolve({ token })
+            resolve({ token: token ?? null })
         } catch (error) {
             reject({ error })
         }

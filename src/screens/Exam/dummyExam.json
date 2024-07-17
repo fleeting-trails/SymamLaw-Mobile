@@ -51,7 +51,7 @@
     "marks": 1,
     "image": null,
     "description": "Choose the correct answer.",
-    "multiple_answer": 0,
+    "multiple_answer": 1,
     "status": 1,
     "created_at": "2024-07-10T18:48:57.000000Z",
     "updated_at": "2024-07-10T18:48:57.000000Z",

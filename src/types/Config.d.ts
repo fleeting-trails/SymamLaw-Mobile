@@ -15,6 +15,7 @@ namespace Config {
             textLight: string,
             textLightPrimary: string,
             textGray: string,
+            success: string,
             error: string,
             errorText: string,
             errorRgb: string,

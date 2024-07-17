@@ -11,6 +11,7 @@ export default function PrimaryButton({
   size,
   lightText,
   style,
+  textStyle,
   onPress,
   loading,
   ...props
@@ -42,7 +43,7 @@ export default function PrimaryButton({
       }}
       disabled={loading}
     >
-      <View style={[style, styles.container]}>
+      <View style={[styles.container, style]}>
         {!loading ? (
           icon && <View className="">{icon}</View>
         ) : (
@@ -53,7 +54,7 @@ export default function PrimaryButton({
             />
           </View>
         )}
-        <CustomText lightText={isLightText} style={styles.buttonText}>
+        <CustomText lightText={isLightText} style={[styles.buttonText, textStyle]}>
           {text}
         </CustomText>
         {endIcon && <View className="">{endIcon}</View>}
@@ -77,6 +78,8 @@ const createStyles = ({ theme, color, size }: StyleType) => {
       justifyContent: "center",
       alignItems: "center",
       gap: 10,
+      borderWidth: 1,
+      borderColor: 'transparent',
       ...(!color && { backgroundColor: theme.colors.accent }),
       ...(color === "light" && { backgroundColor: theme.colors.background }),
       ...(color === "primary" && { backgroundColor: theme.colors.primary }),
