@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import useAppTheme from "../../hooks/useAppTheme";
 import { ScreenContainer } from "../../components";
@@ -13,11 +13,13 @@ import {
   CaretLeftIcon,
   CaretRightIcon,
   DeleteIcon,
+  HomeIcon,
 } from "../../assets/Icons";
 import { ScrollView } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { IconButtonCustom, InputUnderlined } from "../../atoms";
 import * as DocumentPicker from "expo-document-picker";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 type CustomQuestionData = Store.ExamQuestion & {
   option_id?: Array<string>;
@@ -26,11 +28,46 @@ type CustomQuestionData = Store.ExamQuestion & {
 };
 type ScreenType = "exam" | "confirmation";
 export default function Exam() {
-  const [currentScreen, setCurrentScreen] =
-    useState<ScreenType>("confirmation");
-  return currentScreen === "exam" ? <ExamScreen /> : <ExamConfirmationScreen />;
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>("exam");
+  const [timeExpired, setTimeExpired] = useState(false);
+  const [submittedData, setSubmittedData] = useState<
+    CustomQuestionData[] | null
+  >(null);
+
+  const handleExamEnd = (
+    questionData: CustomQuestionData[],
+    isTimeExpired: boolean
+  ) => {
+    setCurrentScreen("confirmation");
+    setSubmittedData(questionData);
+    setTimeExpired(isTimeExpired);
+  };
+
+  const handleReturnToQuestions = () => {
+    setCurrentScreen("exam");
+  };
+
+  return currentScreen === "exam" ? (
+    <ExamScreen onExamEnd={handleExamEnd} />
+  ) : (
+    <ExamConfirmationScreen
+      submittedData={submittedData as CustomQuestionData[]}
+      isTimeExpired={timeExpired}
+      onReturnToQuestions={handleReturnToQuestions}
+    />
+  );
 }
-function ExamScreen() {
+
+/**
+ * Exam Screen
+ */
+type ExamScreenProps = {
+  onExamEnd: (
+    questionData: CustomQuestionData[],
+    isTimeExpired: boolean
+  ) => void;
+};
+function ExamScreen({ onExamEnd }: ExamScreenProps) {
   const theme = useAppTheme();
   const styles = createStyles({ theme });
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
@@ -161,6 +198,13 @@ function ExamScreen() {
     console.log("Current Question", currentQuestion);
   }, [currentQuestion]);
 
+  const handleSubmit = () => {
+    onExamEnd(questions, false);
+  };
+  const handleTimeExpired = () => {
+    onExamEnd(questions, true);
+  };
+
   useEffect(() => {
     console.log(
       "Questions",
@@ -252,7 +296,7 @@ function ExamScreen() {
               borderColor: theme.colors.primary,
               borderWidth: 1,
             }}
-            // onPress={() => setOpenBottomDrawer(true)}
+            onPress={handleSubmit}
             // color="primary"
           />
         </View>
@@ -292,28 +336,122 @@ function ExamScreen() {
     </View>
   );
 }
-function ExamConfirmationScreen() {
+/**
+ * End Exam Screen
+ */
+
+/**
+ * Exam confirmation Screen
+ */
+type ExamConfirmationScreenProps = {
+  submittedData: CustomQuestionData[];
+  isTimeExpired?: boolean;
+  onReturnToQuestions?: () => void;
+};
+type ExamConfirmationScreenStateTypes = "confirmation" | "loading" | "feedback";
+function ExamConfirmationScreen({
+  isTimeExpired = false,
+  submittedData,
+  onReturnToQuestions,
+}: ExamConfirmationScreenProps) {
   const theme = useAppTheme();
-  return (
-    <View className="flex-1 bg-white justify-center p-12">
-      <View className="mx-auto flex flex-row gap-2">
-        <View className="flex-1">
-          <PrimaryButton
-            text="Cancel"
-            style={{
-              borderColor: theme.colors.primary,
-              borderWidth: 1,
-            }}
-          />
+  const { navigate } = useAppNavigation();
+  const [screenState, setScreenState] =
+    useState<ExamConfirmationScreenStateTypes>("confirmation");
+
+  useEffect(() => {
+    if (isTimeExpired) {
+      setScreenState("loading");
+      handleSubmission(submittedData);
+    }
+  }, [isTimeExpired]);
+
+  const handleSubmission = (submittedData: CustomQuestionData[]) => {
+    console.log("Submission data", submittedData);
+    if (screenState !== "loading") {
+      setScreenState("loading")
+    }
+    setTimeout(() => {
+      setScreenState("feedback");
+    }, 2000);
+  };
+
+  if (screenState === "confirmation") {
+    return (
+      <View className="flex-1 gap-4 bg-white justify-center p-12">
+        <View>
+          <CustomText className="text-lg text-center" variant="600">
+            Are you sure you want to submit your exam?
+          </CustomText>
+          <CustomText className="text-center">
+            Submission of your exam is irreversable. If you want to submit your
+            exam click confirm. Or click cancel and go back to edit
+          </CustomText>
         </View>
-        <View className="flex-1">
-          <PrimaryButton text="Confirm" color="primary" />
+        <View className="mx-auto flex flex-row gap-2">
+          <View className="flex-1">
+            <PrimaryButton
+              text="Cancel"
+              style={{
+                borderColor: theme.colors.primary,
+                borderWidth: 1,
+              }}
+              onPress={onReturnToQuestions}
+            />
+          </View>
+          <View className="flex-1">
+            <PrimaryButton
+              text="Confirm"
+              color="primary"
+              onPress={() => handleSubmission(submittedData)}
+            />
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  } else if (screenState === "loading") {
+    return (
+      <View className="flex-1 gap-4 bg-white justify-center p-12">
+        <View className="w-full justify-center items-center">
+          <Image
+            source={require("../../assets/loading.gif")}
+            className="w-12 h-12 mr-5"
+          />
+        </View>
+        <View className="justify-ceter items-center">
+          <CustomText>Submitting Your Exam</CustomText>
+        </View>
+      </View>
+    );
+  } else {
+    return (
+      <View className="flex-1 gap-4 bg-white justify-center p-12">
+        <View className="justify-center items-center">
+          <Image
+            source={require("../../assets/exam-feedback.png")}
+            className="h-[250px] w-[250px] object-contain"
+          />
+        </View>
+        <View className="w-full mx-auto flex justify-center items-center gap-5 ">
+          <CustomText>Your Exam Submitted successfully</CustomText>
+          <PrimaryButton
+            text="Back To Home"
+            icon={<HomeIcon color={theme.colors.textLight} />}
+            color="primary"
+            onPress={() => navigate('HomeTabs')}
+          />
+        </View>
+      </View>
+    );
+  }
 }
+/**
+ * End exam confirmation screen
+ */
 
+/**
+ * MCQ Option View Component
+ */
 type MCQOptionsType = "single" | "multiple";
 type MCQOptionsViewProps = {
   onChange?: (
@@ -442,7 +580,13 @@ function MCQOptionsView({
     </View>
   );
 }
+/**
+ * End MCQ Option View COmponent
+ */
 
+/**
+ * Written Response component
+ */
 type WrittenQuestionResponse = {
   textAnswer?: string;
   attachments?: DocumentPicker.DocumentPickerAsset[];
@@ -563,6 +707,9 @@ function WrittenQuestionResponseField({
     </View>
   );
 }
+/**
+ * End Written response component
+ */
 
 const createStyles = ({ theme }: { theme: Config.Theme }) => {
   return StyleSheet.create({});
