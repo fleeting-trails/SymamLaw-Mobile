@@ -8,9 +8,12 @@ import CourseCard from "../../components/CoursesCard/CourseCard";
 import { FlatList } from "react-native";
 import ExamCard from "../../components/ExamCard/ExamCard";
 import useAppNavigation from "../../hooks/useAppNavigation";
+import useAppTheme from "../../hooks/useAppTheme";
+import PrimaryButton from "../../atoms/Button/PrimaryButton";
 
 export default function Home() {
   const { navigate } = useAppNavigation();
+  const theme = useAppTheme();
   const courseData: Array<PropTypes.CourseCardData> = [
     {
       id: "1",
@@ -49,41 +52,41 @@ export default function Home() {
       },
     },
   ];
-  const examData : Array<PropTypes.ExamCardData> = [
+  const examData: Array<PropTypes.ExamCardData> = [
     {
       id: "1",
       name: "Daily Exam",
       duration: 50,
-      totalQuestions: 40
+      totalQuestions: 40,
     },
     {
       id: "2",
       name: "Labor Law Exam",
       duration: 50,
-      totalQuestions: 40
+      totalQuestions: 40,
     },
     {
       id: "3",
       name: "Constituion Law Exam",
       duration: 50,
-      totalQuestions: 40
+      totalQuestions: 40,
     },
     {
       id: "4",
       name: "Bar-At-Law Preperation",
       duration: 50,
-      totalQuestions: 40
+      totalQuestions: 40,
     },
     {
       id: "5",
       name: "Special Exams",
       duration: 50,
-      totalQuestions: 40
-    }
-  ]
+      totalQuestions: 40,
+    },
+  ];
   const handleExamCardPress = (id: string) => {
-    navigate("ExamStart", { id })
-  }
+    navigate("ExamStart", { id });
+  };
   return (
     <ScreenContainer>
       <Section title="Upcoming Live Class">
@@ -102,10 +105,25 @@ export default function Home() {
           showsHorizontalScrollIndicator={false}
         />
       </Section>
-        
+
+      <View
+        style={{ backgroundColor: theme.colors.backgroundPrimary }}
+        className="p-6 justify-center items-center gap-3 m-1"
+      >
+        <CustomText variant="500" className="text-center" lightText>
+          Want to find exams in more categorized fashion? Visit all exams
+          category page
+        </CustomText>
+        <PrimaryButton 
+          text="Exam Categories Page"
+          onPress={() => navigate('ExamCategories')}
+          color="light"
+        />
+      </View>
+
       <Section title="Recommended Exams For You">
         <View style={{ gap: 8 }}>
-          {examData.map(exam => (
+          {examData.map((exam) => (
             <ExamCard onPress={handleExamCardPress} key={exam.id} data={exam} />
           ))}
         </View>

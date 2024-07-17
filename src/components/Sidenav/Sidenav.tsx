@@ -7,11 +7,13 @@ import { View as MotiView, AnimatePresence } from "moti";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { toggleDarkTheme } from "../../redux/slices/config";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
   const theme = useTheme<Config.Theme>();
   const dispatch = useAppDispatch();
   const darkMode = useAppSelector((state) => state.config.darkMode);
+  const { navigate } = useAppNavigation();
 
   const { height, width } = Dimensions.get("window");
   const styles = createStyles({ theme, screenHeight: height, screenWidth: width });
@@ -19,7 +21,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
     {
       label: "Home",
       icon: <HomeIcon color={theme.colors.text} />,
-      url: "",
+      url: "HomeTabs",
     },
     {
       label: "My Courses",
@@ -27,9 +29,9 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
       url: "",
     },
     {
-      label: "Completed Exams",
+      label: "Exam Categories",
       icon: <CompletedExamsIcon color={theme.colors.text} />,
-      url: "",
+      url: "ExamCategories",
     },
     {
       label: "Settings",
@@ -52,6 +54,10 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
     // console.log("Change pressing");
     dispatch(toggleDarkTheme());
   };
+  const handleNavigate = (screen: string) => {
+    setOpen(false);
+    navigate(screen)
+  }
   return (
     <View style={styles.container}>
       {open && <View style={styles.overlay} onTouchEnd={() => setOpen(false)}></View>}
@@ -82,7 +88,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             </View>
             <View style={styles.menuItemsContainer}>
               {NavItems.map((item, i) => (
-                <TouchableHighlight key={i} onPress={() => console.log("Pressed on", i)} activeOpacity={0.1} underlayColor={theme.colors.primaryGray}>
+                <TouchableHighlight key={i} onPress={() => handleNavigate(item.url)} activeOpacity={0.1} underlayColor={theme.colors.primaryGray}>
                   <View style={styles.menuItem}>
                     {item.icon}
                     <CustomText>{item.label}</CustomText>

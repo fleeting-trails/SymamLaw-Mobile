@@ -1,4 +1,48 @@
 namespace Store {
+    type Exam = {
+        examsByCategory: {
+            data: ExamDataShort[],
+            pagination: API.Pagination
+        },
+        examCategories: {
+            data: ExamCategoryData[],
+            pagination: API.Pagination
+        },
+        loading: {
+            fetchExamCategories: boolean,
+            fetchExamsByCategory: boolean
+        },
+        error: any
+    }
+    type ExamDataShort = {
+        id: number
+        title: string
+        slug: string
+        description: string
+        exam_type: string
+        exam_format: string
+        exam_category_id: string
+        subject_id: string
+        course_id: any
+        start_datetime: string
+        end_datetime: string
+        excerpt: string
+        image: any
+        duration: string
+        price: string
+        discount: string
+        is_free: string
+        status: string
+        total_marks: string
+        pass_marks: string
+        total_questions: string
+        created_at: string
+        updated_at: string
+        attempted_exam_count: number
+        user_attempt_count: number
+        total_passed_count: number
+        user_passed_count: number
+    }
     type ExamData = {
         id: number;
         title: string;
@@ -32,6 +76,14 @@ namespace Store {
         updated_at: string;
         questions: ExamQuestion[];
     };
+    type ExamCategoryData = {
+        id: number
+        title: string
+        slug: string
+        status: string
+        created_at: string
+        updated_at: string
+    }
     type ExamQuestion = {
         id: number;
         exam_id: number;

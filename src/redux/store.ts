@@ -2,13 +2,15 @@ import { configureStore } from '@reduxjs/toolkit'
 import header from './slices/header'
 import config from './slices/config'
 import auth from './slices/auth/auth'
+import examSlice from './slices/exam/examSlice'
 // ...
 
 export const store = configureStore({
   reducer: {
     header: header,
     config: config,
-    auth: auth
+    auth: auth,
+    exam: examSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

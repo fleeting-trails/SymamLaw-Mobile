@@ -68,12 +68,12 @@ export function TopNavigation({
       <>
         <View style={styles.container}>
           <View style={styles.leftActionIconsContainer}>
-            {navigator.canGoBack() && (
+            {/* {navigator.canGoBack() && (
               <IconButton
                 icon={() => <CaretLeftIcon color={theme.colors.textPrimary} />}
                 onPress={() => handleNavigateBack(navigator.goBack())}
               />
-            )}
+            )} */}
             <IconButtonCustom onPress={handleHamburgerClick}>
               <HamburgerIcon color={theme.colors.primary} />
             </IconButtonCustom>
