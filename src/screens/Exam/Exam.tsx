@@ -94,6 +94,7 @@ function ExamScreen({ onExamEnd }: ExamScreenProps) {
       }, 1000);
     } else if (time === 0) {
       clearInterval(interval);
+      handleTimeExpired();
     }
     return () => clearInterval(interval);
   }, [isActive, time]);

@@ -8,12 +8,14 @@ import useAppTheme from "../../hooks/useAppTheme";
 import { ExamCategoryIcon } from "../../assets/Icons";
 import { TouchableRipple } from "react-native-paper";
 import useAppNavigation from "../../hooks/useAppNavigation";
+import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 
 function AllExamCategories() {
   const dispatch = useAppDispatch();
   const { navigate } = useAppNavigation();
   const examState = useAppSelector((state) => state.exam);
   const examCategories = examState.examCategories.data;
+  const loading = examState.loading.fetchExamCategories
   const theme = useAppTheme();
   useEffect(() => {
     handleFetchExamCategory();
@@ -30,15 +32,17 @@ function AllExamCategories() {
     navigate("ExamsByCategories", { category })
   }
   return (
-    <View style={{ backgroundColor: theme.colors.background }} className="p-3">
-      <FlatList
-          data={examCategories}
-          renderItem={({ item }) => <CategoryCard category={item} onPress={handlePress} />}
-          numColumns={2}
+    <ScreenLoading isLoading={loading}>
+      <View style={{ backgroundColor: theme.colors.background }} className="p-3">
+        <FlatList
+            data={examCategories}
+            renderItem={({ item }) => <CategoryCard category={item} onPress={handlePress} />}
+            numColumns={2}
 
-          columnWrapperStyle={styles.row}
-        />
-    </View>
+            columnWrapperStyle={styles.row}
+          />
+      </View>
+    </ScreenLoading>
   );
 }
 
