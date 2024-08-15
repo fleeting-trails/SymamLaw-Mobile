@@ -11,7 +11,7 @@ export default function ExamCard({ data, onPress } : PropTypes.ExamCard) {
   const styles = createStyles({ theme });
   const handlePress = () => {
     if (onPress) {
-      onPress(data.id)
+      onPress(data.id, data.slug)
     }
   }
   return (

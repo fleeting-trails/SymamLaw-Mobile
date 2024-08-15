@@ -20,6 +20,13 @@ import { RadioButton } from "react-native-paper";
 import { IconButtonCustom, InputUnderlined } from "../../atoms";
 import * as DocumentPicker from "expo-document-picker";
 import useAppNavigation from "../../hooks/useAppNavigation";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import ScreenLoading from "../../atoms/Loader/ScreenLoading";
+import {
+  submitAttachmentUpload,
+  submitExam,
+} from "../../redux/slices/exam/examSlice";
+import FormData from "form-data";
 
 type CustomQuestionData = Store.ExamQuestion & {
   option_id?: Array<string>;
@@ -28,6 +35,9 @@ type CustomQuestionData = Store.ExamQuestion & {
 };
 type ScreenType = "exam" | "confirmation";
 export default function Exam() {
+  const examState = useAppSelector((state) => state.exam);
+  const currentExam = examState.currentExam;
+  const loading = examState.loading.fetchExamDetails;
   const [currentScreen, setCurrentScreen] = useState<ScreenType>("exam");
   const [timeExpired, setTimeExpired] = useState(false);
   const [submittedData, setSubmittedData] = useState<
@@ -48,13 +58,20 @@ export default function Exam() {
   };
 
   return currentScreen === "exam" ? (
-    <ExamScreen onExamEnd={handleExamEnd} />
+    <ScreenLoading isLoading={loading}>
+      {currentExam && (
+        <ExamScreen onExamEnd={handleExamEnd} examData={currentExam} />
+      )}
+    </ScreenLoading>
   ) : (
-    <ExamConfirmationScreen
-      submittedData={submittedData as CustomQuestionData[]}
-      isTimeExpired={timeExpired}
-      onReturnToQuestions={handleReturnToQuestions}
-    />
+    currentExam && (
+      <ExamConfirmationScreen
+        examData={currentExam}
+        submittedData={submittedData as CustomQuestionData[]}
+        isTimeExpired={timeExpired}
+        onReturnToQuestions={handleReturnToQuestions}
+      />
+    )
   );
 }
 
@@ -66,24 +83,33 @@ type ExamScreenProps = {
     questionData: CustomQuestionData[],
     isTimeExpired: boolean
   ) => void;
+  examData: Store.ExamData;
 };
-function ExamScreen({ onExamEnd }: ExamScreenProps) {
+function ExamScreen({ onExamEnd, examData }: ExamScreenProps) {
   const theme = useAppTheme();
   const styles = createStyles({ theme });
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
+  // const [questions, setQuestions] = useState<CustomQuestionData[]>(
+  //   dummyQuestionsData as Store.ExamQuestion[]
+  // );
   const [questions, setQuestions] = useState<CustomQuestionData[]>(
-    dummyQuestionsData as Store.ExamQuestion[]
+    examData.question
   );
-  const initialTime = 10000;
+  // Time in second
+  const initialTime = examData.duration
+    ? parseInt(examData.duration) * 60
+    : 10000;
   const [time, setTime] = useState(initialTime);
   const [isActive, setIsActive] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<CustomQuestionData>(
-    dummyQuestionsData[0] as Store.ExamQuestion
+    examData.question[0]
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   useEffect(() => {
-    startTimer();
+    if (examData.duration) {
+      startTimer();
+    }
   }, []);
 
   useEffect(() => {
@@ -195,9 +221,6 @@ function ExamScreen({ onExamEnd }: ExamScreenProps) {
   useEffect(() => {
     setCurrentQuestion(questions[currentQuestionIndex]);
   }, [currentQuestionIndex]);
-  useEffect(() => {
-    console.log("Current Question", currentQuestion);
-  }, [currentQuestion]);
 
   const handleSubmit = () => {
     onExamEnd(questions, false);
@@ -206,26 +229,30 @@ function ExamScreen({ onExamEnd }: ExamScreenProps) {
     onExamEnd(questions, true);
   };
 
-  useEffect(() => {
-    console.log(
-      "Questions",
-      questions.map((q) => ({
-        option_id: q.option_id,
-        written_answer: q.written_answer,
-        written_file: q.written_file,
-      }))
-    );
-  }, [questions]);
+  // useEffect(() => {
+  //   console.log(
+  //     "Questions",
+  //     questions.map((q) => ({
+  //       option_id: q.option_id,
+  //       written_answer: q.written_answer,
+  //       written_file: q.written_file,
+  //     }))
+  //   );
+  // }, [questions]);
 
   return (
     <View
       className="p-3 flex-1"
       style={{ backgroundColor: theme.colors.background }}
     >
-      <View className="flex flex-row">
-        <CustomText variant="500">Time Left</CustomText>
-        <CustomText className="ml-auto">{formatSecondToHour(time)}</CustomText>
-      </View>
+      {examData.duration && (
+        <View className="flex flex-row">
+          <CustomText variant="500">Time Left</CustomText>
+          <CustomText className="ml-auto">
+            {formatSecondToHour(time)}
+          </CustomText>
+        </View>
+      )}
       <View className="flex-1 p-3 mt-3 border-t-slate-300 border-t-[1px]">
         <View className="flex flex-row items-center justify-between mb-6">
           <View>
@@ -255,25 +282,35 @@ function ExamScreen({ onExamEnd }: ExamScreenProps) {
           </CustomText>
           <CustomText>{currentQuestion.description}</CustomText>
           <View className="mt-5">
-            {currentQuestion.question_type === "mcq" ? (
+            {questions[currentQuestionIndex].question_type === "mcq" ? (
               <MCQOptionsView
                 onChange={(data) =>
-                  handleMCQAnswerChange(currentQuestion.id, data)
+                  handleMCQAnswerChange(
+                    questions[currentQuestionIndex].id,
+                    data
+                  )
                 }
-                options={currentQuestion.option}
+                options={questions[currentQuestionIndex].option}
                 type={
-                  currentQuestion.multiple_answer === 1 ? "multiple" : "single"
+                  questions[currentQuestionIndex].multiple_answer === "1"
+                    ? "multiple"
+                    : "single"
                 }
-                defaultValue={currentQuestion.option_id ?? null}
+                defaultValue={questions[currentQuestionIndex].option_id ?? null}
               />
             ) : (
               <WrittenQuestionResponseField
-                defaultValue={{
-                  textAnswer: currentQuestion.written_answer,
-                  attachments: currentQuestion.written_file,
+                answer={{
+                  textAnswer: questions[currentQuestionIndex].written_answer,
+                  attachments: questions[currentQuestionIndex].written_file,
                 }}
-                onChange={(data) =>
-                  handleWrittenAnswer(currentQuestion.id, data)
+                isShort={
+                  questions[currentQuestionIndex].is_short === "1"
+                    ? true
+                    : false
+                }
+                setAnswer={(data) =>
+                  handleWrittenAnswer(questions[currentQuestionIndex].id, data)
                 }
               />
             )}
@@ -345,6 +382,7 @@ function ExamScreen({ onExamEnd }: ExamScreenProps) {
  * Exam confirmation Screen
  */
 type ExamConfirmationScreenProps = {
+  examData: Store.ExamData;
   submittedData: CustomQuestionData[];
   isTimeExpired?: boolean;
   onReturnToQuestions?: () => void;
@@ -354,11 +392,14 @@ function ExamConfirmationScreen({
   isTimeExpired = false,
   submittedData,
   onReturnToQuestions,
+  examData,
 }: ExamConfirmationScreenProps) {
   const theme = useAppTheme();
+  const user = useAppSelector((state) => state.auth.user);
   const { navigate } = useAppNavigation();
   const [screenState, setScreenState] =
     useState<ExamConfirmationScreenStateTypes>("confirmation");
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isTimeExpired) {
@@ -367,14 +408,80 @@ function ExamConfirmationScreen({
     }
   }, [isTimeExpired]);
 
-  const handleSubmission = (submittedData: CustomQuestionData[]) => {
-    console.log("Submission data", submittedData);
+  const handleSubmission = async (submittedData: CustomQuestionData[]) => {
     if (screenState !== "loading") {
-      setScreenState("loading")
+      setScreenState("loading");
     }
-    setTimeout(() => {
-      setScreenState("feedback");
-    }, 2000);
+    if (!user) {
+      navigate("Login");
+    }
+    var uploadedAttachments: Store.ExamAttachUploadResponse[] = [];
+    const attachmentsForm = new FormData();
+    var noAttachments = true;
+
+    console.log("Submitted data", submittedData);
+    submittedData.forEach((data) => {
+      if (
+        data.question_type === "written" &&
+        data.is_short !== "1" &&
+        data.written_file
+      ) {
+        noAttachments = false;
+        attachmentsForm.append("question_ids[]", `${data.id}`);
+        data.written_file.forEach((asset) => {
+          attachmentsForm.append(`file${data.id}[]`, {
+            uri: asset.uri,
+            type: asset.mimeType,
+            name: asset.name,
+          });
+        });
+      }
+    });
+    console.log("Attachment log", noAttachments);
+    // Display the key/value pairs
+    console.log(attachmentsForm)
+    if (!noAttachments) {
+      try {
+        uploadedAttachments = (await dispatch(
+          submitAttachmentUpload(attachmentsForm)
+        ).unwrap());
+        console.log("Upload attachment response", uploadedAttachments);
+      } catch (error) {
+        console.log("Attachment upload error", error);
+      }
+    }
+    console.log("Uploaded attachments", uploadedAttachments);
+
+
+    const body = {
+      user_id: (user as Store.UserData).id,
+      exam_id: examData.id,
+      submission_type: "submit",
+      answers: submittedData.map((q) => {
+        if (q.question_type === "written") {
+          return {
+            question_id: q.id,
+            written_answer: q.written_answer ?? "",
+            written_file: uploadedAttachments.find(
+              (item) => `${item.question_id}` === `${q.id}`
+            )?.files,
+          };
+        } else {
+          return {
+            question_id: q.id,
+            option_id: q.option_id ? q.option_id.map((op) => parseInt(op)) : [],
+          };
+        }
+      }),
+    };
+    console.log("Submit body", body);
+    try {
+      const res = await dispatch(submitExam(body)).unwrap();
+      console.log("Submission resposne", res);
+    } catch (error) {
+      console.log("Failed to submit exam", error);
+    }
+    setScreenState("feedback");
   };
 
   if (screenState === "confirmation") {
@@ -439,7 +546,7 @@ function ExamConfirmationScreen({
             text="Back To Home"
             icon={<HomeIcon color={theme.colors.textLight} />}
             color="primary"
-            onPress={() => navigate('HomeTabs')}
+            onPress={() => navigate("HomeTabs")}
           />
         </View>
       </View>
@@ -522,7 +629,7 @@ function MCQOptionsView({
         }))
       );
     }
-  }, []);
+  }, [options]);
   const handleRadioChange = (value: string) => {
     setSelectedSingleAnswer(value);
     if (onChange) onChange({ type: "single", value });
@@ -593,24 +700,33 @@ type WrittenQuestionResponse = {
   attachments?: DocumentPicker.DocumentPickerAsset[];
 };
 type WrittenQuestionResponseFieldProp = {
-  onChange: (data: WrittenQuestionResponse) => void;
-  defaultValue?: WrittenQuestionResponse;
+  setAnswer: (data: WrittenQuestionResponse) => void;
+  answer?: WrittenQuestionResponse;
+  isShort: boolean;
 };
 function WrittenQuestionResponseField({
-  onChange,
-  defaultValue,
+  setAnswer,
+  answer,
+  isShort,
 }: WrittenQuestionResponseFieldProp) {
   const theme = useAppTheme();
-  const [assetList, setAssetList] = useState<
-    DocumentPicker.DocumentPickerAsset[]
-  >([]);
-  const [answer, setAnswer] = useState<{
-    textAnswer?: string;
-    attachments?: DocumentPicker.DocumentPickerAsset[];
-  }>({
-    textAnswer: "",
-    attachments: [],
-  });
+  // const [assetList, setAssetList] = useState<
+  //   DocumentPicker.DocumentPickerAsset[]
+  // >([]);
+
+  // const [answer, setAnswer] = useState<{
+  //   textAnswer?: string;
+  //   attachments?: DocumentPicker.DocumentPickerAsset[];
+  // }>({
+  //   textAnswer: "",
+  //   attachments: [],
+  // });
+
+  // useEffect(() => {
+  //   if (defaultValue) {
+  //     setAnswer(defaultValue)
+  //   }
+  // }, [])
 
   const handleDocumentSelection = async () => {
     try {
@@ -620,73 +736,80 @@ function WrittenQuestionResponseField({
         });
       if (!response.canceled) {
         const _assets = [
-          ...assetList,
+          ...(answer?.attachments ?? []),
           ...response.assets.map((asset) => asset),
         ];
-        setAssetList(_assets);
-        setAnswer({
+        // setAssetList(_assets);
+        const _answer = {
           ...answer,
           attachments: _assets,
-        });
+        };
+        setAnswer(_answer);
+        // if (onChange) onChange(_answer);
       }
     } catch (err) {
       console.warn(err);
     }
   };
   const deleteAttachment = (index: number) => {
-    const _assets = assetList.filter((asset, i) => index !== i);
-    setAssetList(_assets);
-    setAnswer({
-      ...answer,
-      attachments: _assets,
-    });
+    if (answer && answer.attachments) {
+      const _assets = answer.attachments.filter((asset, i) => index !== i);
+      // setAssetList(_assets);
+      const _answer = {
+        ...answer,
+        attachments: _assets,
+      };
+      setAnswer(_answer);
+      // if (onChange) onChange(_answer);
+    }
   };
 
   const handleTextAnswerChange = (value: string) => {
-    setAnswer({
+    const _answer = {
       ...answer,
       textAnswer: value,
-    });
+    };
+    setAnswer(_answer);
+    // if (onChange) onChange(_answer);
   };
 
-  useEffect(() => {
-    if (onChange) onChange(answer);
-  }, [answer]);
-
-  useEffect(() => {
-    console.log("Default value", defaultValue);
-    if (defaultValue) {
-      setAnswer({
-        textAnswer: defaultValue.textAnswer,
-        attachments: defaultValue.attachments,
-      });
-      if (defaultValue.attachments) {
-        setAssetList(defaultValue.attachments);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   console.log("Default value", defaultValue);
+  //   if (defaultValue) {
+  //     setAnswer({
+  //       textAnswer: defaultValue.textAnswer,
+  //       attachments: defaultValue.attachments,
+  //     });
+  //     if (defaultValue.attachments) {
+  //       setAssetList(defaultValue.attachments);
+  //     }
+  //   }
+  // }, []);
 
   return (
     <View>
       <TextInput
         multiline={true}
         numberOfLines={5}
-        value={answer.textAnswer}
+        value={answer?.textAnswer ?? ""}
         placeholder="Answer your question here or add as an attachment."
         onChangeText={handleTextAnswerChange}
       />
-      <View className="mt-3">
-        <PrimaryButton
-          onPress={handleDocumentSelection}
-          icon={<AttachmentIcon />}
-          text="Add Attachment"
-          color="primary"
-        />
-      </View>
-      {assetList.length !== 0 && (
+
+      {!isShort && (
+        <View className="mt-3">
+          <PrimaryButton
+            onPress={handleDocumentSelection}
+            icon={<AttachmentIcon />}
+            text="Add Attachment"
+            color="primary"
+          />
+        </View>
+      )}
+      {answer?.attachments && answer?.attachments?.length !== 0 && (
         <View className="mt-3">
           <CustomText>Uploaded Files</CustomText>
-          {assetList.map((file, i) => (
+          {answer.attachments.map((file, i) => (
             <View
               key={file.uri}
               className="flex flex-row justify-between gap-2 items-center p-3 pr-0 border-b-[1px]"

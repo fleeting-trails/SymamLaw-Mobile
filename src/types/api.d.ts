@@ -33,4 +33,5 @@ namespace API {
         totalPages: number,
         pageSize: number
     }
+    type WaythinBoolean = "1" | "0"
 }

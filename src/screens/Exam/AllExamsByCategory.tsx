@@ -37,12 +37,9 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
     console.log("Selected cateogry", slug);
   };
 
-  const handleExamCardPress = (id: string) => {
-    navigate("ExamStart", { id });
+  const handleExamCardPress = (id: string, slug: string) => {
+    navigate("ExamStart", { slug });
   };
-  useEffect(() => {
-    console.log("Exams by cateogry", examsByCategories);
-  }, [examsByCategories]);
   return (
     <ScreenLoading isLoading={loading}>
       <View
@@ -59,6 +56,7 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
             <ExamCard
               data={{
                 id: `${item.id}`,
+                slug: item.slug,
                 name: item.title,
                 duration: parseInt(item.duration),
                 totalQuestions: parseInt(item.total_questions),

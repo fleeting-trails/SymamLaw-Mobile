@@ -48,9 +48,9 @@ export default function Account() {
         name: user.name,
         phone: user.phone,
         address: user.address,
-        institute: user.student_details.institute,
-        department: user.student_details.department,
-        is_graduated: user.student_details.is_graduated === '1' ? true : false
+        institute: user.student_details?.institute,
+        department: user.student_details?.department,
+        is_graduated: user.student_details?.is_graduated === '1' ? true : false
       })
     }
   }, [user])

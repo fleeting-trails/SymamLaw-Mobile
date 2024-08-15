@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { axiosExternal } from '../../../axios/axios'
+import { axiosExternal, axiosFileUpload } from '../../../axios/axios'
 import { tailorPaginationResponse } from '../../../utils/apiHelper'
+import FormDataProps from 'form-data'
 
 
 // Define the initial state using that type
-const initialState : Store.Exam = {
+const initialState: Store.Exam = {
     examsByCategory: {
         data: [],
         pagination: {
@@ -23,9 +24,12 @@ const initialState : Store.Exam = {
             pageSize: 100
         }
     },
+    currentExam: null,
     loading: {
         fetchExamCategories: false,
-        fetchExamsByCategory: false
+        fetchExamsByCategory: false,
+        fetchExamDetails: false,
+        submitExam: false
     },
     error: null
 }
@@ -55,6 +59,44 @@ export const fetchExamCategories = createAsyncThunk(
         }
     },
 )
+export const fetchExamDetails = createAsyncThunk(
+    'fetchExamDetails',
+    async (slug: string, thunkAPI) => {
+        try {
+            const res = await axiosExternal(`/user/exam/single/${slug}`)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+export const submitExam = createAsyncThunk(
+    'submitExam',
+    async (body: any, thunkAPI) => {
+        try {
+            const res = await axiosExternal.post(`/user/exam/question/submit`, body)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+export const submitAttachmentUpload = createAsyncThunk(
+    'submitAttachmentUpload',
+    async (body : FormDataProps, thunkAPI) => {
+        try {
+            const res = await axiosFileUpload.post(`/user/exam/question/upload-attachment`, body)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return res.data.data as Store.ExamAttachUploadResponse[]
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 
 
 export const examSliceSlice = createSlice({
@@ -96,6 +138,33 @@ export const examSliceSlice = createSlice({
         })
         builder.addCase(fetchExamsByCategory.rejected, (state, action) => {
             state.loading.fetchExamsByCategory = false;
+            state.error = action.error;
+        })
+
+        // Fetch exam details
+        builder.addCase(fetchExamDetails.pending, (state) => {
+            state.loading.fetchExamDetails = true;
+        })
+        builder.addCase(fetchExamDetails.fulfilled, (state, action) => {
+            state.loading.fetchExamDetails = false;
+            if (action.payload) {
+                state.currentExam = action.payload.data.data;
+            }
+        })
+        builder.addCase(fetchExamDetails.rejected, (state, action) => {
+            state.loading.fetchExamDetails = false;
+            state.error = action.error;
+        })
+
+        // Submmit exam
+        builder.addCase(submitExam.pending, (state) => {
+            state.loading.submitExam = true;
+        })
+        builder.addCase(submitExam.fulfilled, (state) => {
+            state.loading.submitExam = false;
+        })
+        builder.addCase(submitExam.rejected, (state, action) => {
+            state.loading.submitExam = false;
             state.error = action.error;
         })
     },
