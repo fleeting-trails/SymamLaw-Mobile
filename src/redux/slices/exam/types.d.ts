@@ -86,7 +86,7 @@ namespace Store {
         created_at: string
         updated_at: string
     }
-    type ExamQuestion =  {
+    type ExamQuestion = {
         id: number
         exam_id: string
         question_text: string
@@ -102,7 +102,7 @@ namespace Store {
         created_at: string
         updated_at: string
         option: Option[]
-      };
+    };
     type ExamQuestionOption = {
         id: number;
         question_id: number;
@@ -115,6 +115,46 @@ namespace Store {
     type ExamAttachUploadResponse = {
         question_id: number,
         files: Array<string>
+    }
+    type AttemptedExam = {
+        id: number
+        title: string
+        slug: string
+        description: string
+        exam_type: string
+        exam_format: string
+        exam_category_id: number
+        subject_id: number
+        course_id: number
+        start_datetime: string
+        end_datetime: string
+        excerpt: string
+        image: any
+        duration: number
+        price: number
+        discount: number
+        is_free: boolean
+        status: number
+        total_marks: number
+        pass_marks: number
+        total_questions: number
+        created_at: string
+        updated_at: string
+        attempted_exam_count: number
+        user_attempt_count: number
+        total_passed_count: number
+        user_passed_count: number
+        results: Result[]
+    }
+    type AttemptedExamResult = {
+        id: number
+        exam_id: number
+        user_id: number
+        submission_id: number
+        rank: any
+        total_score: number
+        created_at: string
+        updated_at: string
     }
     type ExamFormat = "mcq" | "written";
     type ExamQuestionType = ExamFormat;
