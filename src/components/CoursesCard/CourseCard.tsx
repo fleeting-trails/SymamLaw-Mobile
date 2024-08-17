@@ -15,8 +15,9 @@ export default function CourseCard({ data } : PropTypes.CourseCard) {
         source={data.thumbnail}
         style={styles.thumbnail}
       />
+      
       <View style={styles.saveButtonContainer}>
-        <PrimaryButton text="Save" />
+        <PrimaryButton text="Save" color="white" size="small" />
       </View>
 
       {/* Author Block */}

@@ -24,12 +24,16 @@ const initialState: Store.Exam = {
             pageSize: 100
         }
     },
+    attemptedExams: [],
     currentExam: null,
+    currentExamResult: null,
     loading: {
         fetchExamCategories: false,
         fetchExamsByCategory: false,
         fetchExamDetails: false,
-        submitExam: false
+        submitExam: false,
+        listAttemptedExams: false,
+        getExamResult: false
     },
     error: null
 }
@@ -85,7 +89,7 @@ export const submitExam = createAsyncThunk(
 )
 export const submitAttachmentUpload = createAsyncThunk(
     'submitAttachmentUpload',
-    async (body : FormDataProps, thunkAPI) => {
+    async (body: FormDataProps, thunkAPI) => {
         try {
             const res = await axiosFileUpload.post(`/user/exam/question/upload-attachment`, body)
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
@@ -95,6 +99,31 @@ export const submitAttachmentUpload = createAsyncThunk(
         }
     },
 )
+export const listAttemptedExams = createAsyncThunk(
+    'listParticipatedExams',
+    async (_, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get('/user/result/attempted-list')
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    }
+)
+export const getExamResult = createAsyncThunk(
+    'getExamResult',
+    async (id: number, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get(`/user/result/${id}`)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 
 
 
@@ -156,7 +185,7 @@ export const examSliceSlice = createSlice({
             state.error = action.error;
         })
 
-        // Submmit exam
+        // Submit exam
         builder.addCase(submitExam.pending, (state) => {
             state.loading.submitExam = true;
         })
@@ -167,7 +196,38 @@ export const examSliceSlice = createSlice({
             state.loading.submitExam = false;
             state.error = action.error;
         })
+
+        // List attempted exams
+        builder.addCase(listAttemptedExams.pending, (state) => {
+            state.loading.listAttemptedExams = true;
+        })
+        builder.addCase(listAttemptedExams.fulfilled, (state, action) => {
+            state.loading.listAttemptedExams = false;
+            if (action.payload) {
+                state.attemptedExams = action.payload.data;
+            }
+        })
+        builder.addCase(listAttemptedExams.rejected, (state, action) => {
+            state.loading.listAttemptedExams = false;
+            state.error = action.error;
+        })
+
+        // Get Current Exam Result
+        builder.addCase(getExamResult.pending, (state) => {
+            state.loading.getExamResult = true;
+        })
+        builder.addCase(getExamResult.fulfilled, (state, action) => {
+            state.loading.getExamResult = false;
+            if (action.payload) {
+                state.currentExamResult = action.payload.data;
+            }
+        })
+        builder.addCase(getExamResult.rejected, (state, action) => {
+            state.loading.getExamResult = false;
+            state.error = action.error;
+        })
     },
+
 })
 
 

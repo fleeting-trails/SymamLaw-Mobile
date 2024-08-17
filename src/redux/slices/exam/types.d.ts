@@ -9,11 +9,15 @@ namespace Store {
             pagination: API.Pagination
         },
         currentExam: null | ExamData,
+        currentExamResult: null | ExamResultData,
+        attemptedExams: Array<AttemptedExamListData>,
         loading: {
             fetchExamCategories: boolean,
             fetchExamsByCategory: boolean,
             fetchExamDetails: boolean,
-            submitExam: boolean
+            submitExam: boolean,
+            listAttemptedExams: boolean,
+            getExamResult: boolean
         },
         error: any
     }
@@ -116,37 +120,53 @@ namespace Store {
         question_id: number,
         files: Array<string>
     }
-    type AttemptedExam = {
+    type AttemptedExamListData = {
         id: number
-        title: string
-        slug: string
-        description: string
-        exam_type: string
-        exam_format: string
-        exam_category_id: number
-        subject_id: number
-        course_id: number
-        start_datetime: string
-        end_datetime: string
-        excerpt: string
-        image: any
-        duration: number
-        price: number
-        discount: number
-        is_free: boolean
-        status: number
-        total_marks: number
-        pass_marks: number
-        total_questions: number
+        exam_id: string
+        user_id: string
+        submission_id: string
+        rank: any
+        total_score: string
+        is_checked: string
+        checked_by: any
         created_at: string
         updated_at: string
-        attempted_exam_count: number
-        user_attempt_count: number
-        total_passed_count: number
-        user_passed_count: number
-        results: Result[]
+        exam: {
+            id: number
+            title: string
+            slug: string
+            description: string
+            exam_type: string
+            exam_format: string
+            exam_category_id: string
+            subject_id: string
+            course_id: any
+            start_datetime: any
+            end_datetime: any
+            excerpt: string
+            image: string
+            duration: string
+            price: any
+            discount: any
+            is_free: string
+            status: string
+            total_marks: string
+            pass_marks: string
+            total_questions: string
+            created_by: string
+            is_negative_enabled: string
+            is_answer_changable: any
+            negative_marks: string
+            created_at: string
+            updated_at: string
+            attempted_exam_count: number
+            user_attempt_count: number
+            total_passed_count: number
+            user_passed_count: number
+            UserTimeTracker: any
+        }
     }
-    type AttemptedExamResult = {
+    type ExamResultData = {
         id: number
         exam_id: number
         user_id: number
@@ -155,6 +175,35 @@ namespace Store {
         total_score: number
         created_at: string
         updated_at: string
+        exam: ExamResultQuestion
+    }
+    type ExamResultQuestion = {
+        id: number
+        exam_id: number
+        question_text: string
+        slug: string
+        question_type: string
+        is_short: number
+        marks: number
+        image: string
+        description: string
+        multiple_answer: number
+        status: number
+        created_at: string
+        updated_at: string
+        assigned_marks: number
+        option: ExamResultOption[]
+    }
+    type ExamResultOption = {
+        id: number
+        question_id: number
+        option_text: string
+        slug: string
+        is_correct: boolean
+        option_index: number
+        created_at: string
+        updated_at: string
+        is_user_submitted: boolean
     }
     type ExamFormat = "mcq" | "written";
     type ExamQuestionType = ExamFormat;

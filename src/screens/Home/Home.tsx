@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useState } from "react";
-import { Switch } from "react-native-paper";
+import { Switch, TouchableRipple } from "react-native-paper";
 import { ScreenContainer, Section } from "../../components";
 import CustomText from "../../atoms/CustomText/CustomText";
 import LiveClassCard from "../../components/LiveClassCard/LiveClassCard";
@@ -92,8 +92,57 @@ export default function Home() {
   const handleExamCardPress = (id: string) => {
     navigate("ExamStart", { id });
   };
+  const browseItems = [
+    {
+      key: "exams",
+      title: "Browse Exams",
+      graphics: "../../assets/exams-graphic.png",
+    },
+    {
+      key: "packages",
+      title: "Browse Packages",
+      graphics: "../../assets/packages-graphic.png",
+    },
+  ];
   return (
     <ScreenContainer>
+      <Section title="Browse">
+        <View className="flex flex-row gap-2 justify-center flex-wrap">
+          <TouchableRipple
+            className="w-[45%] h-[100px] rounded border-[1px]"
+            style={{ borderColor: theme.colors.textPrimary }}
+            onPress={() => navigate("ExamCategories")}
+          >
+            <>
+              <Image
+                className="absolute inset-0 w-full h-full opacity-20"
+                source={require("../../assets/exam-graphic.png")}
+              />
+              <View className="w-full h-full p-4 flex justify-center items-center">
+                <CustomText className="text-xl text-center" variant="600">
+                  Exams
+                </CustomText>
+              </View>
+            </>
+          </TouchableRipple>
+          <TouchableRipple
+            className="w-[45%] h-[100px] rounded border-[1px]"
+            style={{ borderColor: theme.colors.textPrimary }}
+          >
+            <>
+              <Image
+                className="absolute inset-0 w-full h-full opacity-20"
+                source={require("../../assets/packages-graphic.png")}
+              />
+              <View className="w-full h-full p-4 flex justify-center items-center">
+                <CustomText className="text-xl text-center" variant="600">
+                  Packages
+                </CustomText>
+              </View>
+            </>
+          </TouchableRipple>
+        </View>
+      </Section>
       <Section title="Upcoming Live Class">
         <LiveClassCard />
       </Section>
@@ -111,7 +160,7 @@ export default function Home() {
         />
       </Section>
 
-      <View
+      {/* <View
         style={{ backgroundColor: theme.colors.backgroundPrimary }}
         className="p-6 justify-center items-center gap-3 m-1"
       >
@@ -119,12 +168,12 @@ export default function Home() {
           Want to find exams in more categorized fashion? Visit all exams
           category page
         </CustomText>
-        <PrimaryButton 
+        <PrimaryButton
           text="Exam Categories Page"
-          onPress={() => navigate('ExamCategories')}
+          onPress={() => navigate("ExamCategories")}
           color="light"
         />
-      </View>
+      </View> */}
 
       <Section title="Recommended Exams For You">
         <View style={{ gap: 8 }}>
