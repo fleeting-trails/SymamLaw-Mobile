@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, TouchableRipple } from "react-native-paper";
 import { ScreenContainer, Section } from "../../components";
 import CustomText from "../../atoms/CustomText/CustomText";
@@ -10,10 +10,23 @@ import ExamCard from "../../components/ExamCard/ExamCard";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import useAppTheme from "../../hooks/useAppTheme";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
+import { useAppSelector } from "../../redux/hooks";
 
 export default function Home() {
   const { navigate } = useAppNavigation();
   const theme = useAppTheme();
+  const recommendedExam = useAppSelector(state => state.exam.recommendedExams);
+  const [recommendedExamCardData, setRecommendedExamCardData] = useState<PropTypes.ExamCardData[]>([]);
+
+  useEffect(() => {
+    setRecommendedExamCardData(recommendedExam.map(exam => ({
+      id: `${exam.id}`,
+      name: exam.title,
+      slug: exam.slug,
+      duration: parseInt(exam.duration),
+      totalQuestions: parseInt(exam.total_questions),
+    })))
+  }, [recommendedExam])
   const courseData: Array<PropTypes.CourseCardData> = [
     {
       id: "1",
@@ -89,21 +102,9 @@ export default function Home() {
       totalQuestions: 40,
     },
   ];
-  const handleExamCardPress = (id: string) => {
-    navigate("ExamStart", { id });
+  const handleExamCardPress = (id: string, slug: string) => {
+    navigate("ExamStart", { slug });
   };
-  const browseItems = [
-    {
-      key: "exams",
-      title: "Browse Exams",
-      graphics: "../../assets/exams-graphic.png",
-    },
-    {
-      key: "packages",
-      title: "Browse Packages",
-      graphics: "../../assets/packages-graphic.png",
-    },
-  ];
   return (
     <ScreenContainer>
       <Section title="Browse">
@@ -128,6 +129,7 @@ export default function Home() {
           <TouchableRipple
             className="w-[45%] h-[100px] rounded border-[1px]"
             style={{ borderColor: theme.colors.textPrimary }}
+            onPress={() => navigate("PackageList")}
           >
             <>
               <Image
@@ -177,7 +179,7 @@ export default function Home() {
 
       <Section title="Recommended Exams For You">
         <View style={{ gap: 8 }}>
-          {examData.map((exam) => (
+          {recommendedExamCardData.map((exam) => (
             <ExamCard onPress={handleExamCardPress} key={exam.id} data={exam} />
           ))}
         </View>

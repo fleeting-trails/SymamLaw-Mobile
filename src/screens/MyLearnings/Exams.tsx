@@ -8,9 +8,11 @@ import { listAttemptedExams } from "../../redux/slices/exam/examSlice";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 import useAppTheme from "../../hooks/useAppTheme";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 function Exams() {
   const theme = useAppTheme();
+  const { navigate } = useAppNavigation();
   const dispatch = useAppDispatch();
   const examState = useAppSelector((state) => state.exam);
   const loading = examState.loading.listAttemptedExams;
@@ -20,6 +22,9 @@ function Exams() {
     dispatch(listAttemptedExams());
   }, []);
 
+  const handleViewExamResult = (id: number) => {
+    navigate("ExamResult", { id });
+  }
   return (
     <ScreenLoading isLoading={loading}>
       <View className="p-3 flex-1" style={{ backgroundColor: theme.colors.background }}>
@@ -31,7 +36,7 @@ function Exams() {
             <View className="my-1">
               <View className="flex flex-row justify-between items-center p-3 rounded-tl rounded-tr" style={{ backgroundColor: theme.colors.primaryGrayLight }}>
                 <CustomText variant="500">{item.exam.title}</CustomText>
-                <TouchableRipple>
+                <TouchableRipple onPress={() => handleViewExamResult(item.id)}>
                   <View className="px-3 py-1" style={{ backgroundColor: theme.colors.backgroundPrimary }}>
                     <CustomText style={{ color: theme.colors.textLight }}>View Result</CustomText>
                   </View>

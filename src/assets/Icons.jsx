@@ -702,3 +702,49 @@ export const ExamCategoryIcon = ({ color = "#fff", scale = 1, ...props }) => (
     />
   </Svg>
 )
+export const CheckmarkRounded = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color="currentColor"
+    {...props}
+  >
+    <Path
+      stroke="currentColor"
+      strokeWidth={1.5}
+      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12s4.477 10 10 10 10-4.477 10-10Z"
+    />
+    <Path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="m8 12.5 2.5 2.5L16 9"
+    />
+  </Svg>
+)
+export const CrossIconRounded = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color="currentColor"
+    {...props}
+  >
+    <Path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M15 15 9 9m0 6 6-6"
+    />
+    <Path
+      stroke="currentColor"
+      strokeWidth={1.5}
+      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12s4.477 10 10 10 10-4.477 10-10Z"
+    />
+  </Svg>
+)

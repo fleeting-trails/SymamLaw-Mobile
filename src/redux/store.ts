@@ -3,6 +3,7 @@ import header from './slices/header'
 import config from './slices/config'
 import auth from './slices/auth/auth'
 import examSlice from './slices/exam/examSlice'
+import packageSlice from './slices/packages/packageSlice'
 // ...
 
 export const store = configureStore({
@@ -10,7 +11,8 @@ export const store = configureStore({
     header: header,
     config: config,
     auth: auth,
-    exam: examSlice
+    exam: examSlice,
+    package: packageSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

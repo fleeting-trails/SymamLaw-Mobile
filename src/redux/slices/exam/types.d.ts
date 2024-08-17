@@ -11,13 +11,15 @@ namespace Store {
         currentExam: null | ExamData,
         currentExamResult: null | ExamResultData,
         attemptedExams: Array<AttemptedExamListData>,
+        recommendedExams: ExamData[],
         loading: {
             fetchExamCategories: boolean,
             fetchExamsByCategory: boolean,
             fetchExamDetails: boolean,
             submitExam: boolean,
             listAttemptedExams: boolean,
-            getExamResult: boolean
+            getExamResult: boolean,
+            listRecommendedExams: boolean
         },
         error: any
     }
@@ -167,15 +169,101 @@ namespace Store {
         }
     }
     type ExamResultData = {
-        id: number
-        exam_id: number
-        user_id: number
-        submission_id: number
-        rank: any
-        total_score: number
-        created_at: string
+        checked_by: null,
+        created_at: string,
+        exam: ExamDataResultVariant,
+        exam_id: string,
+        id: number,
+        is_checked: API.WaythinBoolean,
+        rank: null,
+        submission: {
+            created_at: string,
+            exam_id: string,
+            id: number,
+            submission_type: "submit",
+            updated_at: string,
+            user_id: string,
+            submitted_answers: Array<{
+                assigned_marks: string,
+                comment: null | string,
+                created_at: string,
+                id: number,
+                option_id: string,
+                question_id: string,
+                submission_id: string,
+                updated_at: string,
+                written_answer: null | string,
+                written_file: null
+            }>
+        },
+        submission_id: string,
+        total_score: string,
+        updated_at: string,
+        user_id: string
+    }
+    type ExamDataResultVariant = {
+        UserTimeTracker: null,
+        attempted_exam_count: number,
+        course_id: null,
+        created_at: string,
+        created_by: string,
+        description: string,
+        discount: string,
+        duration: string,
+        end_datetime: null,
+        exam_category_id: string,
+        exam_format: ExamFormat,
+        exam_type: ExamType,
+        excerpt: string,
+        id: number,
+        image: string,
+        is_answer_changable: null,
+        is_free: API.WaythinBoolean,
+        is_negative_enabled: API.WaythinBoolean,
+        negative_marks: string,
+        pass_marks: string,
+        price: null,
+        slug: string,
+        start_datetime: null | string,
+        status: API.WaythinBoolean,
+        subject_id: string,
+        title: string,
+        total_marks: string,
+        total_passed_count: number,
+        total_questions: string,
+        updated_at: string,
+        user_attempt_count: number,
+        user_passed_count: number
+        question: ExamQuestionResultVariant[]
+    }
+    type ExamQuestionResultVariant = {
+        assigned_marks: string,
+        created_at: string,
+        description: string, 
+        exam_id: string,
+        id: number,
+        image: null | string,
+        image_id: string,
+        is_short: API.WaythinBoolean,
+        marks: string,
+        multiple_answer: API.WaythinBoolean,
+        option: ExamOptionsResultVariant[],
+        question_text: string,
+        question_type: ExamQuestionType,
+        slug: string,
+        status: API.WaythinBoolean,
         updated_at: string
-        exam: ExamResultQuestion
+    }
+    type ExamOptionsResultVariant = {
+        created_at: string,
+        id: number,
+        is_correct: API.WaythinBoolean,
+        is_user_submitted: null | 1,
+        option_index: string,
+        option_text: string,
+        question_id: string,
+        slug: string,
+        updated_at: string
     }
     type ExamResultQuestion = {
         id: number
@@ -192,6 +280,7 @@ namespace Store {
         created_at: string
         updated_at: string
         assigned_marks: number
+        total_marks: string
         option: ExamResultOption[]
     }
     type ExamResultOption = {
@@ -206,6 +295,7 @@ namespace Store {
         is_user_submitted: boolean
     }
     type ExamFormat = "mcq" | "written";
+    type ExamType = "live" | "static"
     type ExamQuestionType = ExamFormat;
     type ExamWrittenAnswerAccept = "attachment" | "richtext";
     type ExamWrittenAnswerAccept = "attachment" | "richtext";

@@ -1,6 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
-    useFonts,
+  useFonts,
+  Rubik_300Light,
+  Rubik_300Light_Italic,
+  Rubik_400Regular,
+  Rubik_400Regular_Italic,
+  Rubik_500Medium,
+  Rubik_500Medium_Italic,
+  Rubik_600SemiBold,
+  Rubik_600SemiBold_Italic,
+  Rubik_700Bold,
+  Rubik_700Bold_Italic,
+  Rubik_800ExtraBold,
+  Rubik_800ExtraBold_Italic,
+  Rubik_900Black,
+  Rubik_900Black_Italic,
+} from "@expo-google-fonts/rubik";
+import { setDarkTheme } from "../redux/slices/config";
+import { Appearance, NativeEventEmitter, NativeModules } from "react-native";
+import { EventRegister } from "react-native-event-listeners";
+import { fetchUserProfile } from "../redux/slices/auth/auth";
+import { useAppDispatch } from "../redux/hooks";
+import { listRecommendedExams } from "../redux/slices/exam/examSlice";
+
+function useInitialize() {
+  // const eventEmitter = new NativeEventEmitter();
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(true);
+  const [loadingBySection, setLoadingBySection] = useState({
+    fonts: true,
+    user: true,
+    recommendedExams: true,
+  });
+  const colorScheme = Appearance.getColorScheme();
+
+  useEffect(() => {
+    if (
+      !loadingBySection.fonts &&
+      !loadingBySection.user &&
+      !loadingBySection.recommendedExams
+    ) {
+      setLoading(false);
+    }
+  }, [loadingBySection]);
+
+  // // Load all fonts
+  let [fontsLoaded, fontError] = useFonts({
     Rubik_300Light,
     Rubik_300Light_Italic,
     Rubik_400Regular,
@@ -15,76 +60,70 @@ import {
     Rubik_800ExtraBold_Italic,
     Rubik_900Black,
     Rubik_900Black_Italic,
-  } from "@expo-google-fonts/rubik";
-import { setDarkTheme } from '../redux/slices/config';
-import { Appearance, NativeEventEmitter, NativeModules } from 'react-native';
-import { EventRegister } from 'react-native-event-listeners'
-import { fetchUserProfile } from '../redux/slices/auth/auth';
-import { useAppDispatch } from '../redux/hooks';
+  });
 
-function useInitialize() {
-    // const eventEmitter = new NativeEventEmitter();
-    const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(true);
-    const colorScheme = Appearance.getColorScheme();
-    
-    // // Load all fonts
-    let [fontsLoaded, fontError] = useFonts({
-        Rubik_300Light,
-        Rubik_300Light_Italic,
-        Rubik_400Regular,
-        Rubik_400Regular_Italic,
-        Rubik_500Medium,
-        Rubik_500Medium_Italic,
-        Rubik_600SemiBold,
-        Rubik_600SemiBold_Italic,
-        Rubik_700Bold,
-        Rubik_700Bold_Italic,
-        Rubik_800ExtraBold,
-        Rubik_800ExtraBold_Italic,
-        Rubik_900Black,
-        Rubik_900Black_Italic,
+  const initializeAuthExpirationListener = () => {
+    return EventRegister.addEventListener("token-expired", (data) => {
+      console.log("Testing Event rn");
     });
-
-
-    const initializeAuthExpirationListener = () => {
-        return EventRegister.addEventListener('token-expired', (data) => {
-            console.log("Testing Event rn")
-        })
+  };
+  const initializeUser = async () => {
+    try {
+      await dispatch(fetchUserProfile()).unwrap();
+    } catch (error) {
+      console.log("Failed to load users profile", error);
     }
-    const initializeUser = () => {
-        dispatch(fetchUserProfile());
+    setLoadingBySection((prevState) => ({
+      ...prevState,
+      user: false,
+    }));
+  };
+  const initializeRecommendedExams = async () => {
+    try {
+      await dispatch(listRecommendedExams()).unwrap();
+    } catch (error) {
+      console.log("Failed to load recommended exams", error);
     }
-    useEffect(() => {
-        console.log("Color scheme", colorScheme)
-      dispatch(setDarkTheme(colorScheme !== 'light'))
-      Appearance.addChangeListener(({ colorScheme }) => console.log('New color scheme', colorScheme))
-      const logoutListener = initializeAuthExpirationListener();
+    setLoadingBySection((prevState) => ({
+      ...prevState,
+      recommendedExams: false,
+    }));
+  };
 
-      initializeUser();
-      
-      return () => {
-        EventRegister.removeEventListener(logoutListener as string);
-      }
-    }, [])
-    useEffect(() => {
-        if (fontError) console.log("Failed to load fonts", fontError)
-    }, [fontError])
+  useEffect(() => {
+    dispatch(setDarkTheme(colorScheme !== "light"));
+    Appearance.addChangeListener(({ colorScheme }) =>
+      console.log("New color scheme", colorScheme)
+    );
+    const logoutListener = initializeAuthExpirationListener();
 
-    useEffect(() => {
-        if (fontsLoaded) console.log("Fonts loaded")
-    }, [fontsLoaded])
+    initializeUser();
+    initializeRecommendedExams();
 
-    // Generate loading state combined with all other loading
-    useEffect(() => {
-        if (fontsLoaded) {
-            setLoading(false)
-        }
-    }, [fontsLoaded])
+    return () => {
+      EventRegister.removeEventListener(logoutListener as string);
+    };
+  }, []);
+  useEffect(() => {
+    if (fontError) console.log("Failed to load fonts", fontError);
+  }, [fontError]);
 
-    
+  useEffect(() => {
+    if (fontsLoaded) console.log("Fonts loaded");
+  }, [fontsLoaded]);
 
-    return { loading }
+  // Generate loading state combined with all other loading
+  useEffect(() => {
+    if (fontsLoaded) {
+      setLoading(false);
+      setLoadingBySection((prevState) => ({
+        ...prevState,
+        fonts: false,
+      }));
+    }
+  }, [fontsLoaded]);
+
+  return { loading };
 }
 
-export default useInitialize
+export default useInitialize;

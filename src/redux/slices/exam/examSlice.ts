@@ -27,13 +27,15 @@ const initialState: Store.Exam = {
     attemptedExams: [],
     currentExam: null,
     currentExamResult: null,
+    recommendedExams: [],
     loading: {
         fetchExamCategories: false,
         fetchExamsByCategory: false,
         fetchExamDetails: false,
         submitExam: false,
         listAttemptedExams: false,
-        getExamResult: false
+        getExamResult: false,
+        listRecommendedExams: false
     },
     error: null
 }
@@ -123,6 +125,20 @@ export const getExamResult = createAsyncThunk(
         }
     },
 )
+export const listRecommendedExams = createAsyncThunk(
+    'listRecommendedExams',
+    async (_, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get(`/user/exam/recommend`)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 
 
 
@@ -224,6 +240,21 @@ export const examSliceSlice = createSlice({
         })
         builder.addCase(getExamResult.rejected, (state, action) => {
             state.loading.getExamResult = false;
+            state.error = action.error;
+        })
+
+        // Get Recommended Exams
+        builder.addCase(listRecommendedExams.pending, (state) => {
+            state.loading.listRecommendedExams = true;
+        })
+        builder.addCase(listRecommendedExams.fulfilled, (state, action) => {
+            state.loading.listRecommendedExams = false;
+            if (action.payload) {
+                state.recommendedExams = action.payload.data;
+            }
+        })
+        builder.addCase(listRecommendedExams.rejected, (state, action) => {
+            state.loading.listRecommendedExams = false;
             state.error = action.error;
         })
     },
