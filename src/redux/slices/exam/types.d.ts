@@ -8,12 +8,17 @@ namespace Store {
             data: ExamCategoryData[],
             pagination: API.Pagination
         },
+        examSubCategories: {
+            data: ExamSubCategoryData[],
+            pagination: API.Pagination
+        },
         currentExam: null | ExamData,
         currentExamResult: null | ExamResultData,
         attemptedExams: Array<AttemptedExamListData>,
         recommendedExams: ExamData[],
         loading: {
             fetchExamCategories: boolean,
+            fetchExamSubCategories: boolean,
             fetchExamsByCategory: boolean,
             fetchExamDetails: boolean,
             submitExam: boolean,
@@ -92,6 +97,7 @@ namespace Store {
         created_at: string
         updated_at: string
     }
+    type ExamSubCategoryData = ExamCategoryData
     type ExamQuestion = {
         id: number
         exam_id: string

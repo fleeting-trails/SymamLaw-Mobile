@@ -24,12 +24,22 @@ const initialState: Store.Exam = {
             pageSize: 100
         }
     },
+    examSubCategories: {
+        data: [],
+        pagination: {
+            current: 1,
+            total: 0,
+            totalPages: 1,
+            pageSize: 100
+        }
+    },
     attemptedExams: [],
     currentExam: null,
     currentExamResult: null,
     recommendedExams: [],
     loading: {
         fetchExamCategories: false,
+        fetchExamSubCategories: false,
         fetchExamsByCategory: false,
         fetchExamDetails: false,
         submitExam: false,
@@ -65,6 +75,20 @@ export const fetchExamCategories = createAsyncThunk(
         }
     },
 )
+export const fetchExamSubCategories = createAsyncThunk(
+    'fetchExamSubCategories',
+    async (id: number, thunkAPI) => {
+        try {
+            const res = await axiosExternal(`/exam-cateogry/list?parent_id=${id}&page=1&limit=100`)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 export const fetchExamDetails = createAsyncThunk(
     'fetchExamDetails',
     async (slug: string, thunkAPI) => {
@@ -167,6 +191,23 @@ export const examSliceSlice = createSlice({
         })
         builder.addCase(fetchExamCategories.rejected, (state, action) => {
             state.loading.fetchExamCategories = false;
+            state.error = action.error;
+        })
+
+        // Fetch exam sub categories
+        builder.addCase(fetchExamSubCategories.pending, (state) => {
+            state.loading.fetchExamSubCategories = true;
+        })
+        builder.addCase(fetchExamSubCategories.fulfilled, (state, action) => {
+            state.loading.fetchExamSubCategories = false;
+            if (action.payload) {
+                const { data, pagination } = tailorPaginationResponse(action.payload.data)
+                state.examSubCategories.data = data;
+                state.examSubCategories.pagination = pagination;
+            }
+        })
+        builder.addCase(fetchExamSubCategories.rejected, (state, action) => {
+            state.loading.fetchExamSubCategories = false;
             state.error = action.error;
         })
 
