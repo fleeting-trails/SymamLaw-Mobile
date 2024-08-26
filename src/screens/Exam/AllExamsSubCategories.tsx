@@ -17,7 +17,7 @@ function AllExamSubCategories({ route }: PropTypes.AllExamsSubCategories) {
   const { navigate } = useAppNavigation();
   const examState = useAppSelector((state) => state.exam);
   const examCategories = examState.examSubCategories.data;
-  const loading = examState.loading.fetchExamCategories;
+  const loading = examState.loading.fetchExamSubCategories;
   const theme = useAppTheme();
   useEffect(() => {
     handleFetchExamSubCategory();

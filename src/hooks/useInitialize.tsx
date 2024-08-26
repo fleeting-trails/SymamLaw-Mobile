@@ -20,12 +20,13 @@ import { setDarkTheme } from "../redux/slices/config";
 import { Appearance, NativeEventEmitter, NativeModules } from "react-native";
 import { EventRegister } from "react-native-event-listeners";
 import { fetchUserProfile } from "../redux/slices/auth/auth";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { listRecommendedExams } from "../redux/slices/exam/examSlice";
 
 function useInitialize() {
   // const eventEmitter = new NativeEventEmitter();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(state => state.auth.user);
   const [loading, setLoading] = useState(true);
   const [loadingBySection, setLoadingBySection] = useState({
     fonts: true,
@@ -98,12 +99,21 @@ function useInitialize() {
     const logoutListener = initializeAuthExpirationListener();
 
     initializeUser();
-    initializeRecommendedExams();
-
     return () => {
       EventRegister.removeEventListener(logoutListener as string);
     };
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      initializeRecommendedExams();
+    } else if (!user && !loadingBySection.user) {
+      setLoadingBySection((prevState) => ({
+        ...prevState,
+        recommendedExams: false,
+      }));
+    }
+  }, [user, loadingBySection.user])
   useEffect(() => {
     if (fontError) console.log("Failed to load fonts", fontError);
   }, [fontError]);
@@ -115,7 +125,7 @@ function useInitialize() {
   // Generate loading state combined with all other loading
   useEffect(() => {
     if (fontsLoaded) {
-      setLoading(false);
+      // setLoading(false);
       setLoadingBySection((prevState) => ({
         ...prevState,
         fonts: false,

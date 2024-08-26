@@ -28,7 +28,7 @@ export default function CustomText({
 
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "300i" && (
@@ -41,7 +41,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "400" && (
@@ -50,7 +50,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "400i" && (
@@ -63,7 +63,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "500" && (
@@ -72,7 +72,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "500i" && (
@@ -85,7 +85,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "600" && (
@@ -94,7 +94,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "600i" && (
@@ -107,7 +107,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "700" && (
@@ -116,7 +116,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "700i" && (
@@ -129,7 +129,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "800" && (
@@ -145,7 +145,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "800i" && (
@@ -161,7 +161,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "900" && (
@@ -177,7 +177,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
       {variant === "900i" && (
@@ -193,7 +193,7 @@ export default function CustomText({
           className={className}
           {...props}
         >
-          {truncate ? truncateString(children, truncate) : children}
+          {truncate ? truncateString(children?.toString(), truncate) : children}
         </Text>
       )}
     </>

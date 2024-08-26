@@ -56,6 +56,7 @@ namespace Store {
         user_attempt_count: number
         total_passed_count: number
         user_passed_count: number
+        package_items: Array<ExamPackageHint>
     }
     type ExamData = {
         id: number
@@ -65,7 +66,26 @@ namespace Store {
         exam_type: string
         exam_format: string
         exam_category_id: string
+        exam_category: {
+            created_at: string,
+            id: number,
+            parent_id: string,
+            slug: string,
+            status: API.WaythinBoolean,
+            title: string,
+            updated_at: string
+        }
         subject_id: string
+        subject: {
+            created_at: string,
+            id: number,
+            description: string,
+            parent_id: string,
+            slug: string,
+            status: API.WaythinBoolean,
+            title: string,
+            updated_at: string
+        }
         course_id: any
         start_datetime: any
         end_datetime: any
@@ -88,7 +108,12 @@ namespace Store {
         user_passed_count: number
         question: Question[]
         results: any[]
+        package_items: Array<ExamPackageHint>
     };
+    type ExamUnsubscribed = {
+        is_authorized: boolean,
+        is_subscribed: boolean
+    }
     type ExamCategoryData = {
         id: number
         title: string
@@ -299,6 +324,16 @@ namespace Store {
         created_at: string
         updated_at: string
         is_user_submitted: boolean
+    }
+    type ExamPackageHint = {
+        id: number,
+        exam_id: string,
+        package_id: string,
+        package: {
+            id: number,
+            name: string,
+            slug: string
+        }
     }
     type ExamFormat = "mcq" | "written";
     type ExamType = "live" | "static"

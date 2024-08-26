@@ -33,13 +33,6 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
       console.log("failed to fetch categories");
     }
   };
-  const handlePress = (slug: string) => {
-    console.log("Selected cateogry", slug);
-  };
-
-  const handleExamCardPress = (id: string, slug: string) => {
-    navigate("ExamStart", { slug });
-  };
   return (
     <ScreenLoading isLoading={loading}>
       <View
@@ -60,8 +53,9 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
                 name: item.title,
                 duration: parseInt(item.duration),
                 totalQuestions: parseInt(item.total_questions),
+                package_items: item.package_items
               }}
-              onPress={handleExamCardPress}
+              // onPress={handleExamCardPress}
             />
           )}
           numColumns={1}

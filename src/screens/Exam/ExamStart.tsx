@@ -17,6 +17,8 @@ import { fetchExamDetails } from "../../redux/slices/exam/examSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 import { formatMinuteToTimestring } from "../../utils/helpers";
+import AuthenticationRequired from "../Common/AuthenticationRequired";
+import HtmlRenderer from "../../components/Renderer/HtmlRenderer";
 
 export default function ExamStart({ route }: PropTypes.ExamStart) {
   const { slug } = route.params;
@@ -27,6 +29,7 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
   const examState = useAppSelector((state) => state.exam);
   const currentExam = examState.currentExam;
   const loading = examState.loading.fetchExamDetails;
+  const user = useAppSelector(state => state.auth.user)
 
   useEffect(() => {
     initializeExamDetails(slug);
@@ -41,7 +44,7 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
   }
 
   return (
-    <ScreenContainer>
+    user ? <ScreenContainer>
       <ScreenLoading isLoading={loading}>
         {currentExam && <>
           <Image
@@ -51,12 +54,10 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
           <CustomText className="my-5 text-center text-2xl">
             {currentExam.title}
           </CustomText>
-          <CustomText>
-            {currentExam.description}
-          </CustomText>
+          <HtmlRenderer html={currentExam.description} />
 
           {/* Tags */}
-          <View className="flex flex-row gap-2 flex-wrap mb-3">
+          {/* <View className="flex flex-row gap-2 flex-wrap mb-3">
             <View
               className={`py-1 px-3`}
               style={{ backgroundColor: theme.colors.primary }}
@@ -75,7 +76,7 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
             >
               <CustomText lightText>bjspreperation</CustomText>
             </View>
-          </View>
+          </View> */}
 
           {/* Exam Info */}
           <View className="flex" style={{ gap: 11 }}>
@@ -105,20 +106,20 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
             {/* Exam Info Row */}
             <View className="flex-row gap-2 items-center">
               <QuestionIcon color="black" scale={0.8} />
-              <CustomText variant="500">{currentExam.total_questions}</CustomText>
+              <CustomText variant="500">{currentExam.question.length}</CustomText>
               <CustomText variant="300">Questions</CustomText>
             </View>
             {/* Exam Info Row */}
             <View className="flex-row gap-2 items-center">
               <TopicIcon color="black" scale={0.8} />
               <CustomText variant="500">Subject:</CustomText>
-              <CustomText variant="300">Constitutional </CustomText>
+              <CustomText variant="300">{currentExam.subject.title} </CustomText>
             </View>
             {/* Exam Info Row */}
             <View className="flex-row gap-2 items-center">
               <CategoryIcon color="black" scale={0.8} />
               <CustomText variant="500">Category:</CustomText>
-              <CustomText variant="300">BJS Preperation</CustomText>
+              <CustomText variant="300">{currentExam.exam_category.title}</CustomText>
             </View>
           </View>
 
@@ -136,7 +137,7 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
           />
         </>}
       </ScreenLoading>
-    </ScreenContainer>
+    </ScreenContainer> : <AuthenticationRequired message="Seems like you are not logged in! To start exam please login / create an account first" />
   );
 }
 

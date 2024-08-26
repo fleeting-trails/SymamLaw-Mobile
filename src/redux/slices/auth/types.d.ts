@@ -60,6 +60,14 @@ namespace Store {
         fcm_token: any
         created_at: string
         updated_at: string,
+        current_subscriptions: Array<{
+            start_date: string,
+            end_date: string,
+            id: number,
+            package_id: string,
+            student_id: string,
+            transaction_id: string
+        }>,
         student_details: {
             id: number
             user_id: string

@@ -4,7 +4,11 @@ import { ScreenContainer } from "../../components";
 import { ScreenContainerNonScroll } from "../../components/ScreenContainer/ScreenContainerNonScroll";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { listPackages } from "../../redux/slices/packages/packageSlice";
+import {
+  getSubscriptionRedirectLink,
+  listPackages,
+  listUnsubscribedPackages,
+} from "../../redux/slices/packages/packageSlice";
 import RenderHtml, {
   HTMLElementModel,
   HTMLContentModel,
@@ -12,13 +16,17 @@ import RenderHtml, {
 import HtmlRenderer from "../../components/Renderer/HtmlRenderer";
 import PackageCard from "../../components/PackageCard/PackageCard";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
+import * as WebBrowser from "expo-web-browser";
+import * as Linking from 'expo-linking';
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export default function PackageList() {
   const dispatch = useAppDispatch();
   const { width } = useWindowDimensions();
+  const { navigate } = useAppNavigation();
   const packageState = useAppSelector((state) => state.package);
-  const loading = packageState.loading.listPackages;
-  const packages = packageState.packages;
+  const loading = packageState.loading.listUnsubscribedPackages;
+  const packages = packageState.unSubscribedPackages;
 
   useEffect(() => {
     fetchPackageList();
@@ -26,17 +34,30 @@ export default function PackageList() {
 
   const fetchPackageList = async () => {
     try {
-      await dispatch(listPackages()).unwrap();
+      await dispatch(listUnsubscribedPackages()).unwrap();
     } catch (error) {
       console.log("Failed to fetch package", error);
     }
   };
 
+  const onPurchaseProcessEnd = (data : Store.PackageData, purchaseData: Store.PurchaseResponseData) => {
+    console.log("Purchase data", purchaseData)
+    navigate("PackageBuyFeedback", {
+      success: purchaseData.status,
+      packageData: data,
+      purchaseData: purchaseData
+    })
+  }
+
   return (
     <ScreenLoading isLoading={loading}>
       <ScreenContainer>
         {packages.map((pkg) => (
-          <PackageCard key={pkg.id} data={pkg} />
+          <PackageCard
+            key={pkg.id}
+            data={pkg}
+            onPurchaseProcessEnd={onPurchaseProcessEnd}
+          />
         ))}
       </ScreenContainer>
     </ScreenLoading>

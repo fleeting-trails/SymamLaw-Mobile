@@ -198,6 +198,8 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       width: 30,
       borderRadius: 30,
       objectFit: "cover",
+      borderColor: theme.colors.primary,
+      borderWidth: 2
     },
     spacer: {
       height: 60,

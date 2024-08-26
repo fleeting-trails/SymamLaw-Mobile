@@ -1,5 +1,6 @@
 import { atob } from "react-native-quick-base64";
-export function truncateString(str: string, size: number) {
+export function truncateString(str: string | undefined, size: number) {
+  if (!str) return str;
   if (str.length <= size) {
     return str;
   } else {
@@ -75,4 +76,23 @@ export function base64ToBlob(
   }
 
   return new File(byteArrays, "avatar.jpeg", { type: contentType });
+}
+
+export function getQueryParameters(url: string) {
+  let queryParams : any = {};
+  let urlObj = new URL(url);
+  let queryString = urlObj.search;
+
+  // Remove the '?' at the start of the query string
+  if (queryString) {
+      queryString = queryString.substring(1);
+
+      let pairs = queryString.split('&');
+      pairs.forEach(pair => {
+          let [key, value] = pair.split('=');
+          queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '');
+      });
+  }
+
+  return queryParams;
 }

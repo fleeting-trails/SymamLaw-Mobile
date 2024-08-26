@@ -8,6 +8,7 @@ namespace PropTypes {
         slug: string,
         name: string,
         duration: number, // In Minute
-        totalQuestions: number
+        totalQuestions: number,
+        package_items: Array<Store.ExamPackageHint>
     }
 }

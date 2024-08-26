@@ -14,19 +14,29 @@ import { useAppSelector } from "../../redux/hooks";
 
 export default function Home() {
   const { navigate } = useAppNavigation();
+  const user = useAppSelector(state => state.auth.user);
   const theme = useAppTheme();
-  const recommendedExam = useAppSelector(state => state.exam.recommendedExams);
-  const [recommendedExamCardData, setRecommendedExamCardData] = useState<PropTypes.ExamCardData[]>([]);
+  const recommendedExam = useAppSelector(
+    (state) => state.exam.recommendedExams
+  );
+  const [recommendedExamCardData, setRecommendedExamCardData] = useState<
+    PropTypes.ExamCardData[]
+  >([]);
 
   useEffect(() => {
-    setRecommendedExamCardData(recommendedExam.map(exam => ({
-      id: `${exam.id}`,
-      name: exam.title,
-      slug: exam.slug,
-      duration: parseInt(exam.duration),
-      totalQuestions: parseInt(exam.total_questions),
-    })))
-  }, [recommendedExam])
+    if (recommendedExam) {
+      setRecommendedExamCardData(
+        recommendedExam.map((exam) => ({
+          id: `${exam.id}`,
+          name: exam.title,
+          slug: exam.slug,
+          duration: parseInt(exam.duration),
+          totalQuestions: parseInt(exam.total_questions),
+          package_items: exam.package_items
+        }))
+      );
+    }
+  }, [recommendedExam]);
   const courseData: Array<PropTypes.CourseCardData> = [
     {
       id: "1",
@@ -65,46 +75,6 @@ export default function Home() {
       },
     },
   ];
-  const examData: Array<PropTypes.ExamCardData> = [
-    {
-      id: "1",
-      name: "Daily Exam",
-      slug: "daily",
-      duration: 50,
-      totalQuestions: 40,
-    },
-    {
-      id: "2",
-      name: "Labor Law Exam",
-      slug: "labor",
-      duration: 50,
-      totalQuestions: 40,
-    },
-    {
-      id: "3",
-      name: "Constituion Law Exam",
-      slug: "constituion",
-      duration: 50,
-      totalQuestions: 40,
-    },
-    {
-      id: "4",
-      name: "Bar-At-Law Preperation",
-      slug: "baratlaw",
-      duration: 50,
-      totalQuestions: 40,
-    },
-    {
-      id: "5",
-      name: "Special Exams",
-      slug: "special",
-      duration: 50,
-      totalQuestions: 40,
-    },
-  ];
-  const handleExamCardPress = (id: string, slug: string) => {
-    navigate("ExamStart", { slug });
-  };
   return (
     <ScreenContainer>
       <Section title="Browse">
@@ -177,13 +147,13 @@ export default function Home() {
         />
       </View> */}
 
-      <Section title="Recommended Exams For You">
+      {user && <Section title="Recommended Exams For You">
         <View style={{ gap: 8 }}>
           {recommendedExamCardData.map((exam) => (
-            <ExamCard onPress={handleExamCardPress} key={exam.id} data={exam} />
+            <ExamCard key={exam.id} data={exam} />
           ))}
         </View>
-      </Section>
+      </Section> }
     </ScreenContainer>
   );
 }

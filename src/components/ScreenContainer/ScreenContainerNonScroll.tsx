@@ -13,7 +13,7 @@ export function ScreenContainerNonScroll({
     <View style={[style, styles.container]} {...props}>
       <View style={styles.scrollView}>
         {children}
-        <View style={{ height: 30 }}></View>
+        {/* <View style={{ height: 30 }}></View> */}
       </View>
     </View>
   );

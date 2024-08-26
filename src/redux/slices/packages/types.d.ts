@@ -1,9 +1,13 @@
 namespace Store {
     type Package = {
         packages: Array<PackageData>,
+        subscribedPackages: Array<PackageData>,
+        unSubscribedPackages: Array<PackageData>
         error: any,
         loading: {
-            listPackages: boolean
+            listPackages: boolean,
+            listUnsubscribedPackages: boolean,
+            listSubscribedPackages: boolean
         }
     }
     type PackageData = {
@@ -39,5 +43,11 @@ namespace Store {
         package_id: string,
         status: API.WaythinBoolean,
         updated_at: string
+    }
+    type PurchaseResponseData = {
+        tran_id: string,
+        amount: string,
+        sub_id: string,
+        status: "success" | "failed"
     }
 }
