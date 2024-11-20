@@ -5,34 +5,39 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import { ClockIcon } from "../../assets/Icons";
 import { useTheme } from "react-native-paper";
 
-export default function CourseCard({ data } : PropTypes.CourseCard) {
+export default function CourseCard({ data }: PropTypes.CourseCard) {
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
 
   return (
     <View style={styles.container}>
       <Image
-        source={data.thumbnail}
+        source={
+          data.thumbnail ?? require("../../assets/placeholder-course-image.jpg")
+        }
         style={styles.thumbnail}
       />
-      
+
       <View style={styles.saveButtonContainer}>
         <PrimaryButton text="Save" color="white" size="small" />
       </View>
 
       {/* Author Block */}
-      <View style={styles.authorContainer}>
-        <Image
-          source={data.author.image}
-          style={styles.authorAvatar}
-        />
-        <CustomText variant="500">{data.author.name}</CustomText>
-      </View>
+      {data.author && (
+        <View style={styles.authorContainer}>
+          <Image source={data.author.image} style={styles.authorAvatar} />
+          <CustomText variant="500">{data.author.name}</CustomText>
+        </View>
+      )}
       {/* Course Title */}
       <CustomText variant="300" truncate={50}>
         {data.title}
       </CustomText>
-      <CustomText variant="300" truncate={200} style={{ fontSize: 10, color: theme.colors.textGray }}>
+      <CustomText
+        variant="300"
+        truncate={200}
+        style={{ fontSize: 10, color: theme.colors.textGray }}
+      >
         {data.description}
       </CustomText>
 
@@ -87,18 +92,18 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       borderColor: theme.colors.primaryLight[0],
     },
     metaInfoContainer: {
-        marginTop: 'auto',
-        flexDirection: 'row',
-        gap: 8
+      marginTop: "auto",
+      flexDirection: "row",
+      gap: 8,
     },
     metaInfoItem: {
-        flexDirection: 'row',
-        gap: 6
+      flexDirection: "row",
+      gap: 6,
     },
     actionContainer: {
-        // marginTop: 'auto',
-        flexDirection: 'column',
-        gap: 3
-    }
+      // marginTop: 'auto',
+      flexDirection: "column",
+      gap: 3,
+    },
   });
 };

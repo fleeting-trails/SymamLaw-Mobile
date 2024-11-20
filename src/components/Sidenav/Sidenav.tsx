@@ -26,7 +26,7 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
     {
       label: "My Courses",
       icon: <MyCoursesIcon color={theme.colors.text} />,
-      url: "",
+      url: "CourseList",
     },
     {
       label: "Exam Categories",

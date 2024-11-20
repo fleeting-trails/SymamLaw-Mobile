@@ -26,6 +26,7 @@ import ExamResult from "./screens/Exam/ExamResult";
 import AllExamSubCategories from "./screens/Exam/AllExamsSubCategories";
 import PackageBuyFeedback from "./screens/Package/PackageBuyFeedback";
 import PackageSingle from "./screens/Package/PackageSingle";
+import CourseListScreen from "./screens/Course/CourseListScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -67,6 +68,7 @@ export default function Main() {
           <Stack.Screen name="ExamResult" component={ExamResult} />
           <Stack.Screen name="PackageBuyFeedback" component={PackageBuyFeedback} />
           <Stack.Screen name="PackageSingle" component={PackageSingle} />
+          <Stack.Screen name="CourseList" component={CourseListScreen} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

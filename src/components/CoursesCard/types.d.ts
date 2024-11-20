@@ -6,11 +6,15 @@ namespace PropTypes {
         id: string,
         title: string,
         description: string,
-        author: {
+        author?: {
             image: import('react-native').ImageSourcePropType,
             name: string
         },
         courseHour: string,
-        thumbnail: import('react-native').ImageSourcePropType
+        thumbnail: import('react-native').ImageSourcePropType | null
+    }
+    type CourseCardList = {
+        data: Store.CourseListData,
+        onPress?: (data: Store.CourseListData) => void
     }
 }

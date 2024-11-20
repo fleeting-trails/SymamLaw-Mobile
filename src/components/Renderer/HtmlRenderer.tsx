@@ -26,7 +26,7 @@ function HtmlRenderer({ html, width }: PropTypes.HtmlRenderer) {
   const tagStyles = {
     li: {
       flexDirection: "row",
-      gap: 10,
+      // gap: 10,
     },
   };
   return (
