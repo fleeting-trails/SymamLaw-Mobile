@@ -1,5 +1,5 @@
 import * as React from "react";
-import Svg, { Path, Mask, G, Defs, ClipPath } from "react-native-svg";
+import Svg, { Path, Mask, G, Defs, ClipPath, Circle } from "react-native-svg";
 export const HomeIcon = ({ color = "#000000", scale = 1, ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -803,6 +803,61 @@ export const PriceIcon = ({ color = "#000", scale = 1, ...props }) => (
       strokeLinejoin="round"
       strokeWidth={1.5 * scale}
       d="M16 7.873c-.125-.828-.891-1.607-1.926-1.307-1.083.314-1.575 1.907-1.083 2.902.509 1.032.753 2.032.088 3.447-.129.275-.194.413-.158.5.036.085.15.085.378.085H16m-4-3.333h3.5"
+    />
+  </Svg>
+)
+
+export const LiveIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Circle
+      scale={scale}
+      cx={12}
+      cy={12}
+      r={2}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M7.5 8C6.5 9 6 10.5 6 12s.5 3 1.5 4M4.5 6C3 7.5 2 9.5 2 12s1 4.5 2.5 6M16.5 16c1-1 1.5-2.5 1.5-4s-.5-3-1.5-4M19.5 18c1.5-1.5 2.5-3.5 2.5-6s-1-4.5-2.5-6"
+    />
+  </Svg>
+)
+export const RecordedIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinejoin="round"
+      strokeWidth={1.5 * scale}
+      d="M15.538 18.592c-1.107.908-2.75.908-6.038.908-3.287 0-4.931 0-6.038-.908a4 4 0 0 1-.554-.554C2 16.93 2 15.288 2 12c0-3.287 0-4.931.908-6.038a4 4 0 0 1 .554-.554C4.57 4.5 6.212 4.5 9.5 4.5c3.287 0 4.931 0 6.038.908a4 4 0 0 1 .554.554C17 7.07 17 8.712 17 12c0 3.287 0 4.931-.908 6.038a4.001 4.001 0 0 1-.554.554ZM17 13v-2l2.6-3.467a1.333 1.333 0 0 1 2.4.8v7.334a1.333 1.333 0 0 1-2.4.8L17 13Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinejoin="round"
+      strokeWidth={1.5 * scale}
+      d="M9.5 13.5a1.5 1.5 0 0 0 0-3m0 3a1.5 1.5 0 0 1 0-3m0 3v-3"
     />
   </Svg>
 )

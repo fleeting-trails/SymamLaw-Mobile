@@ -110,11 +110,11 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
               <CustomText variant="300">Questions</CustomText>
             </View>
             {/* Exam Info Row */}
-            <View className="flex-row gap-2 items-center">
+            {currentExam.subject?.title && <View className="flex-row gap-2 items-center">
               <TopicIcon color="black" scale={0.8} />
               <CustomText variant="500">Subject:</CustomText>
-              <CustomText variant="300">{currentExam.subject.title} </CustomText>
-            </View>
+              <CustomText variant="300">{currentExam.subject?.title} </CustomText>
+            </View>}
             {/* Exam Info Row */}
             <View className="flex-row gap-2 items-center">
               <CategoryIcon color="black" scale={0.8} />

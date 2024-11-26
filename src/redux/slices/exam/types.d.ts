@@ -65,18 +65,19 @@ namespace Store {
         description: string
         exam_type: string
         exam_format: string
-        exam_category_id: string
+        exam_category_id: number
         exam_category: {
-            created_at: string,
-            id: number,
-            parent_id: string,
-            slug: string,
-            status: API.WaythinBoolean,
             title: string,
-            updated_at: string
-        }
-        subject_id: string
-        subject: {
+            id: number
+            slug: string
+            parent_id: string
+            parent_category: {
+                id: number
+                slug: string
+            }
+        },
+        subject_id: number | null
+        subject?: {
             created_at: string,
             id: number,
             description: string,
@@ -104,6 +105,8 @@ namespace Store {
         updated_at: string
         attempted_exam_count: number
         user_attempt_count: number
+        distinct_user_attempted_count: number
+        UserTimeTracker: "1" | "0",
         total_passed_count: number
         user_passed_count: number
         question: Question[]
@@ -270,7 +273,7 @@ namespace Store {
     type ExamQuestionResultVariant = {
         assigned_marks: string,
         created_at: string,
-        description: string, 
+        description: string,
         exam_id: string,
         id: number,
         image: null | string,

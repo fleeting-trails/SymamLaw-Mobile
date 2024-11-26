@@ -5,14 +5,14 @@ import { EventRegister } from "react-native-event-listeners";
 
 
 export const axiosExternal = axios.create({
-  baseURL: "https://symamlaw-backend.sapientialibrary.com/api",
+  baseURL: process.env.BASE_URL,
   timeout: 8000,
   headers: {
     Accept: 'application/json'
   },
 });
 export const axiosFileUpload = axios.create({
-  baseURL: "https://symamlaw-backend.sapientialibrary.com/api",
+  baseURL: process.env.BASE_URL,
   timeout: 8000,
   headers: {
     "Accept": '*/*',

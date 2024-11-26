@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { listCourses } from "../../redux/slices/course/courseSlice";
 import CourseList from "../../components/CourseList/CourseList";
 import useAppTheme from "../../hooks/useAppTheme";
+import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 
 export default function CourseListScreen() {
   const styles = createStyles();
@@ -12,6 +13,7 @@ export default function CourseListScreen() {
   const courseState = useAppSelector((state) => state.course);
   const courseList = courseState.courses.data;
   const pagination = courseState.courses.pagination;
+  const loading = courseState.loading.listCourses;
 
   useEffect(() => {
     dispatch(
@@ -22,15 +24,17 @@ export default function CourseListScreen() {
     );
   }, []);
   return (
-    <View
+    <ScreenLoading isLoading={loading}>
+      <View
         style={{
-            flex: 1,
-            backgroundColor: theme.colors.background,
-            paddingHorizontal: 16
+          flex: 1,
+          backgroundColor: theme.colors.background,
+          paddingHorizontal: 16,
         }}
-    >
-      <CourseList courses={courseList} />
-    </View>
+      >
+        <CourseList courses={courseList} />
+      </View>
+    </ScreenLoading>
   );
 }
 
