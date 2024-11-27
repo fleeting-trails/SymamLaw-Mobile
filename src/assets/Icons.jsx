@@ -861,3 +861,62 @@ export const RecordedIcon = ({ color = "#000", scale = 1, ...props }) => (
     />
   </Svg>
 )
+export const VideoIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeWidth={1.5 * scale}
+      d="M2 11c0-3.3 0-4.95 1.025-5.975C4.05 4 5.7 4 9 4h1c3.3 0 4.95 0 5.975 1.025C17 6.05 17 7.7 17 11v2c0 3.3 0 4.95-1.025 5.975C14.95 20 13.3 20 10 20H9c-3.3 0-4.95 0-5.975-1.025C2 17.95 2 16.3 2 13v-2Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5 * scale}
+      d="m17 8.906.126-.104c2.116-1.746 3.174-2.619 4.024-2.197.85.421.85 1.819.85 4.613v1.564c0 2.794 0 4.192-.85 4.613-.85.422-1.908-.451-4.024-2.197L17 15.094"
+    />
+    <Circle
+      scale={scale}
+      cx={11.5}
+      cy={9.5}
+      r={1.5}
+      stroke="currentColor"
+      strokeWidth={1.5 * scale}
+    />
+  </Svg>
+)
+
+export const DocumentIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5 * scale}
+      d="M14.98 7.016s.5.5 1 1.5c0 0 1.589-2.5 3-3M9.995 2.021c-2.499-.105-4.429.182-4.429.182-1.219.088-3.554.77-3.554 4.762 0 3.956-.026 8.834 0 10.779 0 1.188.735 3.96 3.281 4.108 3.095.18 8.67.219 11.227 0 .685-.039 2.965-.576 3.253-3.056.3-2.57.24-4.355.24-4.78"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5 * scale}
+      d="M22 7.016c0 2.761-2.24 5-5.005 5a5.002 5.002 0 0 1-5.005-5c0-2.762 2.241-5 5.005-5a5.002 5.002 0 0 1 5.005 5ZM6.98 13.016h4M6.98 17.016h8"
+    />
+  </Svg>
+)

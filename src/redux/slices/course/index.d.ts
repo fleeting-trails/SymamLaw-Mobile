@@ -82,7 +82,7 @@ namespace Store {
     slug: string
     description: string
     course_section_id: string
-    lecture_type: string
+    lecture_type: CourseLectureTypes
     exam_id?: string
     is_live_started: string
     live_ended: string
@@ -140,4 +140,5 @@ namespace Store {
   }
   type CourseSubscriptionTypeEnum = "paid" | "free"
   type CourseType = "recorded" | "live"
+  type CourseLectureTypes = "file" | "video" | "exam"
 }

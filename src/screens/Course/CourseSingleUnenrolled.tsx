@@ -98,7 +98,7 @@ export default function CourseSingleUnenrolled({
           <CustomText
             variant="600"
             lightText={true}
-            className="text-white text-xl mr-[50px]"
+            className="text-white text-xl mr-[130px]"
           >
             {" "}
             {data.title}

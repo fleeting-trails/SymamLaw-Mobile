@@ -29,7 +29,7 @@ export default function CourseSingleScreen({
       {course ? (
         <>
           {(course.is_user_purchased || course.subscription_type === "free") ? (
-            <CourseSingleEnrolled />
+            <CourseSingleEnrolled data={course} />
           ) : (
             <CourseSingleUnenrolled data={course} />
           )}
