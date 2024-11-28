@@ -79,20 +79,44 @@ export function base64ToBlob(
 }
 
 export function getQueryParameters(url: string) {
-  let queryParams : any = {};
+  let queryParams: any = {};
   let urlObj = new URL(url);
   let queryString = urlObj.search;
 
   // Remove the '?' at the start of the query string
   if (queryString) {
-      queryString = queryString.substring(1);
+    queryString = queryString.substring(1);
 
-      let pairs = queryString.split('&');
-      pairs.forEach(pair => {
-          let [key, value] = pair.split('=');
-          queryParams[decodeURIComponent(key)] = decodeURIComponent(value || '');
-      });
+    let pairs = queryString.split("&");
+    pairs.forEach((pair) => {
+      let [key, value] = pair.split("=");
+      queryParams[decodeURIComponent(key)] = decodeURIComponent(value || "");
+    });
   }
 
   return queryParams;
+}
+
+export function isValidYouTubeVideo(url: string) {
+  const youtubeRegex =
+    /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|live\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(.*)?$/;
+
+  try {
+    // Create a URL object for parsing and validation
+    const parsedUrl = new URL(url);
+
+    // Ensure it's a YouTube URL
+    if (
+      !parsedUrl.hostname.includes("youtube.com") &&
+      !parsedUrl.hostname.includes("youtu.be")
+    ) {
+      return false;
+    }
+
+    // Match the regular expression for YouTube video, embed, or live links
+    return youtubeRegex.test(url);
+  } catch (e) {
+    // If URL constructor throws an error, it's not a valid URL
+    return false;
+  }
 }

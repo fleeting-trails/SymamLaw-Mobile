@@ -24,6 +24,8 @@ import useCoursePurchaseAction from "../../hooks/useCoursePurchaseAction";
 import SnakbarPrimary from "../../components/Snackbar/SnackbarPrimary";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { WebView } from "react-native-webview";
+import { isValidYouTubeVideo } from "../../utils/helpers";
+import { useVideoPlayer, VideoView } from "expo-video";
 
 const LECTURE_ICON_MAP = ({
   lecture_type,
@@ -132,24 +134,32 @@ export default function CourseSingleEnrolled({
         ) : (
           <ContentView data={data} lecture={selectedLecture} />
         )}
-        <View>
-          <CustomText className="mb-2">Course Progress</CustomText>
-          <View className="flex-row items-center">
-            <View className="flex-1">
-              <ProgressBar
-                progress={
-                  parseFloat(data.course_progress.replace("%", "")) / 100
-                }
-                style={{ height: 12, borderRadius: 12 }}
-                color={theme.colors.primaryGray}
-                fillStyle={{ backgroundColor: theme.colors.primary }}
-              />
-            </View>
-            <View className="ml-3">
-              <CustomText>{data.course_progress}</CustomText>
+        {Number.isNaN(parseFloat(data.course_progress.replace("%", ""))) ? (
+          <View>
+            <CustomText>{data.course_progress}</CustomText>
+          </View>
+        ) : (
+          <View>
+            <CustomText className="mb-2">Course Progress</CustomText>
+            <View className="flex-row items-center">
+              <View className="flex-1">
+                <ProgressBar
+                  progress={
+                    data.course_progress
+                      ? parseFloat(data.course_progress.replace("%", "")) / 100
+                      : 0
+                  }
+                  style={{ height: 12, borderRadius: 12 }}
+                  color={theme.colors.primaryGray}
+                  fillStyle={{ backgroundColor: theme.colors.primary }}
+                />
+              </View>
+              <View className="ml-3">
+                <CustomText>{data.course_progress ?? "0.00%"}</CustomText>
+              </View>
             </View>
           </View>
-        </View>
+        )}
         <View className="flex-1">
           <TabPrimary tabs={tabs} />
         </View>
@@ -234,16 +244,73 @@ type ContentViewProps = {
   lecture: Store.CourseLecture;
 };
 function ContentView({ data, lecture }: ContentViewProps) {
-  return (
-    <View>
-      <WebView
-        style={{
-          width: "100%",
-        }}
-        source={{ uri: lecture.link }}
-      />
-    </View>
-  );
+  const player = useVideoPlayer(lecture.link, (player) => {
+    player.loop = true;
+    // player.play();
+  });
+
+  // For "video" type content
+  if (lecture.lecture_type === "video") {
+    if (isValidYouTubeVideo(lecture.link)) {
+      return (
+        <View className="w-full">
+          {lecture.link && <VideoView
+            style={{
+              width: 350,
+              height: 275,
+            }}
+            player={player}
+            allowsFullscreen
+            allowsPictureInPicture
+          />}
+        </View>
+      );
+    } else {
+      return (
+        <View className="relative w-full">
+          <Image
+            style={{
+              height: 200,
+            }}
+            source={
+              data.image
+                ? { uri: data.image }
+                : require("../../assets/placeholder-course-image.jpg")
+            }
+          />
+          <View className="absolute left-0 right-0 bottom-0 top-0 bg-black/70 justify-center items-center">
+            <CustomText
+              variant="600"
+              className="text-white text-lg w-[300px] text-center"
+            >
+              {console.log(lecture.link) as any}
+              Cannot Load Video. Please try again later
+            </CustomText>
+          </View>
+        </View>
+      );
+    }
+  } else if (lecture.lecture_type === "exam") {
+    return (
+      <View className="flex items-center justify-center">
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={require("../../assets/exam-graphic.png")}
+        />
+        <PrimaryButton text="Start Exam" color="primary" />
+      </View>
+    );
+  } else if (lecture.lecture_type === "file") {
+    return (
+      <View className="flex items-center justify-center">
+        <Image
+          style={{ width: 200, height: 200 }}
+          source={require("../../assets/course-document-graphic.png")}
+        />
+        <PrimaryButton text="Start Reading" color="primary" />
+      </View>
+    );
+  }
 }
 
 const createStyles = (theme: Config.Theme) => {
