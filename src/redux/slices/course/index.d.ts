@@ -61,7 +61,20 @@ namespace Store {
     course_progress: string
     course_sections?: CourseSection[]
     course_instructors: CourseInstructor[]
-    routine: any
+    routine?: {
+      id: number
+      course_id: any
+      exam_category_id: any
+      type: string
+      routine_status: string
+      topic: string
+      description: string
+      note: string
+      status: number
+      created_by: number
+      created_at: string
+      updated_at: string
+    }
   }
   type CourseSection = {
     id: number
@@ -76,7 +89,7 @@ namespace Store {
     updated_at: string
     lectures: CourseLecture[]
   }
-  type CourseLecture =  {
+  type CourseLecture = {
     id: number
     title: string
     slug: string

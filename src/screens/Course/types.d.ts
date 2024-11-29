@@ -8,4 +8,12 @@ namespace PropTypes {
     type CourseSingleEnrolled = {
         data: Store.CourseData
     }
+    type CourseEnrolledMoreViews = {
+        open: boolean,
+        setOpen: (open: boolean) => void,
+        data: Store.CourseData
+    }
+    type CourseResources = CourseEnrolledMoreViews & {
+        lecture: Store.CourseLecture
+    }
 }

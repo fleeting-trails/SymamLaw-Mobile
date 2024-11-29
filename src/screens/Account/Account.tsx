@@ -14,6 +14,7 @@ import SwitchPrimary from "../../atoms/Input/SwitchPrimary";
 import { ImagePickerResult } from "expo-image-picker";
 import { updateProfile } from "../../redux/slices/auth/auth";
 import AlertPrimary from "../../atoms/Alert/AlertPrimary";
+import AuthenticationRequired from "../Common/AuthenticationRequired";
 
 type ProfileInputType = {
   name: string,
@@ -136,16 +137,9 @@ export default function Account() {
       <PrimaryButton text="Update" color="primary" loading={submitLoading} onPress={handleSubmit} />
     </ScreenContainer>
   ) : (
-    <ScreenContainer
-      style={{ height: "100%", justifyContent: "center", alignItems: "center" }}
-    >
-      <CustomText>Please Login First</CustomText>
-      <PrimaryButton
-        onPress={() => navigate("Login")}
-        color="primary"
-        text="Login"
-      />
-    </ScreenContainer>
+    <AuthenticationRequired 
+      message="Sign in required to load your profile! Please sign in first."
+    />
   );
 }
 

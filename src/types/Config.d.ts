@@ -12,6 +12,7 @@ namespace Config {
             backgroundPrimary: string,
             backgroundPrimaryLight: string,
             backgroundGray: string,
+            backgroundGrayLight: string,
             textPrimary: string,
             textLight: string,
             textLightPrimary: string,

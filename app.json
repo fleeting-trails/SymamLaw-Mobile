@@ -32,10 +32,6 @@
       "eas": {
         "projectId": "00c883e3-6127-49be-84df-4fb378d865ba"
       }
-    },
-    "scheme": "symamlaw-mobile",
-    "plugins": [
-      "expo-video"
-    ]
+    }
   }
 }
