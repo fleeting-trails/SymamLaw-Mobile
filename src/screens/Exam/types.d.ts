@@ -8,6 +8,9 @@ namespace PropTypes {
     type ExamStart = {
         route: import('@react-navigation/native').RouteProp
     }
+    type Exam = {
+        route: import('@react-navigation/native').RouteProp
+    }
     type ExamResult = {
         route: import('@react-navigation/native').RouteProp
     }

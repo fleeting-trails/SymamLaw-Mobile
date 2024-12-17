@@ -21,7 +21,7 @@ import AuthenticationRequired from "../Common/AuthenticationRequired";
 import HtmlRenderer from "../../components/Renderer/HtmlRenderer";
 
 export default function ExamStart({ route }: PropTypes.ExamStart) {
-  const { slug } = route.params;
+  const { slug, lecture_id, course_id } = route.params;
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
   const styles = createStyles({ theme });
@@ -37,7 +37,11 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
 
   const initializeExamDetails = async (slug: string) => {
     try {
-      await dispatch(fetchExamDetails(slug));
+      await dispatch(fetchExamDetails({
+        slug,
+        lecture_id,
+        course_id
+      }));
     } catch (error) {
       console.log("Failed to fetch exam", error);
     }

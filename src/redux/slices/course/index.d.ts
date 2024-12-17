@@ -5,11 +5,14 @@ namespace Store {
       pagination: API.Pagination
     },
     currentCourse: CourseData | null,
+    currentCourseComments: any,
     loading: {
       listCourses: boolean,
       loadMoreCourses: boolean,
       getCourseSingle: boolean,
+      refreshCourseSingle: boolean,
       markLectureAsViewed: boolean,
+      getComments: boolean,
       commentOnLecture: boolean,
       replyOnLectureComment: boolean,
       getSubscriptionRedirectLink: boolean
@@ -49,14 +52,7 @@ namespace Store {
     is_subscribed: number
     total_section: number
     total_lecture: number
-    is_live_class_ongoing: {
-      status: number
-      link: string
-      lecture_title: string
-      lecture_description: string
-      lecture_id: number
-      course_section_id: string
-    }
+    is_live_class_ongoing: CourseOngoingLiveClass
     latestLecture: any[]
     course_progress: string
     course_sections?: CourseSection[]
@@ -75,6 +71,14 @@ namespace Store {
       created_at: string
       updated_at: string
     }
+  }
+  type CourseOngoingLiveClass = {
+    status: number
+    link: string
+    lecture_title: string
+    lecture_description: string
+    lecture_id: number
+    course_section_id: string
   }
   type CourseSection = {
     id: number
@@ -108,7 +112,7 @@ namespace Store {
     is_viewed: number
     lecture_documents: CourseLectureDocument[]
     exam?: CourseExam
-    comments: any[]
+    comments: CourseLectureComment[]
   }
   type CourseLectureDocument = {
     id: number
@@ -127,6 +131,34 @@ namespace Store {
     instructor_id: string
     created_at: string
     updated_at: string
+  }
+  type CourseLectureComment = {
+    id: number
+    course_id: number
+    lecture_id: number
+    user_id: number
+    comment: string
+    status: number
+    created_at: string
+    updated_at: string
+    comment_replies: CourseLectureCommentReplies[]
+    user: {
+      id: number
+      name: string
+    }
+  }
+  type CourseLectureCommentReplies =  {
+    id: number
+    lecture_comment_id: number
+    comment: string
+    replied_by: number
+    status: number
+    created_at: string
+    updated_at: string
+    user:  {
+      id: number
+      name: string
+    }
   }
 
 

@@ -9,6 +9,7 @@ namespace PropTypes {
         name: string,
         duration: number, // In Minute
         totalQuestions: number,
-        package_items: Array<Store.ExamPackageHint>
+        package_items: Array<Store.ExamPackageHint>,
+        is_free: API.Boolean
     }
 }

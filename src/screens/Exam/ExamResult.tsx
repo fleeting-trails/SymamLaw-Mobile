@@ -51,7 +51,7 @@ function ExamResult({ route }: PropTypes.ExamResult) {
           </View>
           <View className="flex flex-col gap-2">
             {currentExamResult.exam.question.map((q, i) => (
-              <View>
+              <View key={`${q.id}_${i}`}>
                 <View key={q.id} className="flex flex-row justify-between">
                   <CustomText
                     variant="500"
@@ -89,9 +89,9 @@ type MCQQuestionViewerProps = {
 };
 function MCQQuestionViewer({ options }: MCQQuestionViewerProps) {
   const renderCorrectionMarkings = (option: Store.ExamOptionsResultVariant) => {
-    if (option.is_correct === "1") {
+    if (option.is_correct === 1) {
       return <CheckmarkRounded className="text-green-500 h-2 w-2" />;
-    } else if (option.is_correct === "0" && option.is_user_submitted) {
+    } else if (option.is_correct === 0 && option.is_user_submitted) {
       return <CrossIconRounded className="text-red-500 h-2 w-2" />;
     } else {
       return <View></View>;
@@ -100,7 +100,7 @@ function MCQQuestionViewer({ options }: MCQQuestionViewerProps) {
   return (
     <View className="gap-1">
       {options.map((op) => (
-        <View className="flex flex-row gap-1 items-center">
+        <View key={op.id} className="flex flex-row gap-1 items-center">
           <View className="h-4 w-4 mr-2">{renderCorrectionMarkings(op)}</View>
           <CustomText key={op.id}>{op.option_text}</CustomText>
         </View>

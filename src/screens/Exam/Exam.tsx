@@ -23,10 +23,12 @@ import useAppNavigation from "../../hooks/useAppNavigation";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 import {
+  logExamTracker,
   submitAttachmentUpload,
   submitExam,
 } from "../../redux/slices/exam/examSlice";
 import FormData from "form-data";
+import HtmlRenderer from "../../components/Renderer/HtmlRenderer";
 
 type CustomQuestionData = Store.ExamQuestion & {
   option_id?: Array<string>;
@@ -34,15 +36,25 @@ type CustomQuestionData = Store.ExamQuestion & {
   written_file?: Array<DocumentPicker.DocumentPickerAsset>;
 };
 type ScreenType = "exam" | "confirmation";
-export default function Exam() {
+export default function Exam({ route } : PropTypes.Exam) {
+  const dispatch = useAppDispatch();
+  // const { lecture_id, course_id } = route.params;
+  const lecture_id = route.params?.lecture_id;
+  const course_id = route.params?.course_id;
   const examState = useAppSelector((state) => state.exam);
   const currentExam = examState.currentExam;
-  const loading = examState.loading.fetchExamDetails;
+  const loading = examState.loading.fetchExamDetails || examState.loading.logExamTracker;
   const [currentScreen, setCurrentScreen] = useState<ScreenType>("exam");
   const [timeExpired, setTimeExpired] = useState(false);
   const [submittedData, setSubmittedData] = useState<
     CustomQuestionData[] | null
   >(null);
+
+  useEffect(() => {
+    if (currentExam) {
+      dispatch(logExamTracker(currentExam.id))
+    }
+  }, [])
 
   const handleExamEnd = (
     questionData: CustomQuestionData[],
@@ -70,6 +82,8 @@ export default function Exam() {
         submittedData={submittedData as CustomQuestionData[]}
         isTimeExpired={timeExpired}
         onReturnToQuestions={handleReturnToQuestions}
+        lecture_id={lecture_id}
+        course_id={course_id}
       />
     )
   );
@@ -280,7 +294,8 @@ function ExamScreen({ onExamEnd, examData }: ExamScreenProps) {
           <CustomText variant="500" className="text-lg">
             {currentQuestion.question_text}
           </CustomText>
-          <CustomText>{currentQuestion.description}</CustomText>
+          <HtmlRenderer html={currentQuestion.description} />
+          {/* <CustomText>{currentQuestion.description}</CustomText> */}
           <View className="mt-5">
             {questions[currentQuestionIndex].question_type === "mcq" ? (
               <MCQOptionsView
@@ -292,7 +307,7 @@ function ExamScreen({ onExamEnd, examData }: ExamScreenProps) {
                 }
                 options={questions[currentQuestionIndex].option}
                 type={
-                  questions[currentQuestionIndex].multiple_answer === "1"
+                  questions[currentQuestionIndex].multiple_answer === 1
                     ? "multiple"
                     : "single"
                 }
@@ -305,7 +320,7 @@ function ExamScreen({ onExamEnd, examData }: ExamScreenProps) {
                   attachments: questions[currentQuestionIndex].written_file,
                 }}
                 isShort={
-                  questions[currentQuestionIndex].is_short === "1"
+                  questions[currentQuestionIndex].is_short === 1
                     ? true
                     : false
                 }
@@ -386,6 +401,8 @@ type ExamConfirmationScreenProps = {
   submittedData: CustomQuestionData[];
   isTimeExpired?: boolean;
   onReturnToQuestions?: () => void;
+  lecture_id?: number,
+  course_id?: number
 };
 type ExamConfirmationScreenStateTypes = "confirmation" | "loading" | "feedback";
 function ExamConfirmationScreen({
@@ -393,6 +410,8 @@ function ExamConfirmationScreen({
   submittedData,
   onReturnToQuestions,
   examData,
+  lecture_id,
+  course_id
 }: ExamConfirmationScreenProps) {
   const theme = useAppTheme();
   const user = useAppSelector((state) => state.auth.user);
@@ -423,7 +442,7 @@ function ExamConfirmationScreen({
     submittedData.forEach((data) => {
       if (
         data.question_type === "written" &&
-        data.is_short !== "1" &&
+        data.is_short !== 1 &&
         data.written_file
       ) {
         noAttachments = false;
@@ -457,6 +476,8 @@ function ExamConfirmationScreen({
       user_id: (user as Store.UserData).id,
       exam_id: examData.id,
       submission_type: "submit",
+      lecture_id: lecture_id,
+      course_id: course_id,
       answers: submittedData.map((q) => {
         if (q.question_type === "written") {
           return {
@@ -572,15 +593,7 @@ type MCQOptionsViewProps = {
   ) => void;
   type: MCQOptionsType;
   defaultValue?: string[] | null;
-  options: {
-    id: number;
-    question_id: number;
-    option_text: string;
-    slug: string;
-    is_correct: number;
-    created_at: string;
-    updated_at: string;
-  }[];
+  options: Store.ExamQuestionOption[];
 };
 function MCQOptionsView({
   onChange,
@@ -662,7 +675,7 @@ function MCQOptionsView({
         value={selectedSingleAnswer}
         onValueChange={handleRadioChange}
       >
-        {options.map((option) => (
+        {[...options].sort((a, b) => a.option_index - b.option_index).map((option) => (
           <View key={option.id} className="flex flex-row gap-2">
             <RadioButton value={`${option.id}`} />
             <CustomText>{option.option_text}</CustomText>

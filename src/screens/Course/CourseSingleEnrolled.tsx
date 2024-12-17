@@ -24,22 +24,33 @@ import {
   DocumentIcon,
   ExamIcon,
   LiveIcon,
+  NextIcon,
   RecordedIcon,
   VideoIcon,
 } from "../../assets/Icons";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useCoursePurchaseAction from "../../hooks/useCoursePurchaseAction";
 import SnakbarPrimary from "../../components/Snackbar/SnackbarPrimary";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import { WebView } from "react-native-webview";
-import { isValidYouTubeVideo } from "../../utils/helpers";
+import {
+  convertToEmbedUrl,
+  getYoutubeVideoId,
+  isValidYouTubeVideo,
+} from "../../utils/helpers";
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import {
   AboutCourse,
+  CourseDiscussion,
   CourseResources,
   CourseRoutine,
 } from "./CourseEnrolledMoreViews";
+import {
+  getCourseSingle,
+  markLectureAsViewed,
+  refreshCourseSingle,
+} from "../../redux/slices/course/courseSlice";
 
 const LECTURE_ICON_MAP = ({
   lecture_type,
@@ -61,6 +72,7 @@ export default function CourseSingleEnrolled({
   data,
 }: PropTypes.CourseSingleEnrolled) {
   const theme = useAppTheme();
+  const dispatch = useAppDispatch();
   const styles = createStyles(theme);
   const { navigate } = useAppNavigation();
   const [selectedLecture, setSelectedLecture] =
@@ -68,16 +80,146 @@ export default function CourseSingleEnrolled({
   const [currentExpandedSectionIds, setCurrentExpandedSectionIds] = useState<
     number[]
   >([]);
+  const [currentPlayingLiveClass, setCurrentPlayingLiveClass] =
+    useState<null | Store.CourseOngoingLiveClass>(null);
+
+  const [currentSelectedTabIndex, setCurrentSelectedTabIndex] = useState(0);
+  const [markLectureViewedLoading, setMarkLectureViewedLoading] =
+    useState(false);
+
+  // This will be updated based on content size, the size will see expanded collapsed sections and resize itself based on that
+  // Also on tab change, it will resize accordingly
+  const [tabContentHeight, setTabContentHeight] = useState(0);
+  const [lecturePosition, setLecturePosition] = useState<{
+    section: Store.CourseSection | null;
+    current: Store.CourseLecture | null;
+    prev: Store.CourseLecture | null;
+    next: Store.CourseLecture | null;
+  }>({
+    section: null,
+    current: null,
+    prev: null,
+    next: null,
+  });
+
+  /**
+   * Lifecycle method
+   */
+
+  useEffect(() => {
+    if (currentSelectedTabIndex === 0) {
+      setTabContentHeight(300);
+    } else {
+      setTabContentHeight(20);
+    }
+  }, [
+    currentSelectedTabIndex,
+    currentExpandedSectionIds,
+    data.course_sections,
+  ]);
+  /**
+   * End lifecycle methods
+   */
 
   /**
    * Handler functions
    */
 
   const handleLectureSelect = (lecture: Store.CourseLecture) => {
+    setCurrentPlayingLiveClass(null);
     setSelectedLecture(lecture);
+    setLecturePosition(findLecturePosition(lecture.id));
+  };
+
+  const handleLiveClassWatchClick = (
+    liveClass: Store.CourseOngoingLiveClass
+  ) => {
+    setCurrentPlayingLiveClass(liveClass);
+  };
+  const handelTabChange = (tabIndex: number) => {
+    setCurrentSelectedTabIndex(tabIndex);
+  };
+  const handleCompleteAndNextPress = async () => {
+    if (selectedLecture) {
+      setMarkLectureViewedLoading(true);
+      try {
+        if (!selectedLecture.is_viewed) {
+          await dispatch(
+            markLectureAsViewed({
+              lecture_id: selectedLecture?.id,
+              course_id: data.id,
+            })
+          );
+          dispatch(refreshCourseSingle(data.slug));
+        }
+        const lecturePosition = findLecturePosition(selectedLecture.id);
+        if (
+          !lecturePosition.current ||
+          !lecturePosition.section ||
+          !lecturePosition.next
+        ) {
+          setMarkLectureViewedLoading(false);
+          return false;
+        }
+        setSelectedLecture(lecturePosition.next);
+        setLecturePosition(findLecturePosition(lecturePosition.next.id));
+      } catch (error) {
+        console.log("Error marking lecture as viewed", error);
+      }
+      setMarkLectureViewedLoading(false);
+    }
   };
   /**
    * End handler functions
+   */
+
+  /**
+   * Helper functions
+   */
+  function findLecturePosition(lectureId: number) {
+    const result: {
+      section: Store.CourseSection | null;
+      current: Store.CourseLecture | null;
+      prev: Store.CourseLecture | null;
+      next: Store.CourseLecture | null;
+    } = {
+      section: null,
+      current: null,
+      prev: null,
+      next: null,
+    };
+    if (!data.course_sections) return result;
+
+    const linearLectures: Store.CourseLecture[] = [];
+
+    data.course_sections.forEach((section) => {
+      section.lectures.forEach((lecture) => {
+        linearLectures.push(lecture);
+      });
+    });
+
+    const currentLectureIndex = linearLectures.findIndex(
+      (l) => l.id === lectureId
+    );
+    const section = data.course_sections.find((s) =>
+      s.lectures.find((l) => l.id === lectureId)
+    );
+
+    result.section = section ?? null;
+    result.current = linearLectures[currentLectureIndex];
+    result.next =
+      currentLectureIndex === linearLectures.length - 1
+        ? null
+        : linearLectures[currentLectureIndex + 1];
+    result.prev =
+      currentLectureIndex === 0
+        ? null
+        : linearLectures[currentLectureIndex - 1];
+
+    return result;
+  }
+  /**
+   * End helper functions
    */
 
   const tabs = [
@@ -108,55 +250,132 @@ export default function CourseSingleEnrolled({
         {/* <PdfViewer 
           source={{ uri: "https://backoffice.symamlaw.com/documents/cc-final-merged-quote-template-2.pdf" }}
         /> */}
-        {!selectedLecture ? (
-          <LinearGradient
-            colors={[
-              theme.colors.backgroundPrimary,
-              theme.colors.backgroundPrimaryLight,
-            ]}
-            locations={[0.6, 1]}
-            className="p-3 relative"
+        {data.is_live_class_ongoing && (
+          <View
+            className="w-full flex-row justify-between items-center py-1 pl-3 pr-1"
+            style={{ backgroundColor: theme.colors.primary }}
           >
-            <View className="absolute right-3 top-3 bg-red-600 rounded-[20px] px-3 py-1 flex-row items-center">
-              {data.course_type === "recorded" ? (
-                <RecordedIcon color={"#fff"} />
-              ) : (
-                <LiveIcon color={"#fff"} />
-              )}
-              <CustomText className="text-white ml-2">
-                {data.course_type === "recorded" ? "Recorded" : "Live"}
-              </CustomText>
-            </View>
-            <CustomText
-              variant="600"
-              lightText={true}
-              className="text-white text-xl mr-[130px]"
-            >
-              {" "}
-              {data.title}
+            <CustomText className="text-white" style={{ fontSize: 12 }}>
+              {currentPlayingLiveClass
+                ? "You are watching live class"
+                : "Live Class Ongoing"}
             </CustomText>
-
-            <View className="mt-3 ml-1">
+            {currentPlayingLiveClass ? (
+              <PrimaryButton
+                text="Close"
+                color="white"
+                className="py-1"
+                textStyle={{ fontSize: 12 }}
+                onPress={() => setCurrentPlayingLiveClass(null)}
+              />
+            ) : (
+              <PrimaryButton
+                color="white"
+                text="Watch"
+                className="py-1"
+                textStyle={{ fontSize: 12 }}
+                onPress={() =>
+                  handleLiveClassWatchClick(data.is_live_class_ongoing)
+                }
+              />
+            )}
+          </View>
+        )}
+        {!selectedLecture || currentPlayingLiveClass ? (
+          !currentPlayingLiveClass ? (
+            <LinearGradient
+              colors={[
+                theme.colors.backgroundPrimary,
+                theme.colors.backgroundPrimaryLight,
+              ]}
+              locations={[0.6, 1]}
+              className="p-3 relative"
+            >
+              <View className="absolute right-3 top-3 bg-red-600 rounded-[20px] px-3 py-1 flex-row items-center">
+                {data.course_type === "recorded" ? (
+                  <RecordedIcon color={"#fff"} />
+                ) : (
+                  <LiveIcon color={"#fff"} />
+                )}
+                <CustomText className="text-white ml-2">
+                  {data.course_type === "recorded" ? "Recorded" : "Live"}
+                </CustomText>
+              </View>
               <CustomText
-                variant="400"
-                style={{ fontSize: 16 }}
-                className="text-white"
+                variant="600"
+                lightText={true}
+                className="text-white text-xl mr-[130px]"
               >
-                {data.excerpt}
+                {" "}
+                {data.title}
               </CustomText>
-              <CustomText variant="300" className="text-white">
-                Last updated on{" "}
-                {moment(data.updated_at).format("Do MMMM, YYYY")}
-              </CustomText>
+
+              <View className="mt-3 ml-1">
+                <CustomText
+                  variant="400"
+                  style={{ fontSize: 16 }}
+                  className="text-white"
+                >
+                  {data.excerpt}
+                </CustomText>
+                <CustomText variant="300" className="text-white">
+                  Last updated on{" "}
+                  {moment(data.updated_at).format("Do MMMM, YYYY")}
+                </CustomText>
+              </View>
+            </LinearGradient>
+          ) : (
+            <View className="h-[200px] relative">
+              <WebView
+                source={{
+                  uri: convertToEmbedUrl(currentPlayingLiveClass.link),
+                }}
+                // javaScriptEnabled={true}
+                // allowsInlineMediaPlayback={true}
+                allowsFullscreenVideo={true}
+                className="flex-1 h-[200px]"
+              />
+              <View className="absolute right-3 top-3 bg-red-600 rounded-[20px] px-3 py-1 flex-row items-center">
+                <LiveIcon color={"#fff"} />
+                <CustomText className="text-white ml-2">
+                  {data.course_type === "recorded" ? "Recorded" : "Live"}
+                </CustomText>
+              </View>
             </View>
-          </LinearGradient>
+          )
         ) : (
-          <ContentView data={data} lecture={selectedLecture} />
+          <View className="h-[200px]">
+            <ContentView data={data} lecture={selectedLecture} />
+          </View>
         )}
         <View className="flex-1">
-          <TabPrimary tabs={tabs} />
+          <TabPrimary
+            // style={{ height: tabContentHeight }}
+            // style={{ height: 500 }}
+            tabs={tabs}
+            onIndexChange={handelTabChange}
+          />
         </View>
       </ScreenContainerNonScroll>
+      {selectedLecture &&
+        !(!lecturePosition.next && selectedLecture.is_viewed) &&
+        selectedLecture.lecture_type !== "exam" && (
+          <View className="absolute right-[20px] bottom-[50px]">
+            <PrimaryButton
+              onPress={handleCompleteAndNextPress}
+              icon={<NextIcon color={theme.colors.textLight} />}
+              color="primary"
+              text={
+                selectedLecture.is_viewed
+                  ? "Next"
+                  : !lecturePosition.next
+                  ? "Complete"
+                  : "Complete & Next"
+              }
+              loading={markLectureViewedLoading}
+            />
+          </View>
+        )}
     </View>
   );
 }
@@ -192,7 +411,7 @@ function CourseContent({
   };
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView>
       <List.Section>
         {data.course_sections?.map((section) => (
           <List.Accordion
@@ -215,6 +434,14 @@ function CourseContent({
                 title={lecture.title}
                 titleStyle={styles.accordionChildItemTitleStyle}
                 onPress={() => handleLecturePress(lecture)}
+                // background={selectedLecture?.id === lecture.id ? theme.colors.backgroundGrayLight : theme.colors.background}
+                style={{
+                  paddingHorizontal: 10,
+                  backgroundColor:
+                    selectedLecture?.id === lecture.id
+                      ? theme.colors.backgroundGrayLight
+                      : theme.colors.background,
+                }}
               />
             ))}
           </List.Accordion>
@@ -231,8 +458,28 @@ type ContentViewProps = {
 function ContentView({ data, lecture }: ContentViewProps) {
   const theme = useAppTheme();
   const styles = createStyles(theme);
+  const { navigate } = useAppNavigation();
   const [pdfDialogOpen, setPdfDialogOpen] = useState<boolean>(false);
   const [selectedPdf, setSelectedPdf] = useState<API.Document | null>(null);
+
+  /**
+   * Handler functions
+   */
+  const handleStartExam = (lecture : Store.CourseLecture) => {
+    if (lecture.exam) {
+      navigate("ExamStart", {
+        slug: lecture.exam.slug,
+        lecture_id: lecture.id,
+        course_id: data.id
+      });
+    } else {
+      console.log("No exam assigned!", lecture.exam);
+    }
+  };
+  /**
+   * End handler functions
+   */
+
   // For "video" type content
   if (lecture.lecture_type === "video") {
     if (isValidYouTubeVideo(lecture.link)) {
@@ -241,7 +488,8 @@ function ContentView({ data, lecture }: ContentViewProps) {
           source={{ uri: lecture.link }}
           javaScriptEnabled={true}
           allowsInlineMediaPlayback={true}
-          className="w-full"
+          allowsFullscreenVideo={true}
+          // className="w-full h-[200px]"
         />
       );
     } else {
@@ -262,7 +510,6 @@ function ContentView({ data, lecture }: ContentViewProps) {
               variant="600"
               className="text-white text-lg w-[300px] text-center"
             >
-              {console.log(lecture.link) as any}
               Cannot Load Video. Please try again later
             </CustomText>
           </View>
@@ -276,7 +523,11 @@ function ContentView({ data, lecture }: ContentViewProps) {
           style={{ width: 200, height: 200 }}
           source={require("../../assets/exam-graphic.png")}
         />
-        <PrimaryButton text="Start Exam" color="primary" />
+        <PrimaryButton
+          onPress={() => handleStartExam(lecture)}
+          text="Start Exam"
+          color="primary"
+        />
       </View>
     );
   } else if (lecture.lecture_type === "file") {
@@ -326,6 +577,7 @@ function CourseMore({
   selectedLecture: Store.CourseLecture | null;
 }) {
   const theme = useAppTheme();
+  const courseData = useAppSelector((state) => state.course.currentCourse);
   const [modalOpen, setModalOpen] = useState(false);
 
   const menuItems = [
@@ -351,8 +603,20 @@ function CourseMore({
       icon: "💬",
       id: "discussion",
       hasLectureDependency: true,
-      element: ({ open, setOpen, data }: PropTypes.CourseEnrolledMoreViews) => (
-        <AboutCourse open={open} setOpen={setOpen} data={data} />
+      element: ({
+        open,
+        setOpen,
+        data,
+        lecture,
+      }: PropTypes.CourseEnrolledMoreViews & {
+        lecture: Store.CourseLecture | null;
+      }) => (
+        <CourseDiscussion
+          open={open}
+          setOpen={setOpen}
+          data={data}
+          lecture={lecture as Store.CourseLecture}
+        />
       ),
     },
     {
@@ -425,7 +689,7 @@ function CourseMore({
               (!item.hasLectureDependency ||
                 (item.hasLectureDependency && selectedLecture)) && (
                 <TouchableOpacity
-                  key={index}
+                  key={`${index}_${item.title}`}
                   className="flex-row items-center space-x-4 p-3 rounded-lg"
                   style={{ backgroundColor: theme.colors.backgroundGrayLight }}
                   onPress={() => {
@@ -443,7 +707,7 @@ function CourseMore({
       {selectedMenu.element({
         open: modalOpen,
         setOpen: setModalOpen,
-        data: data,
+        data: courseData as Store.CourseData,
         lecture: selectedLecture,
       })}
     </View>

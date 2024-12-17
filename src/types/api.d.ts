@@ -43,5 +43,7 @@ namespace API {
         created_at: string
         updated_at: string
     }
-    type WaythinBoolean = "1" | "0"
+    type Boolean = 1 | 0
+    // type WaythinBoolean = "1" | "0"
+    type WaythinBoolean = API.Boolean
 }

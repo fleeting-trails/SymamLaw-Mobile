@@ -184,7 +184,7 @@ const getRenderType = ({
   useGoogleReader?: boolean;
 }) => {
   const { uri, base64 } = source;
-
+  console.log("Use google drive", useGoogleDriveViewer);
   if (useGoogleReader) {
     return "GOOGLE_READER";
   }
@@ -206,8 +206,11 @@ const getRenderType = ({
     return "DIRECT_BASE64";
   }
 
+  // if (uri !== undefined) {
+  //   return "URL_TO_BASE64";
+  // }
   if (uri !== undefined) {
-    return "URL_TO_BASE64";
+    return "DIRECT_URL";
   }
 
   return undefined;
@@ -296,34 +299,57 @@ const PdfViewer = ({
   }, [getWebviewSource, onError, renderType, source]);
 
   const isAndroid = useMemo(() => Platform.OS === "android", [Platform]);
+  console.log("Url", source.uri);
 
+  function isDocument(uri: undefined | string) {
+    const DOC_EXTENSIONS = ["pdf", "doc", "docx"];
+    if (!uri) return false;
+    const splitted = uri.split(".");
+    const extension = splitted[splitted.length - 1];
+    if (DOC_EXTENSIONS.includes(extension)) {
+      return true;
+    }
+    return false;
+  }
   return ready ? (
     <View style={[styles.container, style]}>
-      <WebView
-        {...{
-          onError,
-          onHttpError: onError,
-          onLoad: (event) => {
-            setRenderedOnce(true);
-            if (onLoad) {
-              onLoad(event);
-            }
-          },
-          onLoadEnd,
-          originWhitelist,
-          source: renderedOnce || !isAndroid ? sourceToUse : undefined,
-          style: [styles.webview, webviewStyle],
-        }}
-        allowFileAccess={isAndroid}
-        allowFileAccessFromFileURLs={isAndroid}
-        allowUniversalAccessFromFileURLs={isAndroid}
-        scalesPageToFit={Platform.select({ android: false })}
-        mixedContentMode={isAndroid ? "always" : undefined}
-        sharedCookiesEnabled={false}
-        startInLoadingState={!noLoader}
-        renderLoading={() => (noLoader ? <View /> : <Loader />)}
-        {...webviewProps}
-      />
+      {!isAndroid ? (
+        <WebView
+          {...{
+            onError,
+            onHttpError: onError,
+            onLoad: (event) => {
+              setRenderedOnce(true);
+              if (onLoad) {
+                onLoad(event);
+              }
+            },
+            onLoadEnd,
+            originWhitelist,
+            source: renderedOnce || !isAndroid ? sourceToUse : undefined,
+            // source: renderedOnce ? undefined : sourceToUse,
+            style: [styles.webview, webviewStyle],
+          }}
+          allowFileAccess={isAndroid}
+          allowFileAccessFromFileURLs={isAndroid}
+          allowUniversalAccessFromFileURLs={isAndroid}
+          scalesPageToFit={Platform.select({ android: false })}
+          mixedContentMode={isAndroid ? "always" : undefined}
+          sharedCookiesEnabled={false}
+          startInLoadingState={!noLoader}
+          renderLoading={() => (noLoader ? <View /> : <Loader />)}
+          {...webviewProps}
+        />
+      ) : (
+        <WebView
+          source={{
+            uri: isDocument(source.uri)
+              ? `https://drive.google.com/viewerng/viewer?embedded=true&url=${source.uri}`
+              : (source.uri as string),
+          }}
+          style={[styles.webview, webviewStyle]}
+        />
+      )}
     </View>
   ) : (
     <View style={styles.loaderContainer}>{!noLoader && <Loader />}</View>

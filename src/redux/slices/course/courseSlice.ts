@@ -16,14 +16,17 @@ const initialState: Store.Course = {
         },
     },
     currentCourse: null,
+    currentCourseComments: null,
     loading: {
         listCourses: false,
         loadMoreCourses: false,
         getCourseSingle: false,
+        refreshCourseSingle: false,
         markLectureAsViewed: false,
+        getComments: false,
         commentOnLecture: false,
         replyOnLectureComment: false,
-        getSubscriptionRedirectLink: false
+        getSubscriptionRedirectLink: false,
     },
     error: null
 }
@@ -77,6 +80,18 @@ export const getCourseSingle = createAsyncThunk(
         }
     },
 )
+export const refreshCourseSingle = createAsyncThunk(
+    'refreshCourseSingle',
+    async (slug: string, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get(`/user/course/${slug}`)
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
 
 type MarkLectureAsViewedProps = {
     lecture_id: number,
@@ -94,6 +109,20 @@ export const markLectureAsViewed = createAsyncThunk(
         }
     },
 )
+
+export const getComments = createAsyncThunk(
+    'getComments',
+    async (lecture_id : number, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get(`/admin/comments/${lecture_id}`);
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 
 type CommentOnLectureProps = {
     course_id: number,
@@ -121,7 +150,7 @@ export const replyOnLectureComment = createAsyncThunk(
     'replyOnLectureComment',
     async (body: ReplyOnLectureComment, thunkAPI) => {
         try {
-            const res = await axiosExternal.post(`/user/course/lecture/comment-reply/${body.lecture_comment_id}?id=${body.lecture_comment_id}`, body);
+            const res = await axiosExternal.post(`/user/course/lecture/comment-reply?id=${body.lecture_comment_id}`, body);
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
         } catch (error) {
@@ -206,6 +235,20 @@ export const courseSlice = createSlice({
             state.loading.getCourseSingle = false;
             state.error = action.error;
         })
+        // Refresh single course
+        builder.addCase(refreshCourseSingle.pending, (state) => {
+            state.loading.refreshCourseSingle = true;
+        })
+        builder.addCase(refreshCourseSingle.fulfilled, (state, action) => {
+            state.loading.refreshCourseSingle = false;
+            if (action.payload) {
+                state.currentCourse = action.payload.data.data;
+            }
+        })
+        builder.addCase(refreshCourseSingle.rejected, (state, action) => {
+            state.loading.refreshCourseSingle = false;
+            state.error = action.error;
+        })
 
         // Mark lecture as viewed
         builder.addCase(markLectureAsViewed.pending, (state) => {
@@ -217,6 +260,20 @@ export const courseSlice = createSlice({
         builder.addCase(markLectureAsViewed.rejected, (state, action) => {
             state.loading.markLectureAsViewed = false;
             state.error = action.error;
+        })
+
+        // Get comments
+        builder.addCase(getComments.pending, (state) => {
+            state.loading.getComments = true;
+        })
+        builder.addCase(getComments.fulfilled, (state, action) => {
+            state.loading.getComments = false;
+            if (action.payload) {
+                state.currentCourseComments = action.payload.data;
+            }
+        })
+        builder.addCase(getComments.rejected, (state) => {
+            state.loading.getComments = false;
         })
 
         // Comment on lecture

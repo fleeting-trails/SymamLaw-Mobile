@@ -920,3 +920,48 @@ export const DocumentIcon = ({ color = "#000", scale = 1, ...props }) => (
     />
   </Svg>
 )
+
+export const NextIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M15.935 12.626c-.254 1.211-1.608 2.082-4.315 3.822-2.945 1.893-4.417 2.84-5.61 2.475a2.765 2.765 0 0 1-1.088-.635C4 17.418 4 15.612 4 12s0-5.418.922-6.288a2.766 2.766 0 0 1 1.089-.635c1.192-.365 2.664.582 5.609 2.475 2.707 1.74 4.06 2.61 4.315 3.822.087.412.087.84 0 1.252Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5}
+      d="M20 5v14"
+    />
+  </Svg>
+)
+export const ReplyIcon = ({ color = "#000", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M4.808 9.441 6.774 7.47C8.19 6.048 8.744 5.284 9.51 5.554c.957.337.642 2.463.642 3.18 1.486 0 3.032-.131 4.497.144C19.487 9.787 21 13.715 21 18c-1.37-.97-2.737-2.003-4.382-2.452-2.054-.562-4.348-.294-6.465-.294 0 .718.314 2.844-.642 3.181-.868.306-1.321-.494-2.737-1.915l-1.966-1.972C3.603 13.338 3 12.733 3 11.995c0-.74.603-1.344 1.808-2.554Z"
+    />
+  </Svg>
+)

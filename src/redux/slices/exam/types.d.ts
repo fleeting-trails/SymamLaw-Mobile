@@ -24,7 +24,8 @@ namespace Store {
             submitExam: boolean,
             listAttemptedExams: boolean,
             getExamResult: boolean,
-            listRecommendedExams: boolean
+            listRecommendedExams: boolean,
+            logExamTracker: boolean
         },
         error: any
     }
@@ -45,7 +46,7 @@ namespace Store {
         duration: string
         price: string
         discount: string
-        is_free: string
+        is_free: API.Boolean
         status: string
         total_marks: string
         pass_marks: string
@@ -95,8 +96,8 @@ namespace Store {
         duration: string
         price: string
         discount: any
-        is_free: string
-        status: string
+        is_free: API.Boolean
+        status: API.Boolean
         total_marks: string
         pass_marks: string
         total_questions: string
@@ -121,36 +122,37 @@ namespace Store {
         id: number
         title: string
         slug: string
-        status: string
+        status: API.Boolean
         created_at: string
         updated_at: string
     }
     type ExamSubCategoryData = ExamCategoryData
     type ExamQuestion = {
         id: number
-        exam_id: string
+        exam_id: number
         question_text: string
         slug: string
         question_type: ExamQuestionType
-        is_short: API.WaythinBoolean
-        marks: string
+        is_short: API.Boolean
+        marks: number
         image: any
         description: string
-        multiple_answer: API.WaythinBoolean
-        status: string
-        image_id: any
+        multiple_answer: API.Boolean
+        status: API.Boolean
+        image_id: null | number
         created_at: string
         updated_at: string
-        option: Option[]
+        option: ExamQuestionOption[]
     };
     type ExamQuestionOption = {
         id: number;
         question_id: number;
         option_text: string;
+        option_index: number;
         slug: string;
-        is_correct: number;
-        created_at: string;
-        updated_at: string;
+        // is_correct: number;
+        // created_at: string;
+        // updated_at: string;
     };
     type ExamAttachUploadResponse = {
         question_id: number,

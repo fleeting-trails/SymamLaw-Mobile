@@ -45,7 +45,8 @@ const initialState: Store.Exam = {
         submitExam: false,
         listAttemptedExams: false,
         getExamResult: false,
-        listRecommendedExams: false
+        listRecommendedExams: false,
+        logExamTracker: false
     },
     error: null
 }
@@ -89,11 +90,23 @@ export const fetchExamSubCategories = createAsyncThunk(
     },
 )
 
+
+
+type FetchExamDetailsProps = {
+    slug: string,
+    course_id?: number,
+    lecture_id?: number
+}
 export const fetchExamDetails = createAsyncThunk(
     'fetchExamDetails',
-    async (slug: string, thunkAPI) => {
+    async (data: FetchExamDetailsProps, thunkAPI) => {
         try {
-            const res = await axiosExternal(`/user/exam/single/${slug}`)
+            const res = await axiosExternal(`/user/exam/single/${data.slug}`, {
+                params: {
+                    course_id: data.course_id,
+                    lecture_id: data.lecture_id
+                }
+            })
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
         } catch (error) {
@@ -156,6 +169,24 @@ export const listRecommendedExams = createAsyncThunk(
             const res = await axiosExternal.get(`/user/exam/recommend`)
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+export const logExamTracker = createAsyncThunk(
+    'logExamTracker',
+    async (id: number, thunkAPI) => {
+        try {
+            const res = await axiosExternal.post('/user/exam/tracker', {
+                params: {
+                    exam_id: id
+                }
+            })
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
 
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
@@ -297,6 +328,16 @@ export const examSliceSlice = createSlice({
         builder.addCase(listRecommendedExams.rejected, (state, action) => {
             state.loading.listRecommendedExams = false;
             state.error = action.error;
+        })
+
+        builder.addCase(logExamTracker.pending, (state) => {
+            state.loading.logExamTracker = true;
+        })
+        builder.addCase(logExamTracker.fulfilled, (state) => {
+            state.loading.logExamTracker = false;
+        })
+        builder.addCase(logExamTracker.rejected, (state) => {
+            state.loading.logExamTracker = false;
         })
     },
 

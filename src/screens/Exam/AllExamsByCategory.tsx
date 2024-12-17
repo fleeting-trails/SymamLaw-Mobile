@@ -53,7 +53,8 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
                 name: item.title,
                 duration: parseInt(item.duration),
                 totalQuestions: parseInt(item.total_questions),
-                package_items: item.package_items
+                package_items: item.package_items,
+                is_free: item.is_free
               }}
               // onPress={handleExamCardPress}
             />
