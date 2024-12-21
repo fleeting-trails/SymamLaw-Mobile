@@ -18,7 +18,8 @@ const initialState: Store.Blog = {
     loading: {
         fetchBlogs: false,
         fetchMoreBlogs: false,
-        fetchBlogSingle: false
+        fetchBlogSingle: false,
+        searchBlogs: false
     },
     error: null,
 };
@@ -81,6 +82,26 @@ export const fetchBlogSingle = createAsyncThunk(
     },
 )
 
+export const searchBlogs = createAsyncThunk(
+    'searchBlogs',
+    async (query: string, thunkAPI) => {
+        try {
+            const res = await axiosExternal.get(`/search`, {
+                params: {
+                    query,
+                    type: 'blog'
+                }
+            })
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 
 
 const blogSlice = createSlice({
@@ -136,6 +157,23 @@ const blogSlice = createSlice({
         })
         builder.addCase(fetchBlogSingle.rejected, (state, action) => {
             state.loading.fetchBlogSingle = false;
+            state.error = action.error;
+        })
+
+        // Search Blogs
+        builder.addCase(searchBlogs.pending, (state) => {
+            state.loading.searchBlogs = true;
+        })
+        builder.addCase(searchBlogs.fulfilled, (state, action) => {
+            state.loading.searchBlogs = false;
+            if (action.payload) {
+                const { data, pagination } = tailorPaginationResponse(action.payload.data);
+                state.data.posts = data;
+                state.data.pagination = pagination;
+            }
+        })
+        builder.addCase(searchBlogs.rejected, (state, action) => {
+            state.loading.searchBlogs = false;
             state.error = action.error;
         })
     },

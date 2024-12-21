@@ -993,3 +993,143 @@ export const ResourcesIcon = ({ color = "#fff", scale = 1, ...props }) => (
     />
   </Svg>
 )
+
+export const LibraryIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M2 7c0-1.4 0-2.1.272-2.635a2.5 2.5 0 0 1 1.093-1.093C3.9 3 4.6 3 6 3c1.4 0 2.1 0 2.635.272a2.5 2.5 0 0 1 1.093 1.093C10 4.9 10 5.6 10 7v10c0 1.4 0 2.1-.272 2.635a2.5 2.5 0 0 1-1.093 1.092C8.1 21 7.4 21 6 21c-1.4 0-2.1 0-2.635-.273a2.5 2.5 0 0 1-1.093-1.092C2 19.1 2 18.4 2 17V7Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M6 17h.009"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M2 7h8M11.449 8.268c-.355-1.33-.533-1.995-.41-2.572a2.46 2.46 0 0 1 .756-1.316c.437-.395 1.1-.573 2.424-.93 1.324-.356 1.987-.534 2.561-.411.506.108.965.374 1.31.76.394.438.572 1.103.927 2.433l2.534 9.5c.355 1.33.533 1.995.41 2.572a2.46 2.46 0 0 1-.756 1.316c-.437.395-1.1.573-2.424.93-1.324.356-1.986.534-2.561.411a2.447 2.447 0 0 1-1.31-.76c-.394-.438-.572-1.103-.927-2.433l-2.534-9.5Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="m17.781 16.695.009-.002"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="m12 8 6.5-2"
+    />
+  </Svg>
+)
+export const MoneyIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeWidth={1.5}
+      d="M12 18c-1.332.622-3.083 1-5 1-1.066 0-2.08-.117-3-.327-.591-.136-.887-.203-1.241-.484a2.367 2.367 0 0 1-.565-.709C2 17.073 2 16.677 2 15.886V5.114c0-.985 1.04-1.661 2-1.441.92.21 1.934.327 3 .327 1.917 0 3.668-.378 5-1 1.332-.622 3.083-1 5-1 1.066 0 2.08.117 3 .327.591.136.887.204 1.241.484.202.16.454.476.565.709.194.408.194.803.194 1.594v10.772c0 .985-1.04 1.661-2 1.441-.92-.21-1.934-.327-3-.327-1.917 0-3.668.378-5 1Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5}
+      d="M2 21c1.333.622 3.083 1 5 1 1.917 0 3.668-.378 5-1 1.332-.622 3.083-1 5-1 1.917 0 3.668.378 5 1"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeWidth={1.5}
+      d="M14.5 10.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M5.5 11.5v.009M18.5 9.492v.01"
+    />
+  </Svg>
+)
+
+export const CartIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5}
+      d="M8 16h7.263c4.488 0 5.17-2.82 5.998-6.93.239-1.187.358-1.78.071-2.175-.287-.395-.837-.395-1.938-.395H6"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.5}
+      d="M8 16 5.379 3.515A2 2 0 0 0 3.439 2H2.5"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M8.88 16h-.411C7.105 16 6 17.151 6 18.571a.42.42 0 0 0 .411.429H17.5"
+    />
+    <Circle
+      scale={scale}
+      cx={10.5}
+      cy={20.5}
+      r={1.5}
+      stroke="currentColor"
+      strokeWidth={1.5}
+    />
+    <Circle
+      scale={scale}
+      cx={17.5}
+      cy={20.5}
+      r={1.5}
+      stroke="currentColor"
+      strokeWidth={1.5}
+    />
+  </Svg>
+)

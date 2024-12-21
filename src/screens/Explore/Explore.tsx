@@ -118,18 +118,20 @@ export default function Explore() {
     <ScreenContainerNonScroll>
       <View className="flex-row items-center">
         <InputPrimary
+          returnKeyType="search"
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
+          onSubmitEditing={handleSearchClick}
           containerStyle={{ flex: 1, height: "100%" }}
           placeholder="Search for content..."
         />
-        <PrimaryButton
+        {/* <PrimaryButton
           className="ml-2"
           color="primary"
           icon={<SearchIcon color={theme.colors.textLight} />}
           text="Search"
           onPress={handleSearchClick}
-        />
+        /> */}
       </View>
 
       <ScreenLoading isLoading={loading}>

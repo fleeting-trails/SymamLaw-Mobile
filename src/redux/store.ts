@@ -6,6 +6,8 @@ import examSlice from './slices/exam/examSlice'
 import packageSlice from './slices/packages/packageSlice'
 import courseSlice from './slices/course/courseSlice'
 import blogSlice from './slices/blog/blogSlice'
+import librarySlice from './slices/library/librarySlice'
+import checkoutSlice from './slices/checkout/checkoutSlice'
 // ...
 
 export const store = configureStore({
@@ -17,6 +19,8 @@ export const store = configureStore({
     package: packageSlice,
     course: courseSlice,
     blog: blogSlice,
+    library: librarySlice,
+    checkout: checkoutSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false

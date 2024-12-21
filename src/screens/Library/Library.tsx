@@ -8,72 +8,82 @@ import {
   NativeSyntheticEvent,
   TextInputSubmitEditingEventData,
 } from "react-native";
-import InputPrimary from "../../atoms/Input/InputPrimary";
-import { ScreenContainer } from "../../components";
-import { ScrollView } from "moti";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
-  fetchBlogs,
-  fetchMoreBlogs,
-  searchBlogs,
-} from "../../redux/slices/blog/blogSlice";
-import BlogCard from "../../components/BlogCard.tsx/BlogCard";
+  fetchBooklist,
+  fetchMoreBooks,
+  searchBooks,
+} from "../../redux/slices/library/librarySlice";
 import { ScreenContainerNonScroll } from "../../components/ScreenContainer/ScreenContainerNonScroll";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
-import useAppNavigation from "../../hooks/useAppNavigation";
+import BookCard from "../../components/BookCard/BookCard";
 import CustomText from "../../atoms/CustomText/CustomText";
+import InputPrimary from "../../atoms/Input/InputPrimary";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
-export default function Resources() {
+export default function Library() {
   const styles = createStyles();
   const dispatch = useAppDispatch();
-  const blogState = useAppSelector((state) => state.blog);
-  const loading = blogState.loading.fetchBlogs;
-  const loadMore = blogState.loading.fetchMoreBlogs;
-  const blogs = blogState.data.posts;
+  const libraryState = useAppSelector((state) => state.library);
+  const loading = libraryState.loading.fetchBooklist || libraryState.loading.searchBooks; 
+  const loadMore = libraryState.loading.fetchMoreBooks;
+  const books = libraryState.list.data;
+  const user = useAppSelector((state) => state.auth.user);
   const { navigate } = useAppNavigation();
 
   useEffect(() => {
-    dispatch(fetchBlogs(null));
+    dispatch(fetchBooklist());
   }, []);
 
   /**
    * Handler functions
    */
-  const handleLoadMore = () => {
-    try {
-      dispatch(fetchMoreBlogs());
-    } catch (error) {
-      console.log("Failed to load more blogs", error);
+  const handlePress = () => {
+    if (!user) {
+        navigate("Login");
+        return;
     }
   };
   const handleSearch = (
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>
   ) => {
-    dispatch(searchBlogs(event.nativeEvent.text));
+    if (event.nativeEvent.text === "") {
+      dispatch(fetchBooklist());
+    } else {
+      dispatch(searchBooks(event.nativeEvent.text));
+    }
   };
+  const handleLoadMore = () => {
+    try {
+      dispatch(fetchMoreBooks());
+    } catch (error) {
+      console.log("Failed to load more books", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Books", books);
+  }, [books])
   /**
    * End handler functions
    */
-  const handlePress = (data: Store.BlogListData) => {
-    navigate("BlogSingle", { id: data.id });
-  };
   return (
     <ScreenContainerNonScroll>
-      {/* <InputPrimary
+      <InputPrimary
         returnKeyType="search"
-        placeholder="Start Searching Blogs..."
+        placeholder="Start Searching Books..."
         onSubmitEditing={handleSearch}
         inputStyle={{
           paddingVertical: 6,
         }}
-      /> */}
-      <ScreenLoading isLoading={loading} label="Loading Blogs...">
+      />
+      <ScreenLoading isLoading={loading} label="Loading Books...">
         <View className="flex-1">
-          {blogs?.length !== 0 ? (
+          {books?.length !== 0 ? (
             <FlatList
-              data={blogs}
+              data={books}
               renderItem={({ item }) => (
-                <BlogCard onPress={handlePress} data={item} />
+                <BookCard onPress={handlePress} data={item} />
               )}
               ListFooterComponent={() =>
                 loadMore && (
@@ -103,7 +113,7 @@ export default function Resources() {
                   className="text-center text-2xl w-[200px]"
                   variant="500"
                 >
-                  {"No Blogs Found!!"}
+                  {"No Books Found!!"}
                 </CustomText>
               </View>
             </View>
@@ -115,11 +125,5 @@ export default function Resources() {
 }
 
 const createStyles = () => {
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "white",
-      padding: 16,
-    },
-  });
+  return StyleSheet.create({});
 };

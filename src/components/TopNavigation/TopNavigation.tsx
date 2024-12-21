@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import {
   CaretLeftIcon,
+  CartIcon,
   HamburgerIcon,
   LogoutIcon,
   NotificationIcon,
@@ -34,6 +35,7 @@ export function TopNavigation({
   const header = useAppSelector((state) => state.header);
   const { navigate, navigator } = useAppNavigation();
   const user = useAppSelector((state) => state.auth.user);
+  const checkoutItemsTotal = useAppSelector((state) => state.checkout.items.length);
   const styles = createStyles({ theme });
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
   const [notificationDropdownVisible, setNotificationDropdownVisible] =
@@ -44,6 +46,9 @@ export function TopNavigation({
   };
   const handleNotificationIconPress = () => {
     setNotificationDropdownVisible(false);
+  };
+  const handleCartIconPress = () => {
+    navigate("Cart");
   };
   const handleHamburgerClick = () => {
     setSidenavOpen(true);
@@ -80,9 +85,15 @@ export function TopNavigation({
           </View>
           <View style={styles.actionIconsContainer}>
             {user && (
-              <IconButtonCustom onPress={handleNotificationIconPress}>
-                <NotificationIcon color={theme.colors.primaryGray} />
-              </IconButtonCustom>
+              <View className="relative">
+                {checkoutItemsTotal !== 0 && <View className="absolute -top-0 -right-0 bg-red-600 items-center justify-center h-4 w-4 rounded-full">
+                  <CustomText className="text-white">{checkoutItemsTotal}</CustomText>
+                </View>}
+                <IconButtonCustom onPress={handleCartIconPress}>
+                  {/* <NotificationIcon color={theme.colors.primaryGray} /> */}
+                  <CartIcon color={theme.colors.primaryGray} scale={1.3} />
+                </IconButtonCustom>
+              </View>
             )}
             {!user ? (
               <Menu
@@ -199,7 +210,7 @@ const createStyles = ({ theme }: { theme: Config.Theme }) => {
       borderRadius: 30,
       objectFit: "cover",
       borderColor: theme.colors.primary,
-      borderWidth: 2
+      borderWidth: 2,
     },
     spacer: {
       height: 60,

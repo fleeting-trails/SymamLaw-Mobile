@@ -8,7 +8,8 @@ namespace Store {
         loading: {
             fetchBlogs: boolean,
             fetchMoreBlogs: boolean,
-            fetchBlogSingle: boolean
+            fetchBlogSingle: boolean,
+            searchBlogs: boolean
         };
         error: any;
     }

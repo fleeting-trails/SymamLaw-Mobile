@@ -8,10 +8,11 @@ import MyLearning from "./MyLearnings/MyLearning";
 import Saved from "./Saved/Saved";
 import Account from "./Account/Account";
 import { RouteProp, ParamListBase } from "@react-navigation/native";
-import { AccountIconFilled, HomeIcon, PlayIconFilled, ResourcesIcon, SaveIconFilled, SearchIcon } from "../assets/Icons";
+import { AccountIconFilled, HomeIcon, LibraryIcon, PlayIconFilled, ResourcesIcon, SaveIconFilled, SearchIcon } from "../assets/Icons";
 import { useTheme } from "react-native-paper";
 import { useAppSelector } from "../redux/hooks";
 import Resources from "./Resources/Resources";
+import Library from "./Library/Library";
 
 export default function HomeTabs() {
   const theme = useTheme<Config.Theme>();
@@ -26,8 +27,8 @@ export default function HomeTabs() {
       return <PlayIconFilled />
     } else if (route.name === "Resources") {
       return <ResourcesIcon scale={1.2} />
-    } else if (route.name === "Account") {
-      return <AccountIconFilled />
+    } else if (route.name === "Library") {
+      return <LibraryIcon scale={1.1} />
     }
 
     // You can return any component that you like here!
@@ -62,7 +63,7 @@ export default function HomeTabs() {
       <Tab.Screen name="Explore" component={Explore} options={{ headerShown: false }} />
       <Tab.Screen name="My Learning" component={MyLearning} options={{ headerShown: false }} />
       <Tab.Screen name="Resources" component={Resources} options={{ headerShown: false }} />
-      <Tab.Screen name="Account" component={Account} options={{ headerShown: false }} />
+      <Tab.Screen name="Library" component={Library} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
