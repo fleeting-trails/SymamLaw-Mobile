@@ -965,3 +965,31 @@ export const ReplyIcon = ({ color = "#000", scale = 1, ...props }) => (
     />
   </Svg>
 )
+
+export const ResourcesIcon = ({ color = "#fff", scale = 1, ...props }) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24 * scale}
+    height={24 * scale}
+    fill="none"
+    color={color}
+    {...props}
+  >
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5 * scale}
+      d="M10.5 8h8m-8 4H13m5.5 0H16m-5.5 4H13m5.5 0H16M7 7.5H6c-1.886 0-2.828 0-3.414.586C2 8.672 2 9.614 2 11.5V18a2.5 2.5 0 0 0 5 0V7.5Z"
+    />
+    <Path
+      scale={scale}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5 * scale}
+      d="M16 3.5h-5c-.93 0-1.395 0-1.776.102a3 3 0 0 0-2.122 2.122C7 6.105 7 6.57 7 7.5V18a2.5 2.5 0 0 1-2.5 2.5H16c2.828 0 4.243 0 5.121-.879C22 18.743 22 17.328 22 14.5v-5c0-2.828 0-4.243-.879-5.121C20.243 3.5 18.828 3.5 16 3.5Z"
+    />
+  </Svg>
+)

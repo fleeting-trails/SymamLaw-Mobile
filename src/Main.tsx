@@ -28,6 +28,7 @@ import PackageBuyFeedback from "./screens/Package/PackageBuyFeedback";
 import PackageSingle from "./screens/Package/PackageSingle";
 import CourseListScreen from "./screens/Course/CourseListScreen";
 import CourseSingleScreen from "./screens/Course/CourseSingleScreen";
+import BlogSingle from "./screens/Resources/BlogSingle";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,6 +72,7 @@ export default function Main() {
           <Stack.Screen name="PackageSingle" component={PackageSingle} />
           <Stack.Screen name="CourseList" component={CourseListScreen} />
           <Stack.Screen name="CourseSingle" component={CourseSingleScreen} />
+          <Stack.Screen name="BlogSingle" component={BlogSingle} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>
