@@ -60,10 +60,7 @@ export default function Library() {
       console.log("Failed to load more books", error);
     }
   };
-
-  useEffect(() => {
-    console.log("Books", books);
-  }, [books])
+  
   /**
    * End handler functions
    */

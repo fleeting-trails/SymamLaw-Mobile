@@ -22,6 +22,7 @@ import { EventRegister } from "react-native-event-listeners";
 import { fetchUserProfile } from "../redux/slices/auth/auth";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { listRecommendedExams } from "../redux/slices/exam/examSlice";
+import { initializeCheckout } from "../redux/slices/checkout/checkoutSlice";
 
 function useInitialize() {
   // const eventEmitter = new NativeEventEmitter();
@@ -91,6 +92,14 @@ function useInitialize() {
     }));
   };
 
+  const initializeCart = async () => {
+    try {
+      dispatch(initializeCheckout())
+    } catch (error) {
+      console.log("Failed while initializing cart", error);
+    }
+  }
+
   useEffect(() => {
     dispatch(setDarkTheme(colorScheme !== "light"));
     Appearance.addChangeListener(({ colorScheme }) =>
@@ -107,6 +116,7 @@ function useInitialize() {
   useEffect(() => {
     if (user) {
       initializeRecommendedExams();
+      initializeCart();
     } else if (!user && !loadingBySection.user) {
       setLoadingBySection((prevState) => ({
         ...prevState,

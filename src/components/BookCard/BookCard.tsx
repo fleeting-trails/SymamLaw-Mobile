@@ -8,7 +8,9 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   addCheckoutItem,
   removeCheckoutItem,
+  removeCheckoutItemFull,
 } from "../../redux/slices/checkout/checkoutSlice";
+import { calculateDiscount } from "../../utils/helpers";
 
 export default function BookCard({ data, onPress }: PropTypes.BookCard) {
   const styles = createStyles();
@@ -36,7 +38,7 @@ export default function BookCard({ data, onPress }: PropTypes.BookCard) {
   };
 
   const handleRemoveFromCheckout = () => {
-    dispatch(removeCheckoutItem(data.id));
+    dispatch(removeCheckoutItemFull(data.id));
   };
   /**
    * End Handler functions
@@ -94,24 +96,16 @@ export default function BookCard({ data, onPress }: PropTypes.BookCard) {
 }
 
 const RenderPrice = ({ data }: { data: Store.BookListData }) => {
-  if (data.discount === 0) {
+  if (!data.discount || data.discount === 0) {
     return (
-      <CustomText className="text-[#333333] font-bold">{data.price}</CustomText>
-    );
-  } else if (data.discount_type === "fixed") {
-    const finalPrice = data.price - data.discount;
-    return (
-      <View className="flex-row items-center gap-2 mt-[2px] ml-[2px]">
-        <CustomText className="text-[#333333] line-through">
-          {data.price}৳
-        </CustomText>
+      <View className="gap-2 mt-[2px] ml-[2px]">
         <CustomText className="text-[#333333] font-bold">
-          {finalPrice}৳
+          {data.price}৳
         </CustomText>
       </View>
     );
   } else {
-    const finalPrice = data.price - (data.price * data.discount) / 100;
+    const finalPrice = calculateDiscount(data.discount_type, data.price, data.discount);
     return (
       <View className="flex-row items-center gap-2 mt-[2px] ml-[2px]">
         <CustomText className="text-[#333333] line-through">
@@ -140,7 +134,6 @@ const RenderCheckoutButton = ({
     return (
       <View className="flex-row items-center gap-2">
         <View className="relative flex-1">
-          
           <PrimaryButton
             color="primary"
             text={`Add More`}

@@ -158,3 +158,17 @@ export function convertToTimeAgo(inputTime : string) {
   }
 }
 
+
+export const calculateDiscount = (type : "percentage" | "fixed", originalPrice : number, discount : number) => {
+  if (!discount || discount === 0) {
+    return originalPrice;
+  }
+  
+  if (type === "percentage") {
+    return originalPrice - (originalPrice * (discount / 100));
+  } else if (type === "fixed") {
+    return originalPrice - discount;
+  } else {
+    return originalPrice;
+  }
+}

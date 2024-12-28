@@ -6,7 +6,12 @@ namespace Store {
             subtotal: number;
             delivery: number;
         }
-        loading: boolean;
+        loading: {
+            initializeCheckout: boolean,
+            addCheckoutItem: boolean,
+            removeCheckoutItem: boolean,
+            removeCheckoutItemFull: boolean
+        };
         error: any;
     }
     type CheckoutItem = {
