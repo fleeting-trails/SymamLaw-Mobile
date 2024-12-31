@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native"
 import { useTheme, Switch } from "react-native-paper";
 import { Dimensions } from "react-native";
 import React from "react";
-import { CompletedExamsIcon, FAQIcon, HomeIcon, LogoWithText, MyCoursesIcon, SettingsIcon, SupportIcon } from "../../assets/Icons";
+import { CompletedExamsIcon, FAQIcon, HomeIcon, LogoWithText, MyCoursesIcon, OrderIcon, SettingsIcon, SupportIcon } from "../../assets/Icons";
 import { View as MotiView, AnimatePresence } from "moti";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -32,6 +32,11 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
       label: "Exam Categories",
       icon: <CompletedExamsIcon color={theme.colors.text} />,
       url: "ExamCategories",
+    },
+    {
+      label: "My Orders",
+      icon: <OrderIcon color={theme.colors.text} />,
+      url: "Orders",
     },
     {
       label: "Settings",

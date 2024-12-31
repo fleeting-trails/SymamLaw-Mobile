@@ -30,6 +30,9 @@ import CourseListScreen from "./screens/Course/CourseListScreen";
 import CourseSingleScreen from "./screens/Course/CourseSingleScreen";
 import BlogSingle from "./screens/Resources/BlogSingle";
 import Cart from "./screens/Checkout/Cart";
+import Checkout from "./screens/Checkout/Checkout";
+import Orders from "./screens/Orders/Orders";
+import OrderDetails from "./screens/Orders/OrderDetails";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,6 +78,9 @@ export default function Main() {
           <Stack.Screen name="CourseSingle" component={CourseSingleScreen} />
           <Stack.Screen name="BlogSingle" component={BlogSingle} />
           <Stack.Screen name="Cart" component={Cart} />
+          <Stack.Screen name="Checkout" component={Checkout} />
+          <Stack.Screen name="Orders" component={Orders} />
+          <Stack.Screen name="OrderDetails" component={OrderDetails} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

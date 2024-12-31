@@ -27,6 +27,11 @@ namespace API {
         message: string;
         code: number;
     };
+    type ResponseBody<T> = {
+        success: boolean;
+        data: T;
+        message: string
+    }
     type Pagination = {
         current: number,
         total: number,

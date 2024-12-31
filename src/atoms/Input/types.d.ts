@@ -8,7 +8,7 @@ namespace PropTypes {
         label?: string,
         containerStyle?: import('react-native').ViewStyle,
         inputStyle?: import('react-native').ViewStyle,
-    } 
+    }
     type DateTimePickerPrimary = {
         label?: string
     }
@@ -21,5 +21,14 @@ namespace PropTypes {
     type SwitchPrimary = import('react-native').SwitchProps & {
         label?: string,
         containerStyle?: import('react-native').ViewStyle
+    }
+    type SelectPrimary = {
+        label?: string
+        options: {
+            label: string,
+            value: string
+        }[];
+        placeholder?: string;
+        onSelect?: (option: string) => void;
     }
 }

@@ -10,7 +10,8 @@ namespace Store {
             initializeCheckout: boolean,
             addCheckoutItem: boolean,
             removeCheckoutItem: boolean,
-            removeCheckoutItemFull: boolean
+            removeCheckoutItemFull: boolean,
+            resetCart: boolean
         };
         error: any;
     }

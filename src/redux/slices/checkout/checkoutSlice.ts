@@ -15,7 +15,8 @@ const initialState: Store.Checkout = {
         initializeCheckout: false,
         addCheckoutItem: false,
         removeCheckoutItem: false,
-        removeCheckoutItemFull: false
+        removeCheckoutItemFull: false,
+        resetCart: false
     },
     error: null
 };
@@ -133,6 +134,26 @@ export const removeCheckoutItemFull = createAsyncThunk(
 )
 
 
+export const resetCart = createAsyncThunk(
+    'resetCart',
+    async (_, thunkAPI) => {
+        try {
+            const rootState = thunkAPI.getState() as RootState;
+            let state = JSON.parse(JSON.stringify(rootState.checkout)) as Store.Checkout;
+            state.items = [];
+            state.amount.subtotal = 0;
+            state.amount.total = 0;
+            state.amount.delivery = 0;
+            
+            await AsyncStorage.setItem("checkout", JSON.stringify(state));
+            return { data: state }
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 
 
 const checkoutSlice = createSlice({
@@ -202,6 +223,21 @@ const checkoutSlice = createSlice({
         builder.addCase(removeCheckoutItemFull.rejected, (state, action) => {
             state.loading.removeCheckoutItemFull = false;
             state.error = action.error;
+        })
+
+        // Reset Cart
+        builder.addCase(resetCart.pending, (state) => {
+            state.loading.resetCart = true;
+        })
+        builder.addCase(resetCart.fulfilled, (state, action) => {
+            state.loading.resetCart = false;
+            if (action.payload) {
+                state.items = action.payload.data.items;
+                state.amount = action.payload.data.amount;
+            }
+        })
+        builder.addCase(resetCart.rejected, (state) => {
+            state.loading.resetCart = false;
         })
     }
 });

@@ -22,7 +22,7 @@ import { EventRegister } from "react-native-event-listeners";
 import { fetchUserProfile } from "../redux/slices/auth/auth";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { listRecommendedExams } from "../redux/slices/exam/examSlice";
-import { initializeCheckout } from "../redux/slices/checkout/checkoutSlice";
+import { initializeCheckout, resetCart } from "../redux/slices/checkout/checkoutSlice";
 
 function useInitialize() {
   // const eventEmitter = new NativeEventEmitter();
