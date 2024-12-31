@@ -8,6 +8,7 @@ import { ScreenContainer } from "../../components";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
 import AuthenticationRequired from "../Common/AuthenticationRequired";
 import { DataTable } from "react-native-paper";
+import MyCourses from "./MyCourses";
 
 export default function MyLearning() {
   const user = useAppSelector(state => state.auth.user);
@@ -16,8 +17,7 @@ export default function MyLearning() {
   );
 
   const SecondRoute = () => (
-    <View style={{ flex: 1 }}>
-    </View>
+    <MyCourses />
   );
 
 

@@ -38,21 +38,21 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
       icon: <OrderIcon color={theme.colors.text} />,
       url: "Orders",
     },
-    {
-      label: "Settings",
-      icon: <SettingsIcon color={theme.colors.text} />,
-      url: "",
-    },
-    {
-      label: "Support",
-      icon: <SupportIcon color={theme.colors.text} />,
-      url: "",
-    },
-    {
-      label: "FAQ",
-      icon: <FAQIcon color={theme.colors.text} />,
-      url: "",
-    },
+    // {
+    //   label: "Settings",
+    //   icon: <SettingsIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
+    // {
+    //   label: "Support",
+    //   icon: <SupportIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
+    // {
+    //   label: "FAQ",
+    //   icon: <FAQIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
   ];
 
   const handleDarkModeToggle = () => {

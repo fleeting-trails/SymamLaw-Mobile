@@ -4,6 +4,10 @@ namespace Store {
       data: CourseListData[],
       pagination: API.Pagination
     },
+    myCourses: {
+      data: CourseListData[],
+      pagination: API.Pagination
+    },
     currentCourse: CourseData | null,
     currentCourseComments: any,
     loading: {
@@ -15,7 +19,8 @@ namespace Store {
       getComments: boolean,
       commentOnLecture: boolean,
       replyOnLectureComment: boolean,
-      getSubscriptionRedirectLink: boolean
+      getSubscriptionRedirectLink: boolean,
+      listMyCourses: boolean
     },
     error: any
   }

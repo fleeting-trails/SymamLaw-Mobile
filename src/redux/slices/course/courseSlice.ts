@@ -2,11 +2,21 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { axiosExternal } from '../../../axios/axios'
 import { tailorPaginationResponse } from '../../../utils/apiHelper'
 import { RootState } from '../../store'
+import { AxiosResponse } from 'axios'
 
 
 // Define the initial state using that type
 const initialState: Store.Course = {
     courses: {
+        data: [],
+        pagination: {
+            current: 1,
+            total: 0,
+            totalPages: 1,
+            pageSize: 30
+        },
+    },
+    myCourses: {
         data: [],
         pagination: {
             current: 1,
@@ -27,6 +37,7 @@ const initialState: Store.Course = {
         commentOnLecture: false,
         replyOnLectureComment: false,
         getSubscriptionRedirectLink: false,
+        listMyCourses: false
     },
     error: null
 }
@@ -93,6 +104,32 @@ export const refreshCourseSingle = createAsyncThunk(
     },
 )
 
+type ListMyCoursesProps = {
+    [key: string]: string | number
+} | undefined
+
+export const listMyCourses = createAsyncThunk(
+    'listMyCourses',
+    async (filters: ListMyCoursesProps, thunkAPI) => {
+        try {
+            var _filters = filters;
+            if (!filters) {
+                _filters = {
+                    limit: 12,
+                    page: 1
+                }
+            }
+            const res = await axiosExternal.get(`/user/course/subscribed/list`, { params: _filters })
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 type MarkLectureAsViewedProps = {
     lecture_id: number,
     course_id: number
@@ -112,7 +149,7 @@ export const markLectureAsViewed = createAsyncThunk(
 
 export const getComments = createAsyncThunk(
     'getComments',
-    async (lecture_id : number, thunkAPI) => {
+    async (lecture_id: number, thunkAPI) => {
         try {
             const res = await axiosExternal.get(`/admin/comments/${lecture_id}`);
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
@@ -163,7 +200,7 @@ export const getSubscriptionRedirectLink = createAsyncThunk(
     'getSubscriptionRedirectLink',
     async ({ course_id, redirect_url }: { course_id: number, redirect_url: string }, thunkAPI) => {
         try {
-            const res = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
+            const res : AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return res.data.data
 
@@ -309,6 +346,23 @@ export const courseSlice = createSlice({
         builder.addCase(getSubscriptionRedirectLink.rejected, (state, action) => {
             state.loading.getSubscriptionRedirectLink = false;
             state.error = action.error;
+        })
+
+
+        // List my courses
+        builder.addCase(listMyCourses.pending, (state) => {
+            state.loading.listMyCourses = true;
+        })
+        builder.addCase(listMyCourses.fulfilled, (state, action) => {
+            state.loading.listMyCourses = false;
+            if (action.payload) {
+                const { data, pagination } = tailorPaginationResponse(action.payload.data);
+                state.myCourses.data = data;
+                state.myCourses.pagination = pagination;
+            }
+        })
+        builder.addCase(listMyCourses.rejected, (state, action) => {
+            state.loading.listMyCourses = false;
         })
     },
 })
