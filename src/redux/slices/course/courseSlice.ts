@@ -25,6 +25,7 @@ const initialState: Store.Course = {
             pageSize: 30
         },
     },
+    recommendedCourses: [],
     currentCourse: null,
     currentCourseComments: null,
     loading: {
@@ -37,7 +38,9 @@ const initialState: Store.Course = {
         commentOnLecture: false,
         replyOnLectureComment: false,
         getSubscriptionRedirectLink: false,
-        listMyCourses: false
+        listMyCourses: false,
+        listMoreMyCourses: false,
+        listRecommendedCourses: false
     },
     error: null
 }
@@ -73,6 +76,22 @@ export const loadMoreCourses = createAsyncThunk(
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
 
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+export const listRecommendedCourses = createAsyncThunk(
+    'listRecommendedCourses',
+    async (params: { [key: string]: any } | undefined = {
+        page: 1,
+        limit: 3
+    }, thunkAPI) => {
+        try {
+            const res : AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.get(`/course/list`, { params })
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
         }
@@ -128,6 +147,29 @@ export const listMyCourses = createAsyncThunk(
         }
     },
 )
+
+export const listMoreMyCourses = createAsyncThunk(
+    'listMoreMyCourses',
+    async (_, thunkAPI) => {
+        try {
+            const state = thunkAPI.getState() as RootState;
+            const { current, totalPages } = state.course.myCourses.pagination;
+            if (current >= totalPages) return { nodata: true }
+            const res = await axiosExternal.get(`/user/course/subscribed/list`, {
+                params: {
+                    limit: 12,
+                    page: current + 1
+                }
+            })
+            if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            return { data: res.data }
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
 
 
 type MarkLectureAsViewedProps = {
@@ -200,7 +242,7 @@ export const getSubscriptionRedirectLink = createAsyncThunk(
     'getSubscriptionRedirectLink',
     async ({ course_id, redirect_url }: { course_id: number, redirect_url: string }, thunkAPI) => {
         try {
-            const res : AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
+            const res: AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return res.data.data
 
@@ -255,6 +297,23 @@ export const courseSlice = createSlice({
         })
         builder.addCase(loadMoreCourses.rejected, (state, action) => {
             state.loading.loadMoreCourses = false;
+            state.error = action.error;
+        })
+
+
+        // List recommended courses
+        builder.addCase(listRecommendedCourses.pending, (state) => {
+            state.loading.listRecommendedCourses = true;
+        })
+        builder.addCase(listRecommendedCourses.fulfilled, (state, action) => {
+            state.loading.listRecommendedCourses = false;
+            if (action.payload) {
+                const { data, pagination } = tailorPaginationResponse(action.payload.data);
+                state.recommendedCourses = data;
+            }
+        })
+        builder.addCase(listRecommendedCourses.rejected, (state, action) => {
+            state.loading.listRecommendedCourses = false;
             state.error = action.error;
         })
 
@@ -363,7 +422,27 @@ export const courseSlice = createSlice({
         })
         builder.addCase(listMyCourses.rejected, (state, action) => {
             state.loading.listMyCourses = false;
+            state.error = action.error;
         })
+
+
+        // List More my courses
+        builder.addCase(listMoreMyCourses.pending, (state) => {
+            state.loading.listMoreMyCourses = true;
+        })
+        builder.addCase(listMoreMyCourses.fulfilled, (state, action) => {
+            state.loading.listMoreMyCourses = false;
+            if (action.payload) {
+                if (action.payload.nodata) return;  // No more data
+                const { data, pagination } = tailorPaginationResponse(action.payload.data);
+                state.myCourses.data = [...state.myCourses.data, ...data];
+                state.myCourses.pagination = pagination;
+            }
+        })
+        builder.addCase(listMoreMyCourses.rejected, (state, action) => {
+            state.loading.listMoreMyCourses = false;
+        })
+
     },
 })
 

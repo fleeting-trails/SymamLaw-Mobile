@@ -8,6 +8,7 @@ namespace Store {
       data: CourseListData[],
       pagination: API.Pagination
     },
+    recommendedCourses: CourseListData[],
     currentCourse: CourseData | null,
     currentCourseComments: any,
     loading: {
@@ -20,7 +21,9 @@ namespace Store {
       commentOnLecture: boolean,
       replyOnLectureComment: boolean,
       getSubscriptionRedirectLink: boolean,
-      listMyCourses: boolean
+      listMyCourses: boolean,
+      listMoreMyCourses: boolean,
+      listRecommendedCourses: boolean
     },
     error: any
   }

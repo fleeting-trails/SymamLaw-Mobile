@@ -5,9 +5,13 @@ import CustomText from "../../atoms/CustomText/CustomText";
 import { ClockIcon } from "../../assets/Icons";
 import { useTheme } from "react-native-paper";
 
-export default function CourseCard({ data }: PropTypes.CourseCard) {
+export default function CourseCard({ data, onPress }: PropTypes.CourseCard) {
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
+
+  const handlePress = (slug: string) => {
+    if (onPress) onPress(slug);
+  }
 
   return (
     <View style={styles.container}>
@@ -18,9 +22,9 @@ export default function CourseCard({ data }: PropTypes.CourseCard) {
         style={styles.thumbnail}
       />
 
-      <View style={styles.saveButtonContainer}>
+      {/* <View style={styles.saveButtonContainer}>
         <PrimaryButton text="Save" color="white" size="small" />
-      </View>
+      </View> */}
 
       {/* Author Block */}
       {data.author && (
@@ -52,7 +56,7 @@ export default function CourseCard({ data }: PropTypes.CourseCard) {
 
       {/* Action container */}
       <View style={styles.actionContainer}>
-        <PrimaryButton text="Start Now" color="primary" />
+        <PrimaryButton onPress={() => handlePress(data.slug)} text="Start Now" color="primary" />
       </View>
     </View>
   );

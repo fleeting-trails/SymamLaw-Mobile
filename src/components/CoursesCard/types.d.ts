@@ -1,10 +1,12 @@
 namespace PropTypes {
     type CourseCard = {
-        data: CourseCardData
+        data: CourseCardData,
+        onPress?: (slug: string) => void
     }
     type CourseCardData = {
         id: string,
         title: string,
+        slug: string,
         description: string,
         author?: {
             image: import('react-native').ImageSourcePropType,

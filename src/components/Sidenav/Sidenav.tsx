@@ -24,12 +24,12 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
       url: "HomeTabs",
     },
     {
-      label: "My Courses",
+      label: "Browse Courses",
       icon: <MyCoursesIcon color={theme.colors.text} />,
       url: "CourseList",
     },
     {
-      label: "Exam Categories",
+      label: "Explore Exams",
       icon: <CompletedExamsIcon color={theme.colors.text} />,
       url: "ExamCategories",
     },

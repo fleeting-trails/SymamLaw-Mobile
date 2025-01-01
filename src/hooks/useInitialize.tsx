@@ -23,6 +23,7 @@ import { fetchUserProfile } from "../redux/slices/auth/auth";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { listRecommendedExams } from "../redux/slices/exam/examSlice";
 import { initializeCheckout, resetCart } from "../redux/slices/checkout/checkoutSlice";
+import { listRecommendedCourses } from "../redux/slices/course/courseSlice";
 
 function useInitialize() {
   // const eventEmitter = new NativeEventEmitter();
@@ -92,6 +93,14 @@ function useInitialize() {
     }));
   };
 
+  const initializeRecommendedCourses = async () => {
+    try {
+      await dispatch(listRecommendedCourses()).unwrap();
+    } catch (error) {
+      console.log("Failed to load recommended courses", error);
+    }
+  }
+
   const initializeCart = async () => {
     try {
       dispatch(initializeCheckout())
@@ -114,6 +123,7 @@ function useInitialize() {
   }, []);
 
   useEffect(() => {
+    initializeRecommendedCourses();
     if (user) {
       initializeRecommendedExams();
       initializeCart();
