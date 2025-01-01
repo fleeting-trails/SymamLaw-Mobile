@@ -1,12 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, View } from "react-native";
+import React, { useEffect } from "react";
+import CustomText from "../../atoms/CustomText/CustomText";
+import TabPrimary from "../../atoms/Tab/TabPrimary";
+import Exams from "./Exams";
+import { useAppSelector } from "../../redux/hooks";
+import { ScreenContainer } from "../../components";
+import PrimaryButton from "../../atoms/Button/PrimaryButton";
+import AuthenticationRequired from "../Common/AuthenticationRequired";
+import { DataTable } from "react-native-paper";
+import MyCourses from "./MyCourses";
 
 export default function MyLearning() {
+  const user = useAppSelector(state => state.auth.user);
+  const FirstRoute = () => (
+    <Exams />
+  );
+
+  const SecondRoute = () => (
+    <MyCourses />
+  );
+
+
+  const tabs = [
+    { key: "exams", title: "Exams", children: FirstRoute },
+    { key: "courses", title: "Courses", children: SecondRoute },
+  ]
+
   return (
-    <View>
-      <Text>MyLearning</Text>
-    </View>
-  )
+    user ? <TabPrimary 
+      tabs={tabs}
+    /> : <AuthenticationRequired message="Login to your account or create a new account to track the progress of your courses, exams and other" />
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

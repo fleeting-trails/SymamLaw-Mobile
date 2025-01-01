@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 // Define the initial state using that type
 const initialState: Store.Navigation = {
     goBackFunc: null,
+    enabled: true
 }
 
 export const navigationSlice = createSlice({
@@ -12,10 +13,13 @@ export const navigationSlice = createSlice({
     reducers: {
         setGoBackFunction: (state, action) => {
             state.goBackFunc = action.payload
+        },
+        setTopNavigationEnabled: (state, action) => {
+            state.enabled = action.payload
         }
     }
 })
 
-export const { setGoBackFunction } = navigationSlice.actions
+export const { setGoBackFunction, setTopNavigationEnabled } = navigationSlice.actions
 
 export default navigationSlice.reducer

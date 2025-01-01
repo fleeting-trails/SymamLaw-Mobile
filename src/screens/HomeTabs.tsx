@@ -8,12 +8,16 @@ import MyLearning from "./MyLearnings/MyLearning";
 import Saved from "./Saved/Saved";
 import Account from "./Account/Account";
 import { RouteProp, ParamListBase } from "@react-navigation/native";
-import { AccountIconFilled, HomeIcon, PlayIconFilled, SaveIconFilled, SearchIcon } from "../assets/Icons";
+import { AccountIconFilled, HomeIcon, LibraryIcon, PlayIconFilled, ResourcesIcon, SaveIconFilled, SearchIcon } from "../assets/Icons";
 import { useTheme } from "react-native-paper";
+import { useAppSelector } from "../redux/hooks";
+import Resources from "./Resources/Resources";
+import Library from "./Library/Library";
 
 export default function HomeTabs() {
   const theme = useTheme<Config.Theme>();
   const Tab = createBottomTabNavigator();
+  const user = useAppSelector(state => state.auth.user)
   const renderTabBarIcon = (route: RouteProp<ParamListBase, string>) => {
     if (route.name === "Home") {
       return <HomeIcon color={"white"} />;
@@ -21,10 +25,10 @@ export default function HomeTabs() {
       return <SearchIcon />
     } else if (route.name === "My Learning") {
       return <PlayIconFilled />
-    } else if (route.name === "Saved") {
-      return <SaveIconFilled />
-    } else if (route.name === "Account") {
-      return <AccountIconFilled />
+    } else if (route.name === "Resources") {
+      return <ResourcesIcon scale={1.2} />
+    } else if (route.name === "Library") {
+      return <LibraryIcon scale={1.1} />
     }
 
     // You can return any component that you like here!
@@ -58,8 +62,8 @@ export default function HomeTabs() {
       <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Tab.Screen name="Explore" component={Explore} options={{ headerShown: false }} />
       <Tab.Screen name="My Learning" component={MyLearning} options={{ headerShown: false }} />
-      <Tab.Screen name="Saved" component={Saved} options={{ headerShown: false }} />
-      <Tab.Screen name="Account" component={Account} options={{ headerShown: false }} />
+      <Tab.Screen name="Resources" component={Resources} options={{ headerShown: false }} />
+      <Tab.Screen name="Library" component={Library} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }

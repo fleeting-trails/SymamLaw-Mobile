@@ -2,16 +2,18 @@ import { StyleSheet, Text, View, Image, TouchableHighlight } from "react-native"
 import { useTheme, Switch } from "react-native-paper";
 import { Dimensions } from "react-native";
 import React from "react";
-import { CompletedExamsIcon, FAQIcon, HomeIcon, MyCoursesIcon, SettingsIcon, SidenavLogo, SupportIcon } from "../../assets/Icons";
+import { CompletedExamsIcon, FAQIcon, HomeIcon, LogoWithText, MyCoursesIcon, OrderIcon, SettingsIcon, SupportIcon } from "../../assets/Icons";
 import { View as MotiView, AnimatePresence } from "moti";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { toggleDarkTheme } from "../../redux/slices/config";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
   const theme = useTheme<Config.Theme>();
   const dispatch = useAppDispatch();
   const darkMode = useAppSelector((state) => state.config.darkMode);
+  const { navigate } = useAppNavigation();
 
   const { height, width } = Dimensions.get("window");
   const styles = createStyles({ theme, screenHeight: height, screenWidth: width });
@@ -19,39 +21,48 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
     {
       label: "Home",
       icon: <HomeIcon color={theme.colors.text} />,
-      url: "",
+      url: "HomeTabs",
     },
     {
-      label: "My Courses",
+      label: "Browse Courses",
       icon: <MyCoursesIcon color={theme.colors.text} />,
-      url: "",
+      url: "CourseList",
     },
     {
-      label: "Completed Exams",
+      label: "Explore Exams",
       icon: <CompletedExamsIcon color={theme.colors.text} />,
-      url: "",
+      url: "ExamCategories",
     },
     {
-      label: "Settings",
-      icon: <SettingsIcon color={theme.colors.text} />,
-      url: "",
+      label: "My Orders",
+      icon: <OrderIcon color={theme.colors.text} />,
+      url: "Orders",
     },
-    {
-      label: "Support",
-      icon: <SupportIcon color={theme.colors.text} />,
-      url: "",
-    },
-    {
-      label: "FAQ",
-      icon: <FAQIcon color={theme.colors.text} />,
-      url: "",
-    },
+    // {
+    //   label: "Settings",
+    //   icon: <SettingsIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
+    // {
+    //   label: "Support",
+    //   icon: <SupportIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
+    // {
+    //   label: "FAQ",
+    //   icon: <FAQIcon color={theme.colors.text} />,
+    //   url: "",
+    // },
   ];
 
   const handleDarkModeToggle = () => {
     // console.log("Change pressing");
     dispatch(toggleDarkTheme());
   };
+  const handleNavigate = (screen: string) => {
+    setOpen(false);
+    navigate(screen)
+  }
   return (
     <View style={styles.container}>
       {open && <View style={styles.overlay} onTouchEnd={() => setOpen(false)}></View>}
@@ -78,11 +89,11 @@ export function Sidenav({ open, setOpen }: PropTypes.Sidenav) {
             style={styles.sidenavContainer}
           >
             <View style={styles.sidenavLogo}>
-              <SidenavLogo color={theme.colors.primary} secondaryColor={theme.colors.primaryLight[0]} />
+              <LogoWithText scale={1} color={theme.colors.primary} secondaryColor={theme.colors.primaryLight[0]} />
             </View>
             <View style={styles.menuItemsContainer}>
               {NavItems.map((item, i) => (
-                <TouchableHighlight key={i} onPress={() => console.log("Pressed on", i)} activeOpacity={0.1} underlayColor={theme.colors.primaryGray}>
+                <TouchableHighlight key={i} onPress={() => handleNavigate(item.url)} activeOpacity={0.1} underlayColor={theme.colors.primaryGray}>
                   <View style={styles.menuItem}>
                     {item.icon}
                     <CustomText>{item.label}</CustomText>

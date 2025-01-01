@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useAppDispatch } from '../redux/hooks';
-import { setGoBackFunction } from '../redux/slices/header';
+import { setGoBackFunction, setTopNavigationEnabled } from '../redux/slices/header';
 
 export default function useAppNavigation() {
   const navigator = useNavigation<Config.StackNavigation>();
@@ -13,12 +13,17 @@ export default function useAppNavigation() {
     if (navigator.canGoBack()) dispatch(setGoBackFunction(navigator.goBack))
     else dispatch(setGoBackFunction(null))
   }
-  const handleNavigate = (screen : string) => {
-    dispatch(setGoBackFunction(handleGoBack))
-    navigator.navigate(screen)
+  const handleNavigate = (screen : string, params?: any) => {
+    dispatch(setTopNavigationEnabled(true));
+    if (navigator.canGoBack()) {
+      dispatch(setGoBackFunction(handleGoBack));
+    } else {
+      dispatch(setGoBackFunction(null))
+    }
+    navigator.navigate(screen, params)
   }
 
 
 
-  return { navigate : handleNavigate };
+  return { navigate : handleNavigate, navigator };
 }

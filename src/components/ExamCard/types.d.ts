@@ -1,11 +1,15 @@
 namespace PropTypes {
-    type ExamCard = {
-        data: ExamCardData
+    type ExamCard = Omit<import('react-native-paper').TouchableRippleProps, 'children' | 'onPress'> & {
+        data: ExamCardData,
+        onPress?: (id: string, slug: string) => void
     }
     type ExamCardData = {
         id: string,
+        slug: string,
         name: string,
         duration: number, // In Minute
-        totalQuestions: number
+        totalQuestions: number,
+        package_items: Array<Store.ExamPackageHint>,
+        is_free: API.Boolean
     }
 }
