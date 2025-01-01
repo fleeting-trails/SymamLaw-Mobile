@@ -193,5 +193,5 @@ namespace Store {
   }
   type CourseSubscriptionTypeEnum = "paid" | "free"
   type CourseType = "recorded" | "live"
-  type CourseLectureTypes = "file" | "video" | "exam"
+  type CourseLectureTypes = "file" | "video" | "exam" | "link"
 }

@@ -45,14 +45,22 @@ const initialState: Store.Course = {
     error: null
 }
 
+type ListCoursesBlog = {
+    [key: string]: string | number
+} | undefined
+
 export const listCourses = createAsyncThunk(
     'listCourses',
-    async (params: { [key: string]: any } = {
-        page: 1,
-        limit: 30
-    }, thunkAPI) => {
+    async (filters: ListCoursesBlog, thunkAPI) => {
         try {
-            const res = await axiosExternal.get(`/course/list`, { params })
+            var _filters = filters;
+            if (!filters) {
+                _filters = {
+                    limit: 12,
+                    page: 1
+                }
+            }
+            const res = await axiosExternal.get(`/course/list`, { params: _filters })
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
         } catch (error) {
@@ -66,11 +74,12 @@ export const loadMoreCourses = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const state = thunkAPI.getState() as RootState
-            const pagination = state.course.courses.pagination;
+            const { current, totalPages } = state.course.courses.pagination;
+            if (current >= totalPages) return { nodata: true }
             const res = await axiosExternal.get(`/course/list`, {
                 params: {
-                    page: pagination.current + 1,
-                    limit: pagination.pageSize
+                    limit: 12,
+                    page: current + 1
                 }
             })
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
@@ -290,8 +299,9 @@ export const courseSlice = createSlice({
         builder.addCase(loadMoreCourses.fulfilled, (state, action) => {
             state.loading.loadMoreCourses = false;
             if (action.payload) {
+                if (action.payload.nodata) return;  // No more data
                 const { data, pagination } = tailorPaginationResponse(action.payload.data);
-                state.courses.data = data;
+                state.courses.data = [...state.courses.data, ...data];
                 state.courses.pagination = pagination;
             }
         })

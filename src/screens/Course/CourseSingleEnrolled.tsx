@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Linking,
 } from "react-native";
 import { List } from "react-native-paper";
 import { ScreenContainer } from "../../components";
@@ -465,15 +466,26 @@ function ContentView({ data, lecture }: ContentViewProps) {
   /**
    * Handler functions
    */
-  const handleStartExam = (lecture : Store.CourseLecture) => {
+  const handleStartExam = (lecture: Store.CourseLecture) => {
     if (lecture.exam) {
       navigate("ExamStart", {
         slug: lecture.exam.slug,
         lecture_id: lecture.id,
-        course_id: data.id
+        course_id: data.id,
       });
     } else {
       console.log("No exam assigned!", lecture.exam);
+    }
+  };
+
+  const handleJoinLive = async (lecture: Store.CourseLecture) => {
+    const supported = await Linking.canOpenURL(lecture.link);
+
+    if (supported) {
+      // Open the link in the default browser
+      await Linking.openURL(lecture.link);
+    } else {
+      console.error("Can't open URL: ", lecture.link);
     }
   };
   /**
@@ -561,6 +573,20 @@ function ContentView({ data, lecture }: ContentViewProps) {
           visible={pdfDialogOpen}
           onClose={() => setPdfDialogOpen(false)}
           pdfUri={selectedPdf?.file_name as string}
+        />
+      </View>
+    );
+  } else if (lecture.lecture_type === "link") {
+    return (
+      <View className="flex items-center justify-center">
+        <Image
+          style={{ width: 150, height: 150, marginBottom: 50 }}
+          source={require("../../assets/live-lecture-graphics.png")}
+        />
+        <PrimaryButton
+          onPress={() => handleJoinLive(lecture)}
+          text="Join Live"
+          color="primary"
         />
       </View>
     );

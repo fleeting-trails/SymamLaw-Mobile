@@ -11,9 +11,9 @@ export default function CourseList({ courses }: PropTypes.CourseList) {
   const styles = createStyles();
   const { navigate } = useAppNavigation();
 
-  const handlePress = (data : Store.CourseListData) => {
-    navigate("CourseSingle", { slug: data.slug })
-  }
+  const handlePress = (data: Store.CourseListData) => {
+    navigate("CourseSingle", { slug: data.slug });
+  };
   return (
     <FlatList
       data={courses}
@@ -24,6 +24,7 @@ export default function CourseList({ courses }: PropTypes.CourseList) {
           <Divider className="my-2" />
         </View>
       )}
+      
       numColumns={1}
     />
   );
