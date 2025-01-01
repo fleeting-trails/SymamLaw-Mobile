@@ -86,10 +86,9 @@ export const fetchNoticeDetails = createAsyncThunk(
     async (slug: string, thunkAPI) => {
         try {
 
-            const res: AxiosResponse<API.ResponseBody<Store.NoticeData>> = await axiosExternal.get(`/api/notice/view/${slug}`)
+            const res: AxiosResponse<API.ResponseBody<Store.NoticeData>> = await axiosExternal.get(`/notice/view/${slug}`)
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
-
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
         }
@@ -143,11 +142,15 @@ const noticeSlice = createSlice({
         builder.addCase(fetchNoticeDetails.pending, (state) => {
             state.loading.fetchNoticeDetails = true;
         })
-        builder.addCase(fetchNoticeDetails.fulfilled, (state) => {
+        builder.addCase(fetchNoticeDetails.fulfilled, (state, action) => {
             state.loading.fetchNoticeDetails = false;
+            if (action.payload) {
+                state.currentNotice = action.payload.data.data;
+            }
         })
-        builder.addCase(fetchNoticeDetails.rejected, (state) => {
+        builder.addCase(fetchNoticeDetails.rejected, (state, action) => {
             state.loading.fetchNoticeDetails = false;
+            state.error = action.error; 
         })
     },
 });

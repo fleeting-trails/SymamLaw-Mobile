@@ -34,6 +34,7 @@ import Checkout from "./screens/Checkout/Checkout";
 import Orders from "./screens/Orders/Orders";
 import OrderDetails from "./screens/Orders/OrderDetails";
 import Notices from "./screens/Notice/Notices";
+import NoticeDetails from "./screens/Notice/NoticeDetails";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -83,6 +84,7 @@ export default function Main() {
           <Stack.Screen name="Orders" component={Orders} />
           <Stack.Screen name="OrderDetails" component={OrderDetails} />
           <Stack.Screen name="Notices" component={Notices} />
+          <Stack.Screen name="NoticeDetails" component={NoticeDetails} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>
