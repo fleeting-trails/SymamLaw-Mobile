@@ -131,7 +131,7 @@ export default function Checkout() {
           placeholder="01xxxxxxxx"
           value={input.shipping_phone}
           onChangeText={(value) => handleSetInput("shipping_phone", value)}
-        />43793310
+        />
 
         {/* Select district */}
         <SelectPrimary

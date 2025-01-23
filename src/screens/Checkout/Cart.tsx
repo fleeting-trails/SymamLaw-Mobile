@@ -31,7 +31,9 @@ export default function Cart() {
   return checkoutState.items?.length !== 0 ? (
     <ScreenContainer>
       <CartSummary />
-      <CartItems />
+      <View className="px-4">
+        <CartItems />
+      </View>
     </ScreenContainer>
   ) : (
     <View
@@ -123,7 +125,6 @@ const CartSummary = () => {
 };
 
 const CartItems = () => {
-
   const cartItems = useAppSelector((state) => state.checkout.items);
 
   return cartItems.map((item) => (
@@ -142,23 +143,23 @@ const CartProductCard = ({ product }: { product: Store.CheckoutItem }) => {
     dispatch(removeCheckoutItem(product.id));
   };
   const handleDelete = () => {
-    dispatch(removeCheckoutItemFull(product.id))
-  }
+    dispatch(removeCheckoutItemFull(product.id));
+  };
 
   return (
-    <View className="relative flex-row items-center bg-white rounded-lg shadow-md px-4 py-4 mb-1">
+    <View className="relative flex-row items-center rounded-lg shadow-md px-4 py-4 mb-1" style={{ backgroundColor: theme.colors.background }}>
       {/* Product Image */}
       <Image source={{ uri: product.image }} className="w-20 h-20 rounded" />
       {/* Product Info */}
-      <View className="flex-1 ml-4">
-        <Text className="text-lg font-bold">{product.title}</Text>
-        <Text className="text-lg" style={{ color: theme.colors.textPrimary }}>
+      <View className="flex-1 ml-4" style={{ backgroundColor: theme.colors.background }}>
+        <CustomText className="text-md">{product.title}</CustomText>
+        <CustomText className="text-lg mt-2" variant="500">
           {calculateDiscount(
             product.discountType,
             product.originalPrice,
             product.discount
-          )}
-        </Text>
+          )}৳
+        </CustomText>
         <Text className="text-gray-500 text-sm">
           {product.details.description}
         </Text>
@@ -188,7 +189,7 @@ const CartProductCard = ({ product }: { product: Store.CheckoutItem }) => {
           className="w-8 h-8 bg-orange-500 rounded-full items-center justify-center"
           style={{ backgroundColor: theme.colors.error }}
         >
-          <DeleteIcon scale={0.8} color={theme.colors.textLight} />
+          <DeleteIcon scale={0.8} color={'#FAFAFA'} />
         </TouchableRipple>
       </View>
     </View>

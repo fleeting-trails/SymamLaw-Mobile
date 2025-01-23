@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "symamlaw-mobile",
+    "name": "Symamlaw",
     "slug": "symamlaw-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "com.abtahitajwar.symamlawmobile",
+    "scheme": "com.symam.symamlawmobile",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,14 +17,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.abtahitajwar.symamlawmobile"
+      "bundleIdentifier": "com.symam.symamlawmobile"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.abtahitajwar.symamlawmobile"
+      "package": "com.symam.symamlawmobile"
     },
     "web": {
       "favicon": "./assets/icon.png"

@@ -37,15 +37,15 @@ export default function Login() {
   const loginLoading = authState.loading.login;
   const theme = useTheme<Config.Theme>();
   const styles = createStyles({ theme });
-  const [request, response, prompAsync] = Google.useAuthRequest({
-    // clientId: '439529637268-idtchlgch2mgv92ep26900pn62agitd7.apps.googleusercontent.com',
-    // clientSecret: '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',
-    iosClientId: process.env.GOOGLE_IOS_CLIENT_ID,
-    androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
-    // redirectUri: 'https://symamlaw-de958.firebaseapp.com/__/auth/handler',
-    // redirectUri: AuthSession.makeRedirectUri(),
-    // scopes: ['profile', 'email']
-  });
+  // const [request, response, prompAsync] = Google.useAuthRequest({
+  //   // clientId: '439529637268-idtchlgch2mgv92ep26900pn62agitd7.apps.googleusercontent.com',
+  //   // clientSecret: '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',
+  //   iosClientId: process.env.GOOGLE_IOS_CLIENT_ID,
+  //   androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
+  //   // redirectUri: 'https://symamlaw-de958.firebaseapp.com/__/auth/handler',
+  //   // redirectUri: AuthSession.makeRedirectUri(),
+  //   // scopes: ['profile', 'email']
+  // });
 
   WebBrowser.maybeCompleteAuthSession();
 
@@ -61,15 +61,15 @@ export default function Login() {
     }
   }, [screenFoncused]);
 
-  useEffect(() => {
-    if (response?.type == "success") {
-      const { id_token } = response.params;
-      const credentials = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credentials);
-    } else {
-      console.log("Response", JSON.stringify(response));
-    }
-  }, [response]);
+  // useEffect(() => {
+  //   if (response?.type == "success") {
+  //     const { id_token } = response.params;
+  //     const credentials = GoogleAuthProvider.credential(id_token);
+  //     signInWithCredential(auth, credentials);
+  //   } else {
+  //     console.log("Response", JSON.stringify(response));
+  //   }
+  // }, [response]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -162,15 +162,17 @@ export default function Login() {
                 {errorMessage}
               </CustomText>
             )}
-            <CustomText
-              style={styles.registerNowLink}
-              onPress={() => navigate("ForgetPassword")}
-            >
-              Forgot Password
-            </CustomText>
+            <View className="flex-row justify-start">
+              <CustomText
+                style={styles.registerNowLink}
+                onPress={() => navigate("ForgetPassword")}
+              >
+                Forgot Password
+              </CustomText>
+            </View>
           </View>
 
-          <View style={styles.dividerContainer}>
+          {/* <View style={styles.dividerContainer}>
             <View style={styles.divider} />
             <CustomText
               variant="600"
@@ -179,21 +181,7 @@ export default function Login() {
               Or Login With
             </CustomText>
             <View style={styles.divider} />
-          </View>
-
-          <PrimaryButton
-            text="Google"
-            icon={<GoogleIcon />}
-            color="#DB4437"
-            lightText={true}
-            onPress={() => prompAsync()}
-          />
-          <PrimaryButton
-            text="Facebook"
-            icon={<FacebookIcon />}
-            color="#4267B2"
-            lightText={true}
-          />
+          </View> */}
         </View>
         <PrimaryButton
           style={styles.backToHomeButton}
