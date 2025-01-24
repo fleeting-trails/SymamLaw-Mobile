@@ -1,4 +1,5 @@
 import { atob } from "react-native-quick-base64";
+import { Buffer } from "buffer";
 export function truncateString(str: string | undefined, size: number) {
   if (!str) return str;
   if (str.length <= size) {
@@ -171,4 +172,11 @@ export const calculateDiscount = (type : "percentage" | "fixed", originalPrice :
   } else {
     return originalPrice;
   }
+}
+
+export function stringToArrayBuffer(str : string) {
+  return Buffer.from(str, 'binary').buffer as ArrayBuffer;
+}
+export function arrayBufferToBase64(buffer : ArrayBuffer) {
+  return Buffer.from(buffer).toString('base64');
 }

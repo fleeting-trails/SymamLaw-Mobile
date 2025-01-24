@@ -1,4 +1,4 @@
-package com.abtahitajwar.symamlawmobile
+package com.symam.symamlawmobile
 
 import android.os.Build
 import android.os.Bundle

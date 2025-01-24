@@ -9,11 +9,13 @@ namespace PropTypes {
         data: Store.CourseData
     }
     type CourseEnrolledMoreViews = {
+        id: string,
         open: boolean,
-        setOpen: (open: boolean) => void,
-        data: Store.CourseData
+        handleClose: () => void,
+        data: Store.CourseData,
+        lecture?: Store.CourseLecture
     }
     type CourseResources = CourseEnrolledMoreViews & {
-        lecture: Store.CourseLecture
+        lecture?: Store.CourseLecture
     }
 }

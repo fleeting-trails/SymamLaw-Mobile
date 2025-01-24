@@ -23,7 +23,8 @@ namespace Store {
       getSubscriptionRedirectLink: boolean,
       listMyCourses: boolean,
       listMoreMyCourses: boolean,
-      listRecommendedCourses: boolean
+      listRecommendedCourses: boolean,
+      downloadCertificate: boolean
     },
     error: any
   }

@@ -14,4 +14,7 @@ namespace PropTypes {
         onCancel?: () => void,
         onPaymentProcessEnd?: (res: Store.CourseData | Store.CourseListData, purchaseData: Store.PurchaseResponseData) => void
     }
+    type useFileDownload = {
+        extension: string,
+    }
 }

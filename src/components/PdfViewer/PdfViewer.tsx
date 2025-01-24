@@ -184,7 +184,6 @@ const getRenderType = ({
   useGoogleReader?: boolean;
 }) => {
   const { uri, base64 } = source;
-  console.log("Use google drive", useGoogleDriveViewer);
   if (useGoogleReader) {
     return "GOOGLE_READER";
   }
@@ -299,7 +298,6 @@ const PdfViewer = ({
   }, [getWebviewSource, onError, renderType, source]);
 
   const isAndroid = useMemo(() => Platform.OS === "android", [Platform]);
-  console.log("Url", source.uri);
 
   function isDocument(uri: undefined | string) {
     const DOC_EXTENSIONS = ["pdf", "doc", "docx"];

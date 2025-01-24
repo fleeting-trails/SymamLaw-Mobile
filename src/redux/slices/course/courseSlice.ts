@@ -3,6 +3,7 @@ import { axiosExternal } from '../../../axios/axios'
 import { tailorPaginationResponse } from '../../../utils/apiHelper'
 import { RootState } from '../../store'
 import { AxiosResponse } from 'axios'
+import { stringToArrayBuffer } from '../../../utils/helpers'
 
 
 // Define the initial state using that type
@@ -40,7 +41,8 @@ const initialState: Store.Course = {
         getSubscriptionRedirectLink: false,
         listMyCourses: false,
         listMoreMyCourses: false,
-        listRecommendedCourses: false
+        listRecommendedCourses: false,
+        downloadCertificate: false
     },
     error: null
 }
@@ -261,6 +263,31 @@ export const getSubscriptionRedirectLink = createAsyncThunk(
     },
 )
 
+type DownloadCertificateProps = {
+    course_id: number
+}
+export const downloadCertificate = createAsyncThunk(
+    'downloadCertificate',
+    async (body : DownloadCertificateProps, thunkAPI) => {
+        try {
+            const res: AxiosResponse<string> = await axiosExternal.post('/user/certificate/claim', body, {
+                headers: {
+                    'Accept': '*/*'
+                },
+            });
+            // if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+            const buffer : ArrayBuffer = stringToArrayBuffer(res.data);
+            console.log("Buffer", buffer);
+            return buffer;
+
+        } catch (error) {
+            console.log("Failed to convert to buffer", error);
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 
 
 
@@ -451,6 +478,16 @@ export const courseSlice = createSlice({
         })
         builder.addCase(listMoreMyCourses.rejected, (state, action) => {
             state.loading.listMoreMyCourses = false;
+        })
+
+        builder.addCase(downloadCertificate.pending, (state) => {
+            state.loading.downloadCertificate = true;
+        })
+        builder.addCase(downloadCertificate.fulfilled, (state) => {
+            state.loading.downloadCertificate = false;
+        })
+        builder.addCase(downloadCertificate.rejected, (state) => {
+            state.loading.downloadCertificate = false;
         })
 
     },

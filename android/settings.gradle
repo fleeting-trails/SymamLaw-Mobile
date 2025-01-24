@@ -1,4 +1,4 @@
-rootProject.name = 'symamlaw-mobile'
+rootProject.name = 'Symamlaw'
 
 dependencyResolutionManagement {
   versionCatalogs {

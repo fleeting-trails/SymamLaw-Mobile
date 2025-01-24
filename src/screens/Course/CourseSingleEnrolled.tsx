@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -43,6 +49,7 @@ import {
 import PdfViewer from "../../components/PdfViewer/PdfViewer";
 import {
   AboutCourse,
+  CourseCertificate,
   CourseDiscussion,
   CourseResources,
   CourseRoutine,
@@ -68,6 +75,125 @@ const LECTURE_ICON_MAP = ({
     return <VideoIcon {...config} />;
   }
 };
+
+type CourseMoreItemsModal = {
+  title: string;
+  icon: string;
+  id: string;
+  element: (props: PropTypes.CourseEnrolledMoreViews) => JSX.Element;
+  lecture?: Store.CourseLecture;
+  hasLectureDependency?: boolean;
+};
+
+const moreViewMenuItems : CourseMoreItemsModal[] = [
+  {
+    title: "About this Course",
+    icon: "...",
+    id: "about",
+    element: ({
+      id,
+      open,
+      handleClose,
+      data,
+    }: PropTypes.CourseEnrolledMoreViews) => (
+      <View key={id}>
+        <AboutCourse
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          data={data}
+        />
+      </View>
+    ),
+  },
+  {
+    title: "Course certificate",
+    icon: "🏆",
+    id: "certificate",
+    element: ({
+      id,
+      open,
+      handleClose,
+      data,
+    }: PropTypes.CourseEnrolledMoreViews) => (
+      <View key={id}>
+        <CourseCertificate
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          data={data}
+        />
+      </View>
+    ),
+  },
+  // { title: "Share this Course", icon: "🔗" },
+  {
+    title: "Discussion",
+    icon: "💬",
+    id: "discussion",
+    hasLectureDependency: true,
+    element: ({
+      id,
+      open,
+      handleClose,
+      data,
+      lecture,
+    }: PropTypes.CourseEnrolledMoreViews) => (
+      <View key={id}>
+        <CourseDiscussion
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          data={data}
+          lecture={lecture as Store.CourseLecture}
+        />
+      </View>
+    ),
+  },
+  {
+    title: "Routine",
+    icon: "📝",
+    id: "routine",
+    element: ({
+      id,
+      open,
+      handleClose,
+      data,
+    }: PropTypes.CourseEnrolledMoreViews) => (
+      <View key={id}>
+        <CourseRoutine
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          data={data}
+        />
+      </View>
+    ),
+  },
+  {
+    title: "Resources",
+    icon: "📚",
+    id: "resources",
+    hasLectureDependency: true,
+    element: ({
+      id,
+      open,
+      handleClose,
+      data,
+      lecture,
+    }: PropTypes.CourseEnrolledMoreViews) => (
+      <View key={id}>
+        <CourseResources
+          id={id}
+          open={open}
+          handleClose={handleClose}
+          data={data}
+          lecture={lecture as Store.CourseLecture}
+        />
+      </View>
+    ),
+  }
+]
 
 export default function CourseSingleEnrolled({
   data,
@@ -103,6 +229,18 @@ export default function CourseSingleEnrolled({
     next: null,
   });
 
+  const [moreViewOpenModals, setMoreViewOpenModals] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+
+  const handleMoreModalOpen = (id: string) => {
+    setMoreViewOpenModals((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleMoreModalClose = (id: string) => {
+    setMoreViewOpenModals((prev) => ({ ...prev, [id]: false }));
+  };
   /**
    * Lifecycle method
    */
@@ -170,6 +308,7 @@ export default function CourseSingleEnrolled({
       setMarkLectureViewedLoading(false);
     }
   };
+
   /**
    * End handler functions
    */
@@ -241,7 +380,12 @@ export default function CourseSingleEnrolled({
       key: "more",
       title: "More",
       children: () => (
-        <CourseMore data={data} selectedLecture={selectedLecture} />
+        <CourseMore
+          data={data}
+          selectedLecture={selectedLecture}
+          handleModalOpen={handleMoreModalOpen}
+          handleModalClose={handleMoreModalClose}
+        />
       ),
     },
   ];
@@ -377,6 +521,14 @@ export default function CourseSingleEnrolled({
             />
           </View>
         )}
+
+      <RenderCourseMoreModals 
+        data={data}
+        selectedLecture={selectedLecture ?? undefined}
+        openModals={moreViewOpenModals}
+        menuItems={moreViewMenuItems}
+        handleModalClose={handleMoreModalClose}
+      />
     </View>
   );
 }
@@ -598,88 +750,133 @@ function ContentView({ data, lecture }: ContentViewProps) {
 function CourseMore({
   data,
   selectedLecture,
+  handleModalOpen,
+  handleModalClose,
 }: {
   data: Store.CourseData;
   selectedLecture: Store.CourseLecture | null;
+  handleModalOpen: (id: string) => void;
+  handleModalClose: (id: string) => void;
 }) {
   const theme = useAppTheme();
   const courseData = useAppSelector((state) => state.course.currentCourse);
-  const [modalOpen, setModalOpen] = useState(false);
 
-  const menuItems = [
-    {
-      title: "About this Course",
-      icon: "...",
-      id: "about",
-      element: ({ open, setOpen, data }: PropTypes.CourseEnrolledMoreViews) => (
-        <AboutCourse open={open} setOpen={setOpen} data={data} />
-      ),
-    },
-    {
-      title: "Course certificate",
-      icon: "🏆",
-      id: "certificate",
-      element: ({ open, setOpen, data }: PropTypes.CourseEnrolledMoreViews) => (
-        <AboutCourse open={open} setOpen={setOpen} data={data} />
-      ),
-    },
-    // { title: "Share this Course", icon: "🔗" },
-    {
-      title: "Discussion",
-      icon: "💬",
-      id: "discussion",
-      hasLectureDependency: true,
-      element: ({
-        open,
-        setOpen,
-        data,
-        lecture,
-      }: PropTypes.CourseEnrolledMoreViews & {
-        lecture: Store.CourseLecture | null;
-      }) => (
-        <CourseDiscussion
-          open={open}
-          setOpen={setOpen}
-          data={data}
-          lecture={lecture as Store.CourseLecture}
-        />
-      ),
-    },
-    {
-      title: "Routine",
-      icon: "📝",
-      id: "routine",
-      element: ({ open, setOpen, data }: PropTypes.CourseEnrolledMoreViews) => (
-        <CourseRoutine open={open} setOpen={setOpen} data={data} />
-      ),
-    },
-    {
-      title: "Resources",
-      icon: "📚",
-      id: "resources",
-      hasLectureDependency: true,
-      element: ({
-        open,
-        setOpen,
-        data,
-        lecture,
-      }: PropTypes.CourseEnrolledMoreViews & {
-        lecture: Store.CourseLecture | null;
-      }) => (
-        <CourseResources
-          open={open}
-          setOpen={setOpen}
-          data={data}
-          lecture={lecture as Store.CourseLecture}
-        />
-      ),
-    },
-    // { title: "Announcements", icon: "🔔" },
-    // { title: "Add course to favorites", icon: "⭐" },
-    // { title: "Archive this course", icon: "📥" },
-  ];
+  const menuItems = useMemo<CourseMoreItemsModal[]>(
+    () => [
+      {
+        title: "About this Course",
+        icon: "...",
+        id: "about",
+        element: ({
+          id,
+          open,
+          handleClose,
+          data,
+        }: PropTypes.CourseEnrolledMoreViews) => (
+          <View key={id}>
+            <AboutCourse
+              id={id}
+              open={open}
+              handleClose={handleClose}
+              data={data}
+            />
+          </View>
+        ),
+      },
+      {
+        title: "Course certificate",
+        icon: "🏆",
+        id: "certificate",
+        element: ({
+          id,
+          open,
+          handleClose,
+          data,
+        }: PropTypes.CourseEnrolledMoreViews) => (
+          <View key={id}>
+            <CourseCertificate
+              id={id}
+              open={open}
+              handleClose={handleClose}
+              data={data}
+            />
+          </View>
+        ),
+      },
+      // { title: "Share this Course", icon: "🔗" },
+      {
+        title: "Discussion",
+        icon: "💬",
+        id: "discussion",
+        hasLectureDependency: true,
+        element: ({
+          id,
+          open,
+          handleClose,
+          data,
+          lecture,
+        }: PropTypes.CourseEnrolledMoreViews) => (
+          <View key={id}>
+            <CourseDiscussion
+              id={id}
+              open={open}
+              handleClose={handleClose}
+              data={data}
+              lecture={lecture as Store.CourseLecture}
+            />
+          </View>
+        ),
+      },
+      {
+        title: "Routine",
+        icon: "📝",
+        id: "routine",
+        element: ({
+          id,
+          open,
+          handleClose,
+          data,
+        }: PropTypes.CourseEnrolledMoreViews) => (
+          <View key={id}>
+            <CourseRoutine
+              id={id}
+              open={open}
+              handleClose={handleClose}
+              data={data}
+            />
+          </View>
+        ),
+      },
+      {
+        title: "Resources",
+        icon: "📚",
+        id: "resources",
+        hasLectureDependency: true,
+        element: ({
+          id,
+          open,
+          handleClose,
+          data,
+          lecture,
+        }: PropTypes.CourseEnrolledMoreViews) => (
+          <View key={id}>
+            <CourseResources
+              id={id}
+              open={open}
+              handleClose={handleClose}
+              data={data}
+              lecture={lecture as Store.CourseLecture}
+            />
+          </View>
+        ),
+      },
+      // { title: "Announcements", icon: "🔔" },
+      // { title: "Add course to favorites", icon: "⭐" },
+      // { title: "Archive this course", icon: "📥" },
+    ],
+    [courseData, selectedLecture]
+  );
 
-  const [selectedMenu, setSelectedMenu] = useState(menuItems[0]);
   return (
     <View className="flex-1">
       {Number.isNaN(parseFloat(data.course_progress.replace("%", ""))) ? (
@@ -719,8 +916,7 @@ function CourseMore({
                   className="flex-row items-center space-x-4 p-3 rounded-lg"
                   style={{ backgroundColor: theme.colors.backgroundGrayLight }}
                   onPress={() => {
-                    setModalOpen(true);
-                    setSelectedMenu(item);
+                    handleModalOpen(item.id);
                   }}
                 >
                   <Text className="text-lg">{item.icon}</Text>
@@ -730,13 +926,53 @@ function CourseMore({
           )}
         </View>
       </ScrollView>
-      {selectedMenu.element({
+
+      {/* {courseData &&
+        menuItems.map((item) =>
+          item.element({
+            id: item.id,
+            open: !!openModals[item.id], // Check the state for this modal
+            handleClose: () => handleModalClose(item.id),
+            data: courseData as Store.CourseData,
+            lecture: selectedLecture,
+          })
+        )} */}
+      {/* {selectedMenu.element({
         open: modalOpen,
         setOpen: setModalOpen,
         data: courseData as Store.CourseData,
         lecture: selectedLecture,
-      })}
+      })} */}
     </View>
+  );
+}
+
+function RenderCourseMoreModals({
+  data,
+  selectedLecture,
+  menuItems,
+  openModals,
+  handleModalClose,
+}: {
+  data: Store.CourseData;
+  selectedLecture?: Store.CourseLecture;
+  openModals: { [key: string]: boolean };
+  menuItems: CourseMoreItemsModal[];
+  handleModalClose: (id: string) => void;
+}) {
+  const courseData = useAppSelector((state) => state.course.currentCourse);
+
+  return (
+    courseData &&
+    menuItems.map((item) =>
+      item.element({
+        id: item.id,
+        open: !!openModals[item.id], // Check the state for this modal
+        handleClose: () => handleModalClose(item.id),
+        data: courseData as Store.CourseData,
+        lecture: selectedLecture,
+      })
+    )
   );
 }
 

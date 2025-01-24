@@ -16,6 +16,7 @@ import {
   LiveIcon,
   RecordedIcon,
   ReplyIcon,
+  SaveIconFilled,
 } from "../../assets/Icons";
 import useAppTheme from "../../hooks/useAppTheme";
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,15 +29,18 @@ import InputPrimary from "../../atoms/Input/InputPrimary";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   commentOnLecture,
+  downloadCertificate,
   getComments,
   refreshCourseSingle,
   replyOnLectureComment,
 } from "../../redux/slices/course/courseSlice";
-import { convertToTimeAgo } from "../../utils/helpers";
+import { arrayBufferToBase64, convertToTimeAgo } from "../../utils/helpers";
+import useFileDownload from "../../hooks/useFileDownload";
+import PdfViewerBase64 from "../../components/PdfViewer/PdfViewerBase64";
 
 export function AboutCourse({
   open,
-  setOpen,
+  handleClose,
   data,
 }: PropTypes.CourseEnrolledMoreViews) {
   const theme = useAppTheme();
@@ -46,9 +50,9 @@ export function AboutCourse({
       animationType="slide"
       transparent={false}
       visible={open}
-      onRequestClose={() => setOpen(false)}
+      onRequestClose={handleClose}
     >
-      <Container setOpen={setOpen}>
+      <Container handleClose={handleClose}>
         <View
           style={{
             borderWidth: 2,
@@ -168,10 +172,80 @@ export function AboutCourse({
     </Modal>
   );
 }
+export const CourseCertificate = React.memo(
+  ({ open, handleClose, data }: PropTypes.CourseEnrolledMoreViews) => {
+    const theme = useAppTheme();
+    const styles = createStyles();
+    const dispatch = useAppDispatch();
+    const { download, fileUri } = useFileDownload({ extension: "pdf" });
+    const loading = useAppSelector(
+      (state) => state.course.loading.downloadCertificate
+    );
+    const [certificateBase64, setCertificateBase64] = useState<string | null>(
+      null
+    );
+
+    // useEffect(() => {
+    //   fetchCertificate();
+    // }, []);
+    const fetchCertificate = async () => {
+      const certificateBuffer: ArrayBuffer = await dispatch(
+        downloadCertificate({
+          course_id: data.id,
+        })
+      ).unwrap();
+      const base64 = `data:application/pdf;base64,${arrayBufferToBase64(
+        certificateBuffer
+      )}`;
+      // const base64 = arrayBufferToBase64(certificateBuffer);
+      console.log("New base 64", base64);
+      setCertificateBase64(base64);
+    };
+    const handleDownloadClick = async () => {
+      try {
+        const certificateBuffer: ArrayBuffer = await dispatch(
+          downloadCertificate({
+            course_id: data.id,
+          })
+        ).unwrap();
+        setCertificateBase64(arrayBufferToBase64(certificateBuffer));
+        await download(certificateBuffer);
+      } catch (error) {
+        console.log("Failed to download certificate: ", error);
+      }
+    };
+
+    useEffect(() => {
+      console.log("File URI", fileUri)
+    }, [fileUri])
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={open}
+        // onRequestClose={() => handleClose()}
+      >
+        <Container handleClose={handleClose}>
+          <View>
+            <PrimaryButton
+              icon={<SaveIconFilled />}
+              text="Download Certificate"
+              color="primary"
+              onPress={handleDownloadClick}
+              loading={loading}
+            />
+          </View>
+          {fileUri && <PdfViewer source={{ uri: fileUri }} />}
+        </Container>
+      </Modal>
+    );
+  }
+);
 
 export const CourseRoutine = ({
   open,
-  setOpen,
+  handleClose,
   data,
 }: PropTypes.CourseEnrolledMoreViews) => {
   const theme = useAppTheme();
@@ -180,9 +254,9 @@ export const CourseRoutine = ({
       animationType="slide"
       transparent={false}
       visible={open}
-      onRequestClose={() => setOpen(false)}
+      onRequestClose={handleClose}
     >
-      <Container setOpen={setOpen}>
+      <Container handleClose={handleClose}>
         {data.routine ? (
           <View>
             <CustomText>{data.routine.topic}</CustomText>
@@ -212,7 +286,7 @@ export const CourseRoutine = ({
 
 export const CourseResources = ({
   open,
-  setOpen,
+  handleClose,
   data,
   lecture,
 }: PropTypes.CourseResources) => {
@@ -220,11 +294,11 @@ export const CourseResources = ({
   const [pdfDialogOpen, setPdfDialogOpen] = useState<boolean>(false);
   const [selectedPdf, setSelectedPdf] = useState<API.Document | null>(null);
   const handlePdfPreviewOpen = () => {
-    setOpen(false);
+    handleClose();
     setPdfDialogOpen(true);
   };
   const handlePdfPreviewClose = () => {
-    setOpen(true);
+    handleClose();
     setPdfDialogOpen(false);
   };
   return (
@@ -238,57 +312,59 @@ export const CourseResources = ({
         animationType="slide"
         transparent={false}
         visible={open}
-        onRequestClose={() => setOpen(false)}
+        onRequestClose={handleClose}
       >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#fff",
-            paddingHorizontal: 30,
-            paddingVertical: 60,
-          }}
-        >
-          <PrimaryButton
-            className="padding-[10px] ml-auto my-5"
-            onPress={() => setOpen(false)}
-            icon={<CrossIcon />}
-            color="primary"
-            text="Close"
-          />
-          <FlatList
-            data={lecture.lecture_documents}
-            keyExtractor={(item, index) => `${lecture.id}-${index}`}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#ccc",
-                }}
-                onPress={() => {
-                  setSelectedPdf(item.document);
-                  handlePdfPreviewOpen();
-                }} // Pass the file link
-              >
-                <CustomText
+        {lecture && (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#fff",
+              paddingHorizontal: 30,
+              paddingVertical: 60,
+            }}
+          >
+            <PrimaryButton
+              className="padding-[10px] ml-auto my-5"
+              onPress={handleClose}
+              icon={<CrossIcon />}
+              color="primary"
+              text="Close"
+            />
+            <FlatList
+              data={lecture.lecture_documents}
+              keyExtractor={(item, index) => `${lecture.id}-${index}`}
+              renderItem={({ item }) => (
+                <TouchableOpacity
                   style={{
-                    fontSize: 16,
-                    color: "#333",
+                    padding: 10,
+                    borderBottomWidth: 1,
+                    borderBottomColor: "#ccc",
                   }}
+                  onPress={() => {
+                    setSelectedPdf(item.document);
+                    handlePdfPreviewOpen();
+                  }} // Pass the file link
                 >
-                  {item.document.name}
-                </CustomText>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+                  <CustomText
+                    style={{
+                      fontSize: 16,
+                      color: "#333",
+                    }}
+                  >
+                    {item.document.name}
+                  </CustomText>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
       </Modal>
     </>
   );
 };
 export const CourseDiscussion = ({
   open,
-  setOpen,
+  handleClose,
   data,
   lecture,
 }: PropTypes.CourseResources) => {
@@ -316,27 +392,29 @@ export const CourseDiscussion = ({
    * Action functions
    */
   const postComment = async () => {
-    try {
-      if (replyingTo) {
-        await dispatch(
-          replyOnLectureComment({
-            lecture_comment_id: replyingTo.id,
-            comment: input,
-          })
-        ).unwrap();
-      } else {
-        await dispatch(
-          commentOnLecture({
-            course_id: data.id,
-            lecture_id: lecture.id,
-            comment: input,
-          })
-        ).unwrap();
+    if (lecture) {
+      try {
+        if (replyingTo) {
+          await dispatch(
+            replyOnLectureComment({
+              lecture_comment_id: replyingTo.id,
+              comment: input,
+            })
+          ).unwrap();
+        } else {
+          await dispatch(
+            commentOnLecture({
+              course_id: data.id,
+              lecture_id: lecture.id,
+              comment: input,
+            })
+          ).unwrap();
+        }
+        await dispatch(refreshCourseSingle(data.slug));
+        handleClose();
+      } catch (error) {
+        console.log("Failed to post comment: ", error);
       }
-      await dispatch(refreshCourseSingle(data.slug));
-      setOpen(true);
-    } catch (error) {
-      console.log("Failed to post comment: ", error);
     }
   };
   /**
@@ -364,84 +442,19 @@ export const CourseDiscussion = ({
         visible={open}
         // onRequestClose={() => setOpen(false)}
       >
-        <ContainerNonScroll className="gap-3" setOpen={setOpen}>
-          <View>
-            <CustomText>
-              Discussion on{" "}
-              <CustomText variant="600">{lecture.title}</CustomText>
-            </CustomText>
-            <Divider className="my-3" />
-          </View>
-          {!replyingTo ? (
-            <ScrollView className="flex-1">
-              {lecture.comments.map((comment) => (
-                <View key={comment.id} className="mb-2">
-                  <View
-                    className="px-3 py-2 rounded-tr rounded-br rounded-bl"
-                    style={{
-                      backgroundColor: theme.colors.backgroundGrayLight,
-                    }}
-                  >
-                    <View className="flex-row flex-wrap items-center">
-                      <CustomText variant="600">{comment.user.name}</CustomText>
-                      <CustomText
-                        className="ml-2"
-                        style={{ fontSize: 10 }}
-                        variant="300"
-                      >
-                        {convertToTimeAgo(comment.updated_at)}
-                      </CustomText>
-                    </View>
-                    <CustomText className="mt-1">{comment.comment}</CustomText>
-                  </View>
-                  <View className="flex-row items-center">
-                    <TouchableRipple onPress={() => handleReplyPress(comment)}>
-                      <View className="flex-row items-center">
-                        <ReplyIcon color={theme.colors.text} />
-                        <CustomText className="ml-2" variant="400">
-                          Reply
-                        </CustomText>
-                      </View>
-                    </TouchableRipple>
-                    <CustomText className="300"> | {comment.comment_replies.length} Replies</CustomText>
-                  </View>
-                </View>
-              ))}
-            </ScrollView>
-          ) : (
-            <View className="flex-1">
-              <View className="flex-row mb-2">
-                <TouchableRipple onPress={handleBackToCommentsPress}>
-                  <View className="flex-row items-center">
-                    <CaretLeftIcon scale={0.6} color={theme.colors.text} />
-                    <CustomText className="ml-2">Back to comments</CustomText>
-                  </View>
-                </TouchableRipple>
-                {/* <CustomText variant="400i">Replying To</CustomText> */}
-              </View>
-              <Divider className="my-1" />
-              <CustomText className="mb-1" variant="300i">
-                Replying to
+        {lecture && (
+          <ContainerNonScroll className="gap-3" handleClose={handleClose}>
+            <View>
+              <CustomText>
+                Discussion on{" "}
+                <CustomText variant="600">{lecture.title}</CustomText>
               </CustomText>
-              <View
-                className="px-3 py-2 rounded-tr rounded-br rounded-bl"
-                style={{ backgroundColor: theme.colors.backgroundGrayLight }}
-              >
-                <View className="flex-row flex-wrap items-center">
-                  <CustomText variant="600">{replyingTo.user.name}</CustomText>
-                  <CustomText
-                    className="ml-2"
-                    style={{ fontSize: 10 }}
-                    variant="300"
-                  >
-                    {convertToTimeAgo(replyingTo.updated_at)}
-                  </CustomText>
-                </View>
-                <CustomText className="mt-1">{replyingTo.comment}</CustomText>
-              </View>
-              <ScrollView className="flex-1 mt-2">
-                {replyingTo.comment_replies.map((comment) => (
-                  <View className="mb-2 ml-2" key={comment.id}>
+              <Divider className="my-3" />
+            </View>
+            {!replyingTo ? (
+              <ScrollView className="flex-1">
+                {lecture.comments.map((comment) => (
+                  <View key={comment.id} className="mb-2">
                     <View
                       className="px-3 py-2 rounded-tr rounded-br rounded-bl"
                       style={{
@@ -464,25 +477,103 @@ export const CourseDiscussion = ({
                         {comment.comment}
                       </CustomText>
                     </View>
+                    <View className="flex-row items-center">
+                      <TouchableRipple
+                        onPress={() => handleReplyPress(comment)}
+                      >
+                        <View className="flex-row items-center">
+                          <ReplyIcon color={theme.colors.text} />
+                          <CustomText className="ml-2" variant="400">
+                            Reply
+                          </CustomText>
+                        </View>
+                      </TouchableRipple>
+                      <CustomText className="300">
+                        {" "}
+                        | {comment.comment_replies.length} Replies
+                      </CustomText>
+                    </View>
                   </View>
                 ))}
               </ScrollView>
+            ) : (
+              <View className="flex-1">
+                <View className="flex-row mb-2">
+                  <TouchableRipple onPress={handleBackToCommentsPress}>
+                    <View className="flex-row items-center">
+                      <CaretLeftIcon scale={0.6} color={theme.colors.text} />
+                      <CustomText className="ml-2">Back to comments</CustomText>
+                    </View>
+                  </TouchableRipple>
+                  {/* <CustomText variant="400i">Replying To</CustomText> */}
+                </View>
+                <Divider className="my-1" />
+                <CustomText className="mb-1" variant="300i">
+                  Replying to
+                </CustomText>
+                <View
+                  className="px-3 py-2 rounded-tr rounded-br rounded-bl"
+                  style={{ backgroundColor: theme.colors.backgroundGrayLight }}
+                >
+                  <View className="flex-row flex-wrap items-center">
+                    <CustomText variant="600">
+                      {replyingTo.user.name}
+                    </CustomText>
+                    <CustomText
+                      className="ml-2"
+                      style={{ fontSize: 10 }}
+                      variant="300"
+                    >
+                      {convertToTimeAgo(replyingTo.updated_at)}
+                    </CustomText>
+                  </View>
+                  <CustomText className="mt-1">{replyingTo.comment}</CustomText>
+                </View>
+                <ScrollView className="flex-1 mt-2">
+                  {replyingTo.comment_replies.map((comment) => (
+                    <View className="mb-2 ml-2" key={comment.id}>
+                      <View
+                        className="px-3 py-2 rounded-tr rounded-br rounded-bl"
+                        style={{
+                          backgroundColor: theme.colors.backgroundGrayLight,
+                        }}
+                      >
+                        <View className="flex-row flex-wrap items-center">
+                          <CustomText variant="600">
+                            {comment.user.name}
+                          </CustomText>
+                          <CustomText
+                            className="ml-2"
+                            style={{ fontSize: 10 }}
+                            variant="300"
+                          >
+                            {convertToTimeAgo(comment.updated_at)}
+                          </CustomText>
+                        </View>
+                        <CustomText className="mt-1">
+                          {comment.comment}
+                        </CustomText>
+                      </View>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+            <View className="flex-row gap-2 items-center">
+              <InputPrimary
+                placeholder="Post your question/answer here"
+                onChangeText={(text) => setInput(text)}
+                containerStyle={{ flex: 1 }}
+              />
+              <PrimaryButton
+                loading={postCommentLoading}
+                text="Post"
+                color="primary"
+                onPress={postComment}
+              />
             </View>
-          )}
-          <View className="flex-row gap-2 items-center">
-            <InputPrimary
-              placeholder="Post your question/answer here"
-              onChangeText={(text) => setInput(text)}
-              containerStyle={{ flex: 1 }}
-            />
-            <PrimaryButton
-              loading={postCommentLoading}
-              text="Post"
-              color="primary"
-              onPress={postComment}
-            />
-          </View>
-        </ContainerNonScroll>
+          </ContainerNonScroll>
+        )}
       </Modal>
     </>
   );
@@ -536,10 +627,10 @@ const PdfDialog = ({
   );
 };
 const Container = ({
-  setOpen,
+  handleClose,
   children,
 }: {
-  setOpen: (open: boolean) => void;
+  handleClose: () => void;
   children: React.ReactNode;
 }) => {
   return (
@@ -553,7 +644,7 @@ const Container = ({
     >
       <PrimaryButton
         className="padding-[10px] ml-auto my-5"
-        onPress={() => setOpen(false)}
+        onPress={() => handleClose()}
         icon={<CrossIcon />}
         color="primary"
         text="Close"
@@ -563,11 +654,11 @@ const Container = ({
   );
 };
 const ContainerNonScroll = ({
-  setOpen,
+  handleClose,
   children,
   className,
 }: {
-  setOpen: (open: boolean) => void;
+  handleClose: () => void;
   children: React.ReactNode;
   className?: string;
 }) => {
@@ -583,7 +674,7 @@ const ContainerNonScroll = ({
     >
       <PrimaryButton
         className="padding-[10px] ml-auto my-5"
-        onPress={() => setOpen(false)}
+        onPress={handleClose}
         icon={<CrossIcon />}
         color="primary"
         text="Close"
