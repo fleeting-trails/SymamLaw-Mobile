@@ -25,9 +25,9 @@ export default function HomeTabs() {
       return <SearchIcon />
     } else if (route.name === "My Learning") {
       return <PlayIconFilled />
-    } else if (route.name === "Resources") {
+    } else if (route.name === "Blogs") {
       return <ResourcesIcon scale={1.2} />
-    } else if (route.name === "Library") {
+    } else if (route.name === "Publications") {
       return <LibraryIcon scale={1.1} />
     }
 
@@ -62,8 +62,8 @@ export default function HomeTabs() {
       <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Tab.Screen name="Explore" component={Explore} options={{ headerShown: false }} />
       <Tab.Screen name="My Learning" component={MyLearning} options={{ headerShown: false }} />
-      <Tab.Screen name="Resources" component={Resources} options={{ headerShown: false }} />
-      <Tab.Screen name="Library" component={Library} options={{ headerShown: false }} />
+      <Tab.Screen name="Blogs" component={Resources} options={{ headerShown: false }} />
+      <Tab.Screen name="Publications" component={Library} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
