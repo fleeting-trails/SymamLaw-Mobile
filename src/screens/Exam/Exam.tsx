@@ -681,10 +681,6 @@ function MCQOptionsView({
             <CustomText>{option.option_text}</CustomText>
           </View>
         ))}
-        <View className="flex flex-row gap-2">
-          <RadioButton value="2" />
-          <CustomText>Option 2</CustomText>
-        </View>
       </RadioButton.Group>
     </View>
   ) : (

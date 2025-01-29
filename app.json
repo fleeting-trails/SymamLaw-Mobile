@@ -24,7 +24,9 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.symam.symamlawmobile"
+      "package": "com.symam.symamlawmobile",
+      "versionCode": 2,
+      "versionName": "1.0.1"
     },
     "web": {
       "favicon": "./assets/icon.png"
