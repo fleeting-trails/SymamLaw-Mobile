@@ -72,10 +72,14 @@ export default function CourseCardList({
             )}
           </View>
 
-          <View className="flex-row gap-1 mt-2">
-            <ClockIcon color={theme.colors.text} />
-            <CustomText>N/A</CustomText>
-          </View>
+          {data.course_instructors && <View className="flex-row gap-2 mt-2 items-center">
+            <Image 
+              className="h-8 w-8 rounded-full p-2"
+              style={{ borderColor: theme.colors.primaryGrayLight, borderWidth: 2 }} 
+              source={{ uri: data.course_instructors.instructor.instructor_details.image }} />
+
+            <CustomText>{data.course_instructors.instructor.instructor_details.name}</CustomText>
+          </View>}
 
           {data.subscription_type === "paid" && !data.is_user_purchased && (
             <View className="flex flex-row items-center mt-2">

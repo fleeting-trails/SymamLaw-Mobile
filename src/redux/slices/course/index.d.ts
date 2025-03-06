@@ -42,6 +42,7 @@ namespace Store {
     course_end_date: string
     description: string
     excerpt: string
+    course_instructors: CourseInstructor
     image: import('react-native').ImageSourcePropType | null
     status: API.WaythinBoolean
     course_curriculum: string
@@ -64,7 +65,6 @@ namespace Store {
     latestLecture: any[]
     course_progress: string
     course_sections?: CourseSection[]
-    course_instructors: CourseInstructor[]
     routine?: {
       id: number
       course_id: any
@@ -135,10 +135,26 @@ namespace Store {
   type CourseExam = Store.ExamData
   type CourseInstructor = {
     id: number
-    course_id: string
-    instructor_id: string
+    course_id: number
+    instructor_id: number
     created_at: string
     updated_at: string
+    instructor: {
+      id: number
+      instructor_details: {
+        id: number
+        name: string
+        position: string
+        batch: string
+        merit: string
+        image: string
+        conduct_course: string
+        status: number
+        user_id: number
+        created_at: string
+        updated_at: string
+      }
+    }
   }
   type CourseLectureComment = {
     id: number

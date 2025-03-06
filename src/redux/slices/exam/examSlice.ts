@@ -317,6 +317,21 @@ export const logExamTracker = createAsyncThunk(
     }
   }
 );
+export const fetchExamCategoryRoutine = createAsyncThunk(
+  "fetchExamCategoryRoutine",
+  async (slug: string, thunkAPI) => {
+    try {
+      const res = await axiosExternal.get(`/exam-cateogry/routine/${slug}`);
+      if (!res.data.success)
+        thunkAPI.rejectWithValue({ error: res.data.message });
+      return { data: res.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error });
+    }
+  }
+);
+
+
 
 export const examSliceSlice = createSlice({
   name: "examSlice",

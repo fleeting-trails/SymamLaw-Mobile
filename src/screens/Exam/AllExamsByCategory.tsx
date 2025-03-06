@@ -5,6 +5,7 @@ import { ScreenContainer } from "../../components";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   fetchExamCategories,
+  fetchExamCategoryRoutine,
   fetchExamsByCategory,
 } from "../../redux/slices/exam/examSlice";
 import useAppTheme from "../../hooks/useAppTheme";
@@ -24,6 +25,7 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
   const theme = useAppTheme();
   useEffect(() => {
     handleFetchExamsByCategory();
+    handleFetchRoutine();
   }, []);
 
   const handleFetchExamsByCategory = async () => {
@@ -33,6 +35,15 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
       console.log("failed to fetch categories");
     }
   };
+
+  const handleFetchRoutine = async () => {
+    try {
+      dispatch(fetchExamCategoryRoutine(category.slug)).unwrap();
+    } catch (error) {
+      console.log("Failed to load routine");
+    }
+  }
+
   return (
     <ScreenLoading isLoading={loading}>
       <View

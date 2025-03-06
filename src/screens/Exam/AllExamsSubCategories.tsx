@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet } from "react-native";
 import CustomText from "../../atoms/CustomText/CustomText";
 import { ScreenContainer } from "../../components";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchExamCategories, fetchExamSubCategories } from "../../redux/slices/exam/examSlice";
+import { fetchExamCategories, fetchExamCategoryRoutine, fetchExamSubCategories } from "../../redux/slices/exam/examSlice";
 import useAppTheme from "../../hooks/useAppTheme";
 import { ExamCategoryIcon } from "../../assets/Icons";
 import { TouchableRipple } from "react-native-paper";
