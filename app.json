@@ -30,6 +30,15 @@
       "favicon": "./assets/icon.png"
     },
     "extra": {
+      "devBuild": {
+        "name": "Symamlaw-Dev",
+        "android": {
+          "package": "com.abtahitajwar.symamlawmobile.dev"
+        },
+        "ios": {
+          "bundleIdentifier": "com.abtahitajwar.symamlawmobile.dev"
+        }
+      },
       "eas": {
         "projectId": "00c883e3-6127-49be-84df-4fb378d865ba"
       }

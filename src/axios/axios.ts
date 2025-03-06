@@ -5,14 +5,14 @@ import { EventRegister } from "react-native-event-listeners";
 
 
 export const axiosExternal = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.EXPO_PUBLIC_BASE_URL,
   timeout: 8000,
   headers: {
     Accept: 'application/json'
   },
 });
 export const axiosFileUpload = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.EXPO_PUBLIC_BASE_URL,
   timeout: 8000,
   headers: {
     "Accept": '*/*',

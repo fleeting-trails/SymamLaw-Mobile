@@ -81,7 +81,7 @@ export default function Home() {
           <TouchableRipple
             className="w-[45%] h-[100px] rounded border-[1px]"
             style={{ borderColor: theme.colors.textPrimary }}
-            onPress={() => navigate("ExamCategories")}
+            onPress={() => navigate("ExamBrowse")}
           >
             <>
               <Image

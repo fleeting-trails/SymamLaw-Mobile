@@ -35,6 +35,10 @@ import Orders from "./screens/Orders/Orders";
 import OrderDetails from "./screens/Orders/OrderDetails";
 import Notices from "./screens/Notice/Notices";
 import NoticeDetails from "./screens/Notice/NoticeDetails";
+import Account from "./screens/Account/Account";
+import ExamBrowse from "./screens/Exam/ExamBrowse";
+import ExamsFree from "./screens/Exam/ExamsFree";
+import ExamsArchived from "./screens/Exam/ExamsArchived";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -69,9 +73,12 @@ export default function Main() {
           <Stack.Screen name="OTP" component={OTP} />
           <Stack.Screen name="ExamStart" component={ExamStart} />
           <Stack.Screen name="Exam" component={Exam} />
+          <Stack.Screen name="ExamBrowse" component={ExamBrowse} />
           <Stack.Screen name="ExamCategories" component={AllExamCategories} />
           <Stack.Screen name="ExamSubCategories" component={AllExamSubCategories} />
           <Stack.Screen name="ExamsByCategories" component={AllExamsByCategory} />
+          <Stack.Screen name="ExamsFree" component={ExamsFree} />
+          <Stack.Screen name="ExamsArchived" component={ExamsArchived} />
           <Stack.Screen name="PackageList" component={PackageList} />
           <Stack.Screen name="ExamResult" component={ExamResult} />
           <Stack.Screen name="PackageBuyFeedback" component={PackageBuyFeedback} />
@@ -85,6 +92,7 @@ export default function Main() {
           <Stack.Screen name="OrderDetails" component={OrderDetails} />
           <Stack.Screen name="Notices" component={Notices} />
           <Stack.Screen name="NoticeDetails" component={NoticeDetails} />
+          <Stack.Screen name="Account" component={Account} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

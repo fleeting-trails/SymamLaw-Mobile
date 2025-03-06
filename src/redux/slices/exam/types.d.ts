@@ -4,6 +4,14 @@ namespace Store {
             data: ExamDataShort[],
             pagination: API.Pagination
         },
+        freeExams: {
+            data: ExamDataShort[],
+            pagination: API.Pagination
+        },
+        archivedExams: {
+            data: ExamDataShort[],
+            pagination: API.Pagination
+        },
         examCategories: {
             data: ExamCategoryData[],
             pagination: API.Pagination
@@ -25,7 +33,11 @@ namespace Store {
             listAttemptedExams: boolean,
             getExamResult: boolean,
             listRecommendedExams: boolean,
-            logExamTracker: boolean
+            logExamTracker: boolean,
+            fetchFreeExams: boolean,
+            fetchFreeExamsMore: boolean,
+            fetchArchivedExams: boolean,
+            fetchArchivedExamsMore: boolean,
         },
         error: any
     }
