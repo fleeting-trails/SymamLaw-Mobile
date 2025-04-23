@@ -13,6 +13,7 @@ import { useTheme } from "react-native-paper";
 import { useAppSelector } from "../redux/hooks";
 import Resources from "./Resources/Resources";
 import Library from "./Library/Library";
+import LibraryDetails from "./Library/LibraryDetails";
 
 export default function HomeTabs() {
   const theme = useTheme<Config.Theme>();

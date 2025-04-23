@@ -11,12 +11,14 @@ import {
   removeCheckoutItemFull,
 } from "../../redux/slices/checkout/checkoutSlice";
 import { calculateDiscount } from "../../utils/helpers";
+import useAppNavigation from "../../hooks/useAppNavigation";
+import { TouchableRipple } from "react-native-paper";
 
 export default function BookCard({ data, onPress }: PropTypes.BookCard) {
   const styles = createStyles();
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
-
+  const { navigate } = useAppNavigation();
   /**
    * Handler functions
    */
@@ -36,7 +38,12 @@ export default function BookCard({ data, onPress }: PropTypes.BookCard) {
       })
     );
   };
-
+  /* 
+   * Handle full press
+   */
+  const handleCardPress = () => {
+    navigate("LibraryDetails", { data });
+  }
   const handleRemoveFromCheckout = () => {
     dispatch(removeCheckoutItemFull(data.id));
   };
@@ -45,53 +52,55 @@ export default function BookCard({ data, onPress }: PropTypes.BookCard) {
    */
 
   return (
-    <View className="bg-[#f8f1e7] shadow-md p-4 m-4">
-      {/* Image Section */}
-      <Image
-        source={{ uri: data.book_image }} // Replace with the actual image
-        className="h-60 w-full object-cover"
-      />
+    <TouchableRipple onPress={handleCardPress}>
+      <View className="bg-[#f8f1e7] shadow-md p-4 m-4">
+        {/* Image Section */}
+        <Image
+          source={{ uri: data.book_image }} // Replace with the actual image
+          className="h-60 w-full object-cover"
+        />
 
-      {/* Content Section */}
-      <View className="mt-4">
-        {/* Tag */}
-        <CustomText className="text-sm text-[#9E9E9E] bg-[#e8dcb7] px-3 py-1 rounded-full self-start font-semibold">
-          {data.book_category.title}
-        </CustomText>
+        {/* Content Section */}
+        <View className="mt-4">
+          {/* Tag */}
+          <CustomText className="text-sm text-[#9E9E9E] bg-[#e8dcb7] px-3 py-1 rounded-full self-start font-semibold">
+            {data.book_category.title}
+          </CustomText>
 
-        {/* Title */}
-        <CustomText className="text-xl font-bold text-[#4a3b3a] mt-2">
-          {data.title}
-        </CustomText>
+          {/* Title */}
+          <CustomText className="text-xl font-bold text-[#4a3b3a] mt-2">
+            {data.title}
+          </CustomText>
 
-        {/* Author */}
-        <CustomText className="text-base text-[#333333] mt-1">
-          {data.author}
-        </CustomText>
+          {/* Author */}
+          <CustomText className="text-base text-[#333333] mt-1">
+            {data.author}
+          </CustomText>
 
-        {/* Meta Info */}
-        <View className="flex-row items-center mt-4 space-x-4">
-          {/* Amount */}
-          <View className="flex-row items-center gap-2">
-            <MoneyIcon scale={0.7} color={theme.colors.text} />
-            {/* <CustomText>BDT </CustomText> */}
-            <RenderPrice data={data} />
-          </View>
-          {/* Reading Time */}
-          {/* <CustomText className="text-sm text-gray-600">
+          {/* Meta Info */}
+          <View className="flex-row items-center mt-4 space-x-4">
+            {/* Amount */}
+            <View className="flex-row items-center gap-2">
+              <MoneyIcon scale={0.7} color={theme.colors.text} />
+              {/* <CustomText>BDT </CustomText> */}
+              <RenderPrice data={data} />
+            </View>
+            {/* Reading Time */}
+            {/* <CustomText className="text-sm text-gray-600">
             ⏱ 19-minute read
           </CustomText> */}
-        </View>
+          </View>
 
-        <View className="mt-3">
-          <RenderCheckoutButton
-            data={data}
-            handleAddToCheckout={handleAddToCheckout}
-            handleRemoveFromCheckout={handleRemoveFromCheckout}
-          />
+          <View className="mt-3">
+            <RenderCheckoutButton
+              data={data}
+              handleAddToCheckout={handleAddToCheckout}
+              handleRemoveFromCheckout={handleRemoveFromCheckout}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableRipple>
   );
 }
 

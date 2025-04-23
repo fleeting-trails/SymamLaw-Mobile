@@ -163,6 +163,31 @@ export function AboutCourse({
               </CustomText>
             </View>
           )}
+
+          {data.course_instructors && (
+            <View>
+              <CustomText variant="600" className="text-xl mt-3">
+                Instructor
+              </CustomText>
+              <View className="flex-row gap-2 mt-2 items-center">
+                <Image
+                  className="h-8 w-8 rounded-full p-2"
+                  style={{
+                    borderColor: theme.colors.primaryGrayLight,
+                    borderWidth: 2,
+                  }}
+                  source={{
+                    uri: data.course_instructors.instructor.instructor_details
+                      .image,
+                  }}
+                />
+
+                <CustomText>
+                  {data.course_instructors.instructor.instructor_details.name}
+                </CustomText>
+              </View>
+            </View>
+          )}
         </View>
       </Container>
     </Modal>
@@ -403,7 +428,10 @@ export const CourseDiscussion = ({
                         </CustomText>
                       </View>
                     </TouchableRipple>
-                    <CustomText className="300"> | {comment.comment_replies.length} Replies</CustomText>
+                    <CustomText className="300">
+                      {" "}
+                      | {comment.comment_replies.length} Replies
+                    </CustomText>
                   </View>
                 </View>
               ))}

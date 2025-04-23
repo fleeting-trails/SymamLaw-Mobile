@@ -39,6 +39,7 @@ import Account from "./screens/Account/Account";
 import ExamBrowse from "./screens/Exam/ExamBrowse";
 import ExamsFree from "./screens/Exam/ExamsFree";
 import ExamsArchived from "./screens/Exam/ExamsArchived";
+import LibraryDetails from "./screens/Library/LibraryDetails";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -93,6 +94,7 @@ export default function Main() {
           <Stack.Screen name="Notices" component={Notices} />
           <Stack.Screen name="NoticeDetails" component={NoticeDetails} />
           <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="LibraryDetails" component={LibraryDetails} />
         </Stack.Navigator>
         {/* <HomeTabs /> */}
       </PaperProvider>

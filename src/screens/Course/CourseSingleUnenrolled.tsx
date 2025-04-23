@@ -52,7 +52,7 @@ export default function CourseSingleUnenrolled({
     res: Store.CourseListData | Store.CourseData,
     purchaseData: Store.PurchaseResponseData
   ) {
-    navigate("CourseSingle", { slug: data.slug })
+    navigate("CourseSingle", { slug: data.slug });
   }
 
   const handlePurchasePress = () => {
@@ -144,6 +144,7 @@ export default function CourseSingleUnenrolled({
 }
 
 function CourseDetails({ data }: { data: Store.CourseData }) {
+  const theme = useAppTheme();
   return (
     <ScrollView className="my-3">
       <View>
@@ -197,6 +198,31 @@ function CourseDetails({ data }: { data: Store.CourseData }) {
             <CustomText>
               {moment(data.course_end_date).format("MMMM Do YYYY, h:mm:ss a")}
             </CustomText>
+          </View>
+        )}
+
+        {data.course_instructors && (
+          <View>
+            <CustomText variant="600" className="text-xl mt-3">
+              Instructor
+            </CustomText>
+            <View className="flex-row gap-2 mt-2 items-center">
+              <Image
+                className="h-8 w-8 rounded-full p-2"
+                style={{
+                  borderColor: theme.colors.primaryGrayLight,
+                  borderWidth: 2,
+                }}
+                source={{
+                  uri: data.course_instructors.instructor.instructor_details
+                    .image,
+                }}
+              />
+
+              <CustomText>
+                {data.course_instructors.instructor.instructor_details.name}
+              </CustomText>
+            </View>
           </View>
         )}
       </View>

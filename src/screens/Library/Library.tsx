@@ -25,7 +25,7 @@ export default function Library() {
   const styles = createStyles();
   const dispatch = useAppDispatch();
   const libraryState = useAppSelector((state) => state.library);
-  const loading = libraryState.loading.fetchBooklist || libraryState.loading.searchBooks; 
+  const loading = libraryState.loading.fetchBooklist || libraryState.loading.searchBooks;
   const loadMore = libraryState.loading.fetchMoreBooks;
   const books = libraryState.list.data;
   const user = useAppSelector((state) => state.auth.user);
@@ -40,8 +40,8 @@ export default function Library() {
    */
   const handlePress = () => {
     if (!user) {
-        navigate("Login");
-        return;
+      navigate("Login");
+      return;
     }
   };
   const handleSearch = (
@@ -60,7 +60,7 @@ export default function Library() {
       console.log("Failed to load more books", error);
     }
   };
-  
+
   /**
    * End handler functions
    */
