@@ -33,13 +33,13 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
   useEffect(() => {
     if (user && data) {
       const foundSubscription = data.package_items?.find((pkg) =>
-        user.current_subscriptions.find(
+        user.current_subscriptions?.find(
           (sub) => `${pkg.package_id}` === `${sub.package_id}`
         )
           ? true
           : false
       );
-      
+
       if (!data.is_free && data.package_items?.length !== 0) {
         setIsExamLocked(foundSubscription ? false : true);
       } else {
@@ -63,7 +63,7 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
         </View>
         <View>
           {isExamLocked ? (
-            <PrimaryButton 
+            <PrimaryButton
               text="Subscribe"
               icon={<LockIcon scale={0.8} />}
               color="primary"

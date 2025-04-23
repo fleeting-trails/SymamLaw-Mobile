@@ -7,10 +7,12 @@ import { ScreenContainerNonScroll } from "../../components/ScreenContainer/Scree
 import CourseCardList from "../../components/CoursesCard/CourseCardList";
 import { Divider } from "react-native-paper";
 import CustomText from "../../atoms/CustomText/CustomText";
+import useAppNavigation from "../../hooks/useAppNavigation";
 
 export default function MyCourses() {
   const styles = createStyles();
   const dispatch = useAppDispatch();
+  const { navigate } = useAppNavigation();
   const courseState = useAppSelector((state) => state.course);
   const courses = courseState.myCourses.data;
   const loading = courseState.loading.listMyCourses;
@@ -20,7 +22,7 @@ export default function MyCourses() {
   }, []);
 
   const handlePress = (data: Store.CourseListData) => {
-
+    navigate("CourseSingle", { slug: data.slug });
   }
 
   return (

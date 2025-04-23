@@ -31,7 +31,7 @@ export default function Account() {
   const user = authState.user;
   const storeError = authState.error;
   const submitLoading = authState.loading.updateProfile
-  
+
   const [avatar, setAvatar] = useState<Blob | null>(null);
   const [error, setError] = useState("");
   const [input, setInput] = useState<ProfileInputType>({
@@ -57,20 +57,21 @@ export default function Account() {
   }, [user])
 
   const handleSubmit = async () => {
-    const formData = new FormData();
     if (!input.name) {
       setError("Name Cannot be empty");
       return;
     }
-    if (input.name) formData.append("name", input.name);
-    formData.append("phone", input.phone ?? "");
-    formData.append("address", input.address ?? "");
-    formData.append("institute", input.institute ?? "");
-    formData.append("department", input.department ?? "");
-    formData.append("is_graduated", input.is_graduated ? '1' : '0');
+    const body = {
+      name: input.name,
+      phone: input.phone,
+      address: input.address,
+      institute: input.institute,
+      department: input.department,
+      is_graduated: input.is_graduated
+    }
     try {
-      await dispatch(updateProfile(formData)).unwrap();
-      
+      await dispatch(updateProfile(body)).unwrap();
+
     } catch (error) {
       console.log("Error", error)
       setError(storeError)
@@ -78,7 +79,7 @@ export default function Account() {
   }
 
 
-  const handleInputChange = (key: keyof ProfileInputType, value: string ) => {
+  const handleInputChange = (key: keyof ProfileInputType, value: string) => {
     setInput({
       ...input,
       [key]: value
@@ -121,7 +122,7 @@ export default function Account() {
         label="Department"
         placeholder="Name of the department at your current institute"
       />
-      <SwitchPrimary 
+      <SwitchPrimary
         label="Are You Graduated?"
         value={input.is_graduated}
         onValueChange={() => setInput({ ...input, is_graduated: !input.is_graduated })}
@@ -137,7 +138,7 @@ export default function Account() {
       <PrimaryButton text="Update" color="primary" loading={submitLoading} onPress={handleSubmit} />
     </ScreenContainer>
   ) : (
-    <AuthenticationRequired 
+    <AuthenticationRequired
       message="Sign in required to load your profile! Please sign in first."
     />
   );

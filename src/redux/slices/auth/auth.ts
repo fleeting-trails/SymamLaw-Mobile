@@ -6,7 +6,7 @@ import FormDataProps from 'form-data'
 
 
 // Define the initial state using that type
-export const initialState : Store.Auth = {
+export const initialState: Store.Auth = {
     user: null,
     registerResponse: null,
     error: null,
@@ -56,7 +56,7 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const login = createAsyncThunk(
     'login',
-    async (body : Store.LoginAPIBody, thunkAPI) => {
+    async (body: Store.LoginAPIBody, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/login", body)
             if (!res.data.success) {
@@ -71,11 +71,11 @@ export const login = createAsyncThunk(
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
         }
-    },  
+    },
 )
 export const verifyEmail = createAsyncThunk(
     'verifyEmail',
-    async (body : Store.VerifyEmailBody, thunkAPI) => {
+    async (body: Store.VerifyEmailBody, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/email/verify", body)
             if (!res.data.success) {
@@ -90,7 +90,7 @@ export const verifyEmail = createAsyncThunk(
 )
 export const register = createAsyncThunk(
     'register',
-    async (body : Store.RegisterAPIBody, thunkAPI) => {
+    async (body: Store.RegisterAPIBody, thunkAPI) => {
         try {
             const formData = new FormData();
             (Object.keys(body) as Array<keyof typeof body>).forEach((key) => {
@@ -109,7 +109,7 @@ export const register = createAsyncThunk(
 )
 export const forgetPasswordGetOtp = createAsyncThunk(
     'forgetPassword/get-otp',
-    async (body : { email: string }, thunkAPI) => {
+    async (body: { email: string }, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/forgot-password/get-otp", body)
             console.log("Get OTP res", JSON.stringify(res.data))
@@ -131,7 +131,7 @@ type ForgetPasswordPostOtpPayload = {
 }
 export const forgetPasswordPostOtp = createAsyncThunk(
     'forgetPasswordPostOtp',
-    async (body : ForgetPasswordPostOtpPayload, thunkAPI) => {
+    async (body: ForgetPasswordPostOtpPayload, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/forgot-password/post-otp", body)
             if (!res.data.success) {
@@ -144,10 +144,18 @@ export const forgetPasswordPostOtp = createAsyncThunk(
         }
     },
 )
+type UpdateProfileProps = {
+    name: string,
+    phone: string,
+    address: string,
+    institute: string,
+    department: string
+    is_graduated: boolean
+}
 
 export const updateProfile = createAsyncThunk(
     'updateProfile',
-    async (body: FormData, thunkAPI) => {
+    async (body: UpdateProfileProps, thunkAPI) => {
         try {
             const res = await axiosExternal.post("/user/profile/update", body)
             if (!res.data.success) {
@@ -177,7 +185,7 @@ export const updateProfileImage = createAsyncThunk(
 
 
 export const authSlice = createSlice({
-    name:'auth',
+    name: 'auth',
     initialState,
     reducers: {
         setauth: (state) => {
@@ -284,7 +292,19 @@ export const authSlice = createSlice({
         builder.addCase(updateProfile.fulfilled, (state, action) => {
             state.loading.updateProfile = false;
             if (action.payload) {
-                state.user = action.payload.data.data;
+                const profileData = action.payload.data.data;
+                let existingUser = state.user;
+                if (existingUser) {
+
+                    Object.keys(profileData).forEach(key => {
+                        // @ts-ignore
+                        existingUser[key] = profileData[key];
+                    })
+                    state.user = profileData;
+
+                } else {
+                    state.user = action.payload.data.data;
+                }
             }
         })
         builder.addCase(updateProfile.rejected, (state, action) => {
