@@ -14,6 +14,7 @@ export default function PrimaryButton({
   textStyle,
   onPress,
   loading,
+  disabled,
   ...props
 }: PropTypes.PrimaryButton) {
   const theme = useTheme<Config.Theme>();
@@ -41,7 +42,7 @@ export default function PrimaryButton({
       onPress={() => {
         if (onPress) onPress();
       }}
-      disabled={loading}
+      disabled={loading || disabled}
     >
       <View style={[styles.container, style]}>
         {!loading ? (

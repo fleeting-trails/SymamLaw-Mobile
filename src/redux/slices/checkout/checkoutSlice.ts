@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootState } from '../../store';
 import { calculateDiscount } from '../../../utils/helpers';
-
+import { axiosExternal } from '../../../axios/axios';
+import { AxiosResponse } from 'axios';
 
 const initialState: Store.Checkout = {
     items: [],
@@ -16,7 +17,8 @@ const initialState: Store.Checkout = {
         addCheckoutItem: false,
         removeCheckoutItem: false,
         removeCheckoutItemFull: false,
-        resetCart: false
+        resetCart: false,
+        updateStockStatus: false
     },
     error: null
 };
@@ -27,16 +29,60 @@ export const initializeCheckout = createAsyncThunk(
         try {
             const localStorageData = await AsyncStorage.getItem("checkout");
             let checkoutData = null;
+            /** DEBUG: Please remove later **/
+            const testBook = {
+                id: 6,
+                quantity: 2,
+                title: "(Debug): Aain er shohoj prokash",
+                originalPrice: 350,
+                discount: 0,
+                discountType: "percentage",
+                image: "https://backoffice.symamlaw.com/images/books/20240813023310book.jpg",
+                details: {
+                    id: 2,
+                    description: "Test description"
+                },
+                type: "book",
+            }
+            /** End debug **/
+
             if (localStorageData) {
                 checkoutData = JSON.parse(localStorageData) as Store.Checkout;
             }
-
+            if (checkoutData) checkoutData.items.push(testBook);
             return { data: checkoutData };
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
         }
     },
 )
+
+
+export const updateStockStatus = createAsyncThunk(
+    'updateStockStatus',
+    async (_, thunkAPI) => {
+        try {
+            const rootState = thunkAPI.getState() as RootState;
+            let state = JSON.parse(JSON.stringify(rootState.checkout)) as Store.Checkout;
+            const checkoutItems = state.items;
+            // fetch all the books to check their stock.
+            const books: AxiosResponse<API.ResponseBody<Store.BookData>>[] = await Promise.all(checkoutItems.map(item => axiosExternal.get(`/library/list/${item.id}`)));
+            checkoutItems.map((item, i) => {
+                if (item.quantity > books[i].data.data.stock) {
+                    const removeAmount = item.quantity - books[i].data.data.stock;
+                    const amountToRemove = removeAmount * calculateDiscount(item.discountType, item.originalPrice, item.discount) * item.quantity;
+                    item.quantity = books[i].data.data.stock;
+                    state.amount.subtotal -= amountToRemove;
+                }
+            })
+            return { data: state };
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error })
+        }
+    },
+)
+
+
 
 export const addCheckoutItem = createAsyncThunk(
     'addCheckoutItem',
@@ -144,7 +190,7 @@ export const resetCart = createAsyncThunk(
             state.amount.subtotal = 0;
             state.amount.total = 0;
             state.amount.delivery = 0;
-            
+
             await AsyncStorage.setItem("checkout", JSON.stringify(state));
             return { data: state }
         } catch (error) {
@@ -176,6 +222,21 @@ const checkoutSlice = createSlice({
         builder.addCase(initializeCheckout.rejected, (state) => {
             state.loading.initializeCheckout = false;
         })
+        builder.addCase(updateStockStatus.pending, (state) => {
+            state.loading.updateStockStatus = true;
+        })
+        builder.addCase(updateStockStatus.fulfilled, (state, action) => {
+            state.loading.updateStockStatus = false;
+            if (action.payload.data) {
+                state.amount = action.payload.data.amount;
+                state.items = action.payload.data.items;
+            }
+        })
+        builder.addCase(updateStockStatus.rejected, (state, action) => {
+            state.loading.updateStockStatus = false;
+            state.error = action.error;
+        })
+
 
         // Add item to checkout
         builder.addCase(addCheckoutItem.pending, (state) => {

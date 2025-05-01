@@ -35,14 +35,9 @@ export default function OrderDetails({ route }: PropTypes.OrderDetails) {
               Shipping Address
             </CustomText>
             <CustomText className="">
-              {shipping_name}
-              {"\n"}
-              {shipping_address}
-              {"\n"}
-              {data.shipping_district}, {shipping_zip}
-              {"\n"}
-              Mobile: {shipping_phone}
+              {`${shipping_name}\n${shipping_address}\n${data.shipping_district}, ${shipping_zip}\nMobile: ${shipping_phone}`}
             </CustomText>
+
           </View>
           <View>
             <CustomText variant="400" className="font-semibold mb-1">

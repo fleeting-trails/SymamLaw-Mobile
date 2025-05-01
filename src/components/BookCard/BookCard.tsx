@@ -142,7 +142,7 @@ const RenderCheckoutButton = ({
   if (thisItem) {
     return (
       <View className="flex-row items-center gap-2">
-        <View className="relative flex-1">
+        {thisItem.quantity < data.stock && <View className="relative flex-1">
           <PrimaryButton
             color="primary"
             text={`Add More`}
@@ -151,7 +151,7 @@ const RenderCheckoutButton = ({
           <View className="absolute -top-2 -right-2 bg-red-600 items-center justify-center h-5 w-5 rounded-full">
             <CustomText className="text-white">{thisItem.quantity}</CustomText>
           </View>
-        </View>
+        </View>}
         <View className="flex-1">
           <PrimaryButton
             color="secondary"
@@ -163,12 +163,12 @@ const RenderCheckoutButton = ({
     );
   } else {
     return (
-      <PrimaryButton
+      data.stock > 0 ? <PrimaryButton
         //   className="mt-3"
         color="primary"
         text="Add to Cart"
         onPress={handleAddToCheckout}
-      />
+      /> : <CustomText> Out Of Stock </CustomText>
     );
   }
 };

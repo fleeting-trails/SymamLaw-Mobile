@@ -17,6 +17,10 @@ type InputState = Omit<
   Store.CreateOrderAPIPayload,
   "user_id" | "products" | "redirect_url"
 >;
+type ErrorMessageType = {
+  isError: boolean,
+  message: string
+}
 const REQUIRED_FIELDS = [
   "shipping_name",
   "shipping_phone",
@@ -37,9 +41,14 @@ export default function Checkout() {
     message: "",
   });
 
+  const [error, setError] = useState<ErrorMessageType>({
+    isError: false,
+    message: ""
+  })
   const { orderPressAction, redirectUrl } = useCompleteOrderAction({
     setLoading: setOrderLoading,
     onCancel: handleOrderCancel,
+    setError: setError,
     onPurchaseProcessEnd: handleOrderComplete,
   });
 
@@ -54,7 +63,6 @@ export default function Checkout() {
     payment_method: "ssl",
     order_from: "",
   });
-
   /** Hanlder functions */
   const handleSetInput = (key: string, value: string) => {
     setInput({
@@ -73,7 +81,7 @@ export default function Checkout() {
     navigate("Orders");
   }
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     const allRequiredFiledsCompleted = REQUIRED_FIELDS.reduce(
       (acc: boolean, curr: string) => {
         // @ts-ignore
@@ -94,15 +102,23 @@ export default function Checkout() {
       return;
     }
 
-    orderPressAction({
-      ...input,
-      user_id: (user as Store.UserData).id,
-      products: cartItems.map((item) => ({
-        book_id: item.id,
-        qty: item.quantity,
-      })),
-      redirect_url: redirectUrl,
-    });
+    try {
+
+      const orderPressActionRes: any = await orderPressAction({
+        ...input,
+        user_id: (user as Store.UserData).id,
+        products: cartItems.map((item) => ({
+          book_id: item.id,
+          qty: item.quantity,
+        })),
+        redirect_url: redirectUrl,
+      });
+    } catch (e: any) {
+      setError({
+        isError: true,
+        message: e ?? "Unexpected error occured"
+      })
+    }
   };
   /** End handler functions */
   return (
@@ -131,7 +147,7 @@ export default function Checkout() {
           placeholder="01xxxxxxxx"
           value={input.shipping_phone}
           onChangeText={(value) => handleSetInput("shipping_phone", value)}
-        />43793310
+        />
 
         {/* Select district */}
         <SelectPrimary
@@ -190,6 +206,9 @@ export default function Checkout() {
         </View>
 
         <OrderSummary loading={orderLoading} onPlaceOrder={handlePlaceOrder} />
+        <View className="p-3" style={{ backgroundColor: theme.colors.error }}>
+          {error.isError && <CustomText className="text-white">{error.message}</CustomText>}
+        </View>
       </View>
     </ScreenContainer>
   );

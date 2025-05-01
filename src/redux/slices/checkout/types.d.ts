@@ -12,6 +12,7 @@ namespace Store {
             removeCheckoutItem: boolean,
             removeCheckoutItemFull: boolean,
             resetCart: boolean
+            updateStockStatus: boolean
         };
         error: any;
     }
