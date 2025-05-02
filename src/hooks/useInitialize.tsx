@@ -22,7 +22,7 @@ import { EventRegister } from "react-native-event-listeners";
 import { fetchUserProfile } from "../redux/slices/auth/auth";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { listRecommendedExams } from "../redux/slices/exam/examSlice";
-import { initializeCheckout, resetCart } from "../redux/slices/checkout/checkoutSlice";
+import { initializeCheckout, resetCart, updateStockStatus } from "../redux/slices/checkout/checkoutSlice";
 import { listRecommendedCourses } from "../redux/slices/course/courseSlice";
 
 function useInitialize() {
@@ -103,7 +103,8 @@ function useInitialize() {
 
   const initializeCart = async () => {
     try {
-      dispatch(initializeCheckout())
+      await dispatch(initializeCheckout())
+      await dispatch(updateStockStatus())
     } catch (error) {
       console.log("Failed while initializing cart", error);
     }

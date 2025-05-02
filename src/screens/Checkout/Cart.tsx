@@ -14,9 +14,10 @@ import {
 import { calculateDiscount } from "../../utils/helpers";
 import { DeleteIcon } from "../../assets/Icons";
 
-export default function Cart() {
+export default function Cart({ route }: PropTypes.Cart) {
   const styles = createStyles();
   const theme = useAppTheme();
+  const error = route.params?.error;
   const { navigate } = useAppNavigation();
   const user = useAppSelector((state) => state.auth.user);
   const checkoutState = useAppSelector((state) => state.checkout);
@@ -30,6 +31,9 @@ export default function Cart() {
 
   return checkoutState.items?.length !== 0 ? (
     <ScreenContainer>
+      {error && <View className="p-3" style={{ backgroundColor: theme.colors.errorText }}>
+        <CustomText className="text-white">{error}, We have we have removed any  stock/unavailable items available. Please review your cart and try again</CustomText>
+      </View>}
       <CartSummary />
       <CartItems />
     </ScreenContainer>
@@ -38,6 +42,9 @@ export default function Cart() {
       className="flex-1 gap-6 justify-center items-center"
       style={{ backgroundColor: theme.colors.background }}
     >
+      {error && <View className="p-3" style={{ backgroundColor: theme.colors.errorText }}>
+        <CustomText className="text-white">{error}, We have we have removed any  stock/unavailable items available. Please review your cart and try again</CustomText>
+      </View>}
       <Image
         source={require("../../assets/empty-search-graphics.png")}
         style={{

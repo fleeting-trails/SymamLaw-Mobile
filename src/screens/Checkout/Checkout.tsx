@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import CustomText from "../../atoms/CustomText/CustomText";
 import InputPrimary from "../../atoms/Input/InputPrimary";
@@ -11,7 +11,7 @@ import useAppTheme from "../../hooks/useAppTheme";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import useCompleteOrderAction from "../../hooks/useCompleteOrderAction";
 import useAppNavigation from "../../hooks/useAppNavigation";
-import { resetCart } from "../../redux/slices/checkout/checkoutSlice";
+import { resetCart, updateStockStatus } from "../../redux/slices/checkout/checkoutSlice";
 
 type InputState = Omit<
   Store.CreateOrderAPIPayload,
@@ -32,7 +32,7 @@ export default function Checkout() {
   const styles = createStyles();
   const theme = useAppTheme();
   const dispatch = useAppDispatch();
-  const { navigate } = useAppNavigation();
+  const { navigate, navigator } = useAppNavigation();
   const user = useAppSelector((state) => state.auth.user);
   const cartItems = useAppSelector((state) => state.checkout.items);
   const [orderLoading, setOrderLoading] = useState<boolean>(false);
@@ -52,17 +52,41 @@ export default function Checkout() {
     onPurchaseProcessEnd: handleOrderComplete,
   });
 
+
   const [input, setInput] = useState<InputState>({
-    shipping_name: "",
-    shipping_email: "",
-    shipping_phone: "",
-    shipping_district: "",
-    shipping_address: "",
-    shipping_zip: "",
-    order_note: "",
+    shipping_name: "Abtahi Tajwar",
+    shipping_email: "abtahitajwar@gmail.com",
+    shipping_phone: "01796391053",
+    shipping_district: "Dhaka",
+    shipping_address: "Chawkbazar, Chittagong",
+    shipping_zip: "4203",
+    order_note: "heskai mar",
     payment_method: "ssl",
     order_from: "",
   });
+  // const [input, setInput] = useState<InputState>({
+  //   shipping_name: "",
+  //   shipping_email: "",
+  //   shipping_phone: "",
+  //   shipping_district: "",
+  //   shipping_address: "",
+  //   shipping_zip: "",
+  //   order_note: "",
+  //   payment_method: "ssl",
+  //   order_from: "",
+  // });
+  useEffect(() => {
+    if (error.isError) {
+      const message = error.message;
+      setError({
+        isError: false,
+        message: ""
+      });
+      dispatch(updateStockStatus()).unwrap().then(() => {
+        navigate("Cart", { error: error.message })
+      })
+    }
+  }, [error])
   /** Hanlder functions */
   const handleSetInput = (key: string, value: string) => {
     setInput({
@@ -104,7 +128,7 @@ export default function Checkout() {
 
     try {
 
-      const orderPressActionRes: any = await orderPressAction({
+      await orderPressAction({
         ...input,
         user_id: (user as Store.UserData).id,
         products: cartItems.map((item) => ({
@@ -114,7 +138,7 @@ export default function Checkout() {
         redirect_url: redirectUrl,
       });
     } catch (e: any) {
-      setError({
+      ({
         isError: true,
         message: e ?? "Unexpected error occured"
       })
@@ -206,9 +230,9 @@ export default function Checkout() {
         </View>
 
         <OrderSummary loading={orderLoading} onPlaceOrder={handlePlaceOrder} />
-        <View className="p-3" style={{ backgroundColor: theme.colors.error }}>
-          {error.isError && <CustomText className="text-white">{error.message}</CustomText>}
-        </View>
+        {error.isError && <View className="p-3" style={{ backgroundColor: theme.colors.error }}>
+          <CustomText className="text-white">{error.message}</CustomText>
+        </View>}
       </View>
     </ScreenContainer>
   );

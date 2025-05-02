@@ -49,7 +49,10 @@ export const initializeCheckout = createAsyncThunk(
             if (localStorageData) {
                 checkoutData = JSON.parse(localStorageData) as Store.Checkout;
             }
+            /** DEBUG: please remove later **/
+            // @ts-ignore
             if (checkoutData) checkoutData.items.push(testBook);
+            /** End debug **/
             return { data: checkoutData };
         } catch (error) {
             return thunkAPI.rejectWithValue({ error })
@@ -64,19 +67,30 @@ export const updateStockStatus = createAsyncThunk(
         try {
             const rootState = thunkAPI.getState() as RootState;
             let state = JSON.parse(JSON.stringify(rootState.checkout)) as Store.Checkout;
-            const checkoutItems = state.items;
+            let checkoutItems = state.items;
             // fetch all the books to check their stock.
-            const books: AxiosResponse<API.ResponseBody<Store.BookData>>[] = await Promise.all(checkoutItems.map(item => axiosExternal.get(`/library/list/${item.id}`)));
+            const books: AxiosResponse<API.ResponseBody<Store.BookData>>[] = await Promise.all(checkoutItems.map(item => axiosExternal.get(`/library/view/${item.id}`)));
             checkoutItems.map((item, i) => {
-                if (item.quantity > books[i].data.data.stock) {
-                    const removeAmount = item.quantity - books[i].data.data.stock;
-                    const amountToRemove = removeAmount * calculateDiscount(item.discountType, item.originalPrice, item.discount) * item.quantity;
-                    item.quantity = books[i].data.data.stock;
+                const book = books.find(b => b.data.success && b.data.data.id == item.id);
+                if (book) {
+                    if (item.quantity > book.data.data.stock) {
+                        const removeAmount = item.quantity - book.data.data.stock;
+                        const amountToRemove = removeAmount * calculateDiscount(item.discountType, item.originalPrice, item.discount) * item.quantity;
+                        item.quantity = book.data.data.stock;
+                        state.amount.subtotal -= amountToRemove;
+                    }
+                } else {
+                    const amountToRemove = item.quantity * calculateDiscount(item.discountType, item.originalPrice, item.discount) * item.quantity;
+                    item.quantity = 0;
                     state.amount.subtotal -= amountToRemove;
+
                 }
             })
+            checkoutItems = checkoutItems.filter(item => item.quantity != 0)
+            state.items = checkoutItems;
             return { data: state };
         } catch (error) {
+            debugger;
             return thunkAPI.rejectWithValue({ error })
         }
     },
@@ -233,6 +247,7 @@ const checkoutSlice = createSlice({
             }
         })
         builder.addCase(updateStockStatus.rejected, (state, action) => {
+            debugger;
             state.loading.updateStockStatus = false;
             state.error = action.error;
         })
