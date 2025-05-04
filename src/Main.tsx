@@ -40,6 +40,8 @@ import ExamBrowse from "./screens/Exam/ExamBrowse";
 import ExamsFree from "./screens/Exam/ExamsFree";
 import ExamsArchived from "./screens/Exam/ExamsArchived";
 import LibraryDetails from "./screens/Library/LibraryDetails";
+import ExamPreview from "./screens/Exam/ExamPreview";
+import ExamDetails from "./screens/Exam/ExamDetails";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -80,6 +82,7 @@ export default function Main() {
           <Stack.Screen name="ExamsByCategories" component={AllExamsByCategory} />
           <Stack.Screen name="ExamsFree" component={ExamsFree} />
           <Stack.Screen name="ExamsArchived" component={ExamsArchived} />
+          <Stack.Screen name="ExamPreview" component={ExamPreview} />
           <Stack.Screen name="PackageList" component={PackageList} />
           <Stack.Screen name="ExamResult" component={ExamResult} />
           <Stack.Screen name="PackageBuyFeedback" component={PackageBuyFeedback} />

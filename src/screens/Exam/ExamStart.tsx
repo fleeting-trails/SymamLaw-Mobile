@@ -134,11 +134,19 @@ export default function ExamStart({ route }: PropTypes.ExamStart) {
             </CustomText>
           </View>
 
-          <PrimaryButton
-            text="Start Exam"
-            color="primary"
-            onPress={() => navigate("Exam")}
-          />
+          <View className="flex-row gap-2 items-center w-full">
+            <PrimaryButton
+              className="flex-1"
+              text="Preview"
+              color="primary"
+              onPress={() => navigate("ExamPreview")}
+            />
+            <PrimaryButton
+              text="Start Exam"
+              color="primary"
+              onPress={() => navigate("Exam")}
+            />
+          </View>
         </>}
       </ScreenLoading>
     </ScreenContainer> : <AuthenticationRequired message="Seems like you are not logged in! To start exam please login / create an account first" />

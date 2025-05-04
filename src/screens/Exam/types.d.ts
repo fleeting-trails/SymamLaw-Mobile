@@ -14,4 +14,10 @@ namespace PropTypes {
     type ExamResult = {
         route: import('@react-navigation/native').RouteProp
     }
+    type ExamDetails = {
+        route: import('@react-navigation/native').RouteProp
+    }
+    type ExamPreview = {
+        route: import('@react-navigation/native').RouteProp
+    }
 }

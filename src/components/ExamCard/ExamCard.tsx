@@ -15,7 +15,7 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
   const styles = createStyles({ theme });
   const user = useAppSelector((state) => state.auth.user);
   const [isExamLocked, setIsExamLocked] = useState(false);
-  const handlePress = () => {
+  const handleStartPress = () => {
     if (onPress) {
       onPress(data.id, data.slug);
     }
@@ -69,10 +69,10 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
               color="primary"
               size="small"
               style={{ borderRadius: 30 }}
-              onPress={handlePress}
+              onPress={handleStartPress}
             />
           ) : (
-            <Button textColor={theme.colors.textPrimary} onPress={handlePress}>
+            <Button textColor={theme.colors.textPrimary} onPress={handleStartPress}>
               <View
                 style={{ flexDirection: "row", alignItems: "center", gap: 7 }}
               >

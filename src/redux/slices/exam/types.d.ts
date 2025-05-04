@@ -122,7 +122,7 @@ namespace Store {
         UserTimeTracker: "1" | "0",
         total_passed_count: number
         user_passed_count: number
-        question: Question[]
+        question: ExamQuestion[]
         results: any[]
         package_items: Array<ExamPackageHint>
     };
