@@ -35,12 +35,12 @@ function AllExamCategories() {
     <ScreenLoading isLoading={loading}>
       <View style={{ backgroundColor: theme.colors.background }} className="p-3 flex-1">
         <FlatList
-            data={examCategories}
-            renderItem={({ item }) => <CategoryCard category={item} onPress={handlePress} />}
-            numColumns={2}
+          data={examCategories}
+          renderItem={({ item }) => <CategoryCard category={item} onPress={handlePress} />}
+          numColumns={2}
 
-            columnWrapperStyle={styles.row}
-          />
+          columnWrapperStyle={styles.row}
+        />
       </View>
     </ScreenLoading>
   );
@@ -48,7 +48,7 @@ function AllExamCategories() {
 
 type CategoryCardProps = {
   category: Store.ExamCategoryData;
-  onPress: (category: Store.ExamCategoryData) => void 
+  onPress: (category: Store.ExamCategoryData) => void
 };
 function CategoryCard({ category, onPress }: CategoryCardProps) {
   const theme = useAppTheme();
@@ -58,10 +58,10 @@ function CategoryCard({ category, onPress }: CategoryCardProps) {
       className="flex-1 rounded flex justify-center items-center mx-2 my-2"
       onPress={() => onPress(category)}
     >
-        <View className="gap-2 justify-center items-center min-h-[100px] h-full w-full p-3">
-            <ExamCategoryIcon color={theme.colors.primaryGray} />
-            <CustomText className="text-center">{category.title}</CustomText>
-        </View>
+      <View className="gap-2 justify-center items-center min-h-[100px] h-full w-full p-3">
+        <ExamCategoryIcon color={theme.colors.primaryGray} />
+        <CustomText className="text-center">{category.title}</CustomText>
+      </View>
     </TouchableRipple>
   );
 }

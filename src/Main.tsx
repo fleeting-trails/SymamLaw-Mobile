@@ -41,7 +41,6 @@ import ExamsFree from "./screens/Exam/ExamsFree";
 import ExamsArchived from "./screens/Exam/ExamsArchived";
 import LibraryDetails from "./screens/Library/LibraryDetails";
 import ExamPreview from "./screens/Exam/ExamPreview";
-import ExamDetails from "./screens/Exam/ExamDetails";
 
 SplashScreen.preventAutoHideAsync();
 

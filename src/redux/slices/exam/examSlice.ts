@@ -124,10 +124,10 @@ export const fetchFreeExams = createAsyncThunk(
         API.ResponseBodyPaginated<Array<Store.ExamData>>
       > = await axiosExternal.get(`/user/exam/list`, {
         params: {
-            limit: 12,
-            page: 1,
-            search_by: "is_free",
-            search: 1,
+          limit: 12,
+          page: 1,
+          search_by: "is_free",
+          search: 1,
         }
       });
       if (!res.data.success)
@@ -165,48 +165,48 @@ export const fetchFreeExamsMore = createAsyncThunk(
 );
 
 export const fetchArchivedExams = createAsyncThunk(
-    "fetchArchivedExams",
-    async (_, thunkAPI) => {
-      try {
-        const res: AxiosResponse<
-          API.ResponseBodyPaginated<Array<Store.ExamData>>
-        > = await axiosExternal.get(`/user/exam/archived/list`, {
-          params: {
-              limit: 12,
-              page: 1
-          }
-        });
-        if (!res.data.success)
-          thunkAPI.rejectWithValue({ error: res.data.message });
-        return { data: res.data };
-      } catch (error) {
-        return thunkAPI.rejectWithValue({ error });
-      }
+  "fetchArchivedExams",
+  async (_, thunkAPI) => {
+    try {
+      const res: AxiosResponse<
+        API.ResponseBodyPaginated<Array<Store.ExamData>>
+      > = await axiosExternal.get(`/user/exam/archived/list`, {
+        params: {
+          limit: 12,
+          page: 1
+        }
+      });
+      if (!res.data.success)
+        thunkAPI.rejectWithValue({ error: res.data.message });
+      return { data: res.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error });
     }
-  );
-  export const fetchArchivedExamsMore = createAsyncThunk(
-    "fetchArchivedExamsMore",
-    async (_, thunkAPI) => {
-      try {
-        const state = thunkAPI.getState() as RootState;
-        const { current, totalPages } = state.exam.archivedExams.pagination;
-        if (current >= totalPages) return { nodata: true };
-        const res: AxiosResponse<
-          API.ResponseBodyPaginated<Array<Store.ExamData>>
-        > = await axiosExternal.get(`/user/exam/archived/list`, {
-          params: {
-            limit: 12,
-            page: current + 1
-          },
-        });
-        if (!res.data.success)
-          thunkAPI.rejectWithValue({ error: res.data.message });
-        return { data: res.data };
-      } catch (error) {
-        return thunkAPI.rejectWithValue({ error });
-      }
+  }
+);
+export const fetchArchivedExamsMore = createAsyncThunk(
+  "fetchArchivedExamsMore",
+  async (_, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as RootState;
+      const { current, totalPages } = state.exam.archivedExams.pagination;
+      if (current >= totalPages) return { nodata: true };
+      const res: AxiosResponse<
+        API.ResponseBodyPaginated<Array<Store.ExamData>>
+      > = await axiosExternal.get(`/user/exam/archived/list`, {
+        params: {
+          limit: 12,
+          page: current + 1
+        },
+      });
+      if (!res.data.success)
+        thunkAPI.rejectWithValue({ error: res.data.message });
+      return { data: res.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error });
     }
-  );
+  }
+);
 
 type FetchExamDetailsProps = {
   slug: string;
@@ -317,8 +317,8 @@ export const logExamTracker = createAsyncThunk(
     }
   }
 );
-export const fetchExamCategoryRoutine = createAsyncThunk(
-  "fetchExamCategoryRoutine",
+export const fetchExamRoutine = createAsyncThunk(
+  "fetchExamRoutine",
   async (slug: string, thunkAPI) => {
     try {
       const res = await axiosExternal.get(`/exam-cateogry/routine/${slug}`);

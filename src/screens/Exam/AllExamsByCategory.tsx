@@ -5,7 +5,7 @@ import { ScreenContainer } from "../../components";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   fetchExamCategories,
-  fetchExamCategoryRoutine,
+  fetchExamRoutine,
   fetchExamsByCategory,
 } from "../../redux/slices/exam/examSlice";
 import useAppTheme from "../../hooks/useAppTheme";
@@ -16,7 +16,7 @@ import useAppNavigation from "../../hooks/useAppNavigation";
 import ScreenLoading from "../../atoms/Loader/ScreenLoading";
 
 function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
-  const { category } = route.params;
+  const { category }: { category: Store.ExamSubCategoryData } = route.params;
   const { navigate } = useAppNavigation();
   const dispatch = useAppDispatch();
   const examState = useAppSelector((state) => state.exam);
@@ -25,8 +25,11 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
   const theme = useAppTheme();
   useEffect(() => {
     handleFetchExamsByCategory();
-    handleFetchRoutine();
   }, []);
+
+  useEffect(() => {
+    fetchRoutine();
+  }, [category])
 
   const handleFetchExamsByCategory = async () => {
     try {
@@ -36,12 +39,8 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
     }
   };
 
-  const handleFetchRoutine = async () => {
-    try {
-      dispatch(fetchExamCategoryRoutine(category.slug)).unwrap();
-    } catch (error) {
-      console.log("Failed to load routine");
-    }
+  const fetchRoutine = () => {
+    dispatch(fetchExamRoutine(category.slug));
   }
 
   return (
@@ -67,11 +66,11 @@ function AllExamsByCategory({ route }: PropTypes.AllExamsByCategory) {
                 package_items: item.package_items,
                 is_free: item.is_free
               }}
-              // onPress={handleExamCardPress}
+            // onPress={handleExamCardPress}
             />
           )}
           numColumns={1}
-          // columnWrapperStyle={styles.row}
+        // columnWrapperStyle={styles.row}
         />
       </View>
     </ScreenLoading>
