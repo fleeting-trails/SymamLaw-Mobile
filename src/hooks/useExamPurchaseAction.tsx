@@ -2,27 +2,27 @@ import React from "react";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { useAppDispatch } from "../redux/hooks";
-import { getSubscriptionRedirectLink } from "../redux/slices/course/courseSlice";
+import { getSubscriptionRedirectLink } from "../redux/slices/exam/examSlice";
 import { getQueryParameters } from "../utils/helpers";
 
-function useCoursePurchaseAction({
+function useExamPurchaseAction({
   setLoading,
   onCancel,
   onPurchaseProcessEnd,
-}: PropTypes.useCoursePurchaseAction) {
+}: PropTypes.useExamPurchaseAction) {
   const dispatch = useAppDispatch();
-  const onSubscribePress = async (data: Store.CourseData | Store.CourseListData) => {
-    handleSubscribe(data);
+  const onSubscribePress = async (id: number) => {
+    handleSubscribe(id);
   };
 
   const handleSubscribe = async (
-    data: Store.CourseData | Store.CourseListData
+    id: number
   ) => {
     if (setLoading) setLoading(true);
     try {
       const redirect_url = Linking.createURL("");
       const res: string = await dispatch(
-        getSubscriptionRedirectLink({ course_id: data.id, redirect_url })
+        getSubscriptionRedirectLink({ id, redirect_url })
       ).unwrap();
       const paymentRes = await WebBrowser.openAuthSessionAsync(
         res,
@@ -32,7 +32,7 @@ function useCoursePurchaseAction({
         if (onCancel) onCancel();
       } else {
         const purchaseData = getQueryParameters((paymentRes as any).url);
-        if (onPurchaseProcessEnd) onPurchaseProcessEnd(data, purchaseData);
+        if (onPurchaseProcessEnd) onPurchaseProcessEnd(id, purchaseData);
       }
       if (setLoading) setLoading(false);
       return {
@@ -51,4 +51,4 @@ function useCoursePurchaseAction({
   return { onSubscribePress };
 }
 
-export default useCoursePurchaseAction;
+export default useExamPurchaseAction;

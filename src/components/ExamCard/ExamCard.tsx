@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { CaretRightIcon, ExamIcon, LockIcon } from "../../assets/Icons";
 import CustomText from "../../atoms/CustomText/CustomText";
@@ -8,6 +8,7 @@ import { formatMinutesToHourMinute } from "../../utils/helpers";
 import { useAppSelector } from "../../redux/hooks";
 import useAppNavigation from "../../hooks/useAppNavigation";
 import PrimaryButton from "../../atoms/Button/PrimaryButton";
+import useExamPurchaseAction from "../../hooks/useExamPurchaseAction";
 
 export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
   const theme = useTheme<Config.Theme>();
@@ -15,6 +16,14 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
   const styles = createStyles({ theme });
   const user = useAppSelector((state) => state.auth.user);
   const [isExamLocked, setIsExamLocked] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+  const { onSubscribePress } = useExamPurchaseAction({
+    setLoading: setPurchaseLoading,
+    onCancel: onPurchaseFailed,
+    onPurchaseProcessEnd: onPurchaseSuccess
+  })
+
+
   const handleStartPress = () => {
     if (onPress) {
       onPress(data.id, data.slug);
@@ -47,6 +56,13 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
       }
     }
   }, [user, data]);
+
+  function onPurchaseSuccess() {
+    navigate("ExamStart", { slug: data.slug })
+  }
+  function onPurchaseFailed() {
+    console.log("Failed to buy exam");
+  }
   return (
     <TouchableRipple>
       <View style={styles.container}>
@@ -63,14 +79,19 @@ export default function ExamCard({ data, onPress }: PropTypes.ExamCard) {
         </View>
         <View>
           {isExamLocked ? (
-            <PrimaryButton
-              text="Subscribe"
-              icon={<LockIcon scale={0.8} />}
-              color="primary"
-              size="small"
-              style={{ borderRadius: 30 }}
-              onPress={handleStartPress}
-            />
+            purchaseLoading ?
+              <Image
+                source={require("../../assets/loading.gif")}
+                className="w-[15px] h-[15px] object-contain"
+              />
+              : <PrimaryButton
+                text="Subscribe"
+                icon={<LockIcon scale={0.8} />}
+                color="primary"
+                size="small"
+                style={{ borderRadius: 30 }}
+                onPress={() => onSubscribePress(parseInt(data.id))}
+              />
           ) : (
             <Button textColor={theme.colors.textPrimary} onPress={handleStartPress}>
               <View

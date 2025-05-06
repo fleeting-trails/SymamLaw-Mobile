@@ -98,7 +98,7 @@ export const listRecommendedCourses = createAsyncThunk(
         limit: 3
     }, thunkAPI) => {
         try {
-            const res : AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.get(`/course/list`, { params })
+            const res: AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.get(`/course/list`, { params })
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return { data: res.data }
         } catch (error) {
@@ -251,7 +251,7 @@ export const getSubscriptionRedirectLink = createAsyncThunk(
     'getSubscriptionRedirectLink',
     async ({ course_id, redirect_url }: { course_id: number, redirect_url: string }, thunkAPI) => {
         try {
-            const res: AxiosResponse<API.ResponseBodyPaginated<Array<Store.CourseListData>>> = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
+            const res: AxiosResponse<API.ResponseBody<string>> = await axiosExternal.post('/user/purchase/subcription', { course_id: course_id, redirect_url });
             if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
             return res.data.data
 

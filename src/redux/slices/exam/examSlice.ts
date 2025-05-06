@@ -332,6 +332,19 @@ export const fetchExamRoutine = createAsyncThunk(
 );
 
 
+export const getSubscriptionRedirectLink = createAsyncThunk(
+  'getSubscriptionRedirectLink',
+  async ({ id, redirect_url }: { id: number, redirect_url: string }, thunkAPI) => {
+    try {
+      const res: AxiosResponse<API.ResponseBody<string>> = await axiosExternal.post('/user/purchase/subcription', { exam_id: id, redirect_url });
+      if (!res.data.success) thunkAPI.rejectWithValue({ error: res.data.message })
+      return res.data.data
+
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error })
+    }
+  },
+)
 
 export const examSliceSlice = createSlice({
   name: "examSlice",
